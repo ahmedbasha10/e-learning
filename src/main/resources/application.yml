@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: e-learning
+  datasource:
+    url: jdbc:mysql://localhost:3306/e_learning
+    username: root
+    password: manager
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 5000
