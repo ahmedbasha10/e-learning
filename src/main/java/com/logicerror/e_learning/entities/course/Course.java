@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "courses")
 @NoArgsConstructor
@@ -41,5 +43,8 @@ public class Course {
     @Column(name = "price", nullable = false)
     private int price;
 
+    //TODO: Fetch lazy
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Section> sections;
 
 }
