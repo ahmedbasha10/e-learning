@@ -30,7 +30,7 @@ public class SectionKey {
 
     @Override
     public int hashCode() {
-        return Objects.hash(courseId.hashCode(), sectionId.hashCode());
+        return Objects.hash(courseId, sectionId);
     }
 
 }

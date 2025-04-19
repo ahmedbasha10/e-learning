@@ -34,6 +34,6 @@ public class VideoKey {
 
     @Override
     public int hashCode() {
-        return Objects.hash(courseId.hashCode(), sectionId.hashCode(), videoId.hashCode());
+        return Objects.hash(courseId, sectionId, videoId);
     }
 }
