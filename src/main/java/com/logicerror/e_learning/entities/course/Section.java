@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "sections")
 @NoArgsConstructor
@@ -27,4 +29,7 @@ public class Section {
     @MapsId("courseId")
     @JoinColumn(name = "course_id")
     private Course course;
+
+    @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Video> videos;
 }
