@@ -1,5 +1,6 @@
 package com.logicerror.e_learning.entities.user;
 
+import com.logicerror.e_learning.entities.review.Review;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,6 +53,9 @@ public class User implements UserDetails {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

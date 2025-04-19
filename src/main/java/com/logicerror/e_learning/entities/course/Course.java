@@ -1,5 +1,6 @@
 package com.logicerror.e_learning.entities.course;
 
+import com.logicerror.e_learning.entities.review.Review;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,8 +44,11 @@ public class Course {
     @Column(name = "price", nullable = false)
     private int price;
 
+
     //TODO: Fetch lazy
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Section> sections;
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews;
 }
