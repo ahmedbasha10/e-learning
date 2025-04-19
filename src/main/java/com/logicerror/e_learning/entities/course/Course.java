@@ -1,4 +1,4 @@
-package com.logicerror.e_learning.entities;
+package com.logicerror.e_learning.entities.course;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

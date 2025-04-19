@@ -1,6 +1,6 @@
 package com.logicerror.e_learning.repositories;
 
-import com.logicerror.e_learning.entities.Role;
+import com.logicerror.e_learning.entities.user.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

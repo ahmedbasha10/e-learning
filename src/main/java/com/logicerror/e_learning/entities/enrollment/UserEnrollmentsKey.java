@@ -1,4 +1,4 @@
-package com.logicerror.e_learning.entities;
+package com.logicerror.e_learning.entities.enrollment;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -13,22 +13,20 @@ import java.util.Objects;
 @AllArgsConstructor
 @Getter
 @Setter
-public class TeacherCoursesKey {
+public class UserEnrollmentsKey {
 
-    private Long courseId;
     private Long userId;
+    private Long courseId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TeacherCoursesKey that)) return false;
-        return Objects.equals(courseId, that.courseId) &&
-                Objects.equals(userId, that.userId);
+        if (!(o instanceof UserEnrollmentsKey that)) return false;
+        return userId.equals(that.userId) && courseId.equals(that.courseId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(courseId, userId);
+        return Objects.hash(userId, courseId);
     }
-
 }

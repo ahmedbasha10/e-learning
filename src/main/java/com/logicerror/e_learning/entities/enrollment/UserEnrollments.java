@@ -1,5 +1,7 @@
-package com.logicerror.e_learning.entities;
+package com.logicerror.e_learning.entities.enrollment;
 
+import com.logicerror.e_learning.entities.course.Course;
+import com.logicerror.e_learning.entities.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
