@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -31,11 +32,12 @@ public class SecurityConfig {
         System.out.println("inside security filter chain");
         http.authenticationProvider(createAuthenticationProvider());
         http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll();
+            auth.requestMatchers("/login","/api/v1/users/register","/api/v1/users/", "/css/**", "/js/**", "/images/**").permitAll();
             auth.anyRequest().authenticated();
         });
 
-        http.formLogin(Customizer.withDefaults());
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.formLogin(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
