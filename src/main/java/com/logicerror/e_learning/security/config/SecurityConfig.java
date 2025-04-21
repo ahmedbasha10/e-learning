@@ -29,7 +29,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println("inside security filter chain");
         http.authenticationProvider(createAuthenticationProvider());
         http.authorizeHttpRequests(auth -> {
             auth.requestMatchers("/login","/api/v1/users/register","/api/v1/users/", "/error" ,"/css/**", "/js/**", "/images/**").permitAll();
