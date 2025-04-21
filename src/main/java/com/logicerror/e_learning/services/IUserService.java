@@ -2,7 +2,7 @@ package com.logicerror.e_learning.services;
 
 import com.logicerror.e_learning.dto.UserDto;
 import com.logicerror.e_learning.entities.user.User;
-import requests.CreateUserRequest;
+import com.logicerror.e_learning.requests.CreateUserRequest;
 
 public interface IUserService {
     User getUserById(Long userId);

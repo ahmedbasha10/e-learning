@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import requests.CreateUserRequest;
+import com.logicerror.e_learning.requests.CreateUserRequest;
 
 @Service
 @AllArgsConstructor
