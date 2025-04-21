@@ -70,7 +70,11 @@ public class UserService implements IUserService {
 
         newUser.setRole(role);
 
-        return userRepository.save(newUser);
+        User savedUser = userRepository.save(newUser);
+
+        logger.info("User created successfully: {}", savedUser.getUsername());
+
+        return savedUser;
     }
 
     @Override
