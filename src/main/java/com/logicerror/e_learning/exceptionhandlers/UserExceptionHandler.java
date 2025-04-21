@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 @ControllerAdvice(assignableTypes = UserController.class)
 public class UserExceptionHandler {
 
@@ -25,5 +27,10 @@ public class UserExceptionHandler {
     @ExceptionHandler(RoleNotFoundException.class)
     public ResponseEntity<ApiResponse> handleRoleNotFoundException(RoleNotFoundException ex) {
         return ResponseEntity.status(404).body(new ApiResponse(ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<ApiResponse> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
+        return ResponseEntity.status(409).body(new ApiResponse("Database constraint violation: " + ex.getMessage(), null));
     }
 }
