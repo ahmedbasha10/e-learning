@@ -15,22 +15,22 @@ import java.sql.SQLIntegrityConstraintViolationException;
 public class UserExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ApiResponse> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
-        return ResponseEntity.status(409).body(new ApiResponse(ex.getMessage(), null));
+    public ResponseEntity<ApiResponse<Void>> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+        return ResponseEntity.status(409).body(new ApiResponse<>(ex.getMessage(), null));
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiResponse> handleUserNotFoundException(UserNotFoundException ex) {
-        return ResponseEntity.status(404).body(new ApiResponse(ex.getMessage(), null));
+    public ResponseEntity<ApiResponse<Void>> handleUserNotFoundException(UserNotFoundException ex) {
+        return ResponseEntity.status(404).body(new ApiResponse<>(ex.getMessage(), null));
     }
 
     @ExceptionHandler(RoleNotFoundException.class)
-    public ResponseEntity<ApiResponse> handleRoleNotFoundException(RoleNotFoundException ex) {
-        return ResponseEntity.status(404).body(new ApiResponse(ex.getMessage(), null));
+    public ResponseEntity<ApiResponse<Void>> handleRoleNotFoundException(RoleNotFoundException ex) {
+        return ResponseEntity.status(404).body(new ApiResponse<>(ex.getMessage(), null));
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<ApiResponse> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
-        return ResponseEntity.status(409).body(new ApiResponse("Database constraint violation: " + ex.getMessage(), null));
+    public ResponseEntity<ApiResponse<Void>> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
+        return ResponseEntity.status(409).body(new ApiResponse<>("Database constraint violation: " + ex.getMessage(), null));
     }
 }
