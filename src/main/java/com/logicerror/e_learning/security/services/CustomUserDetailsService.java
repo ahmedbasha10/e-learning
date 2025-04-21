@@ -1,6 +1,8 @@
 package com.logicerror.e_learning.security.services;
 
 import com.logicerror.e_learning.repositories.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
+    Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
     private final UserRepository userRepository;
 
     @Autowired
@@ -18,8 +21,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("here in loading");
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        UserDetails user = userRepository.findByUsername(username)
+                .orElseThrow(() -> {
+                    logger.error("User details not found with username: {}", username);
+                    return new UsernameNotFoundException("User not found with username: " + username);
+                });
+        logger.info("User details found with username: {}", username);
+        return user;
     }
 }
