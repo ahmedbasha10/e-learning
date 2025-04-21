@@ -6,11 +6,11 @@ import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.RoleNotFoundException;
 import com.logicerror.e_learning.exceptions.UserAlreadyExistsException;
 import com.logicerror.e_learning.exceptions.UserNotFoundException;
+import com.logicerror.e_learning.mappers.UserMapper;
 import com.logicerror.e_learning.repositories.RoleRepository;
 import com.logicerror.e_learning.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final ModelMapper modelMapper;
+    private final UserMapper userMapper;
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Override
@@ -60,15 +60,7 @@ public class UserService implements IUserService {
             throw new UserAlreadyExistsException("Email or username is already in use.");
         }
 
-        User newUser = new User();
-        newUser.setFirstName(user.getFirstName());
-        newUser.setLastName(user.getLastName());
-        newUser.setEmail(user.getEmail());
-        newUser.setUsername(user.getUsername());
-        newUser.setPassword(user.getPassword());
-        newUser.setCountry(user.getCountry());
-        newUser.setCity(user.getCity());
-        newUser.setState(user.getState());
+        User newUser = userMapper.createUserRequestToUser(user);
 
         Role role = roleRepository.findByName(user.getRole().getName())
                 .orElseThrow(() -> {
@@ -93,6 +85,6 @@ public class UserService implements IUserService {
 
     @Override
     public UserDto convertToDto(User user) {
-        return modelMapper.map(user, UserDto.class);
+        return userMapper.userToUserDto(user);
     }
 }
