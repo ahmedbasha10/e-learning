@@ -32,7 +32,7 @@ public class SecurityConfig {
         System.out.println("inside security filter chain");
         http.authenticationProvider(createAuthenticationProvider());
         http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/login","/api/v1/users/register","/api/v1/users/", "/css/**", "/js/**", "/images/**").permitAll();
+            auth.requestMatchers("/login","/api/v1/users/register","/api/v1/users/", "/error" ,"/css/**", "/js/**", "/images/**").permitAll();
             auth.anyRequest().authenticated();
         });
 
