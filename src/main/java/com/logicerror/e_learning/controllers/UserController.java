@@ -24,8 +24,16 @@ public class UserController {
                     "You need to provide the user details in the request body.",
             responses = {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "200",
+                            responseCode = "201",
                             description = "User registered successfully"
+                    ),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "409",
+                            description = "Email or username already in use"
+                    ),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "404",
+                            description = "Role not found"
                     ),
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(
                             responseCode = "400",
@@ -37,10 +45,12 @@ public class UserController {
                     )
             }
     )
-    public ResponseEntity<ApiResponse> registerUser(@RequestBody CreateUserRequest user){
+    public ResponseEntity<ApiResponse<UserDto>> registerUser(@RequestBody CreateUserRequest user){
         User createdUser = userService.createUser(user);
         UserDto userDto = userService.convertToDto(createdUser);
-        return ResponseEntity.ok(new ApiResponse("User registered successfully", userDto));
+        return ResponseEntity
+                .status(201)
+                .body(new ApiResponse<>("User registered successfully", userDto));
     }
 
 }
