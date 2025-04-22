@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.logicerror.e_learning.requests.CreateUserRequest;
 
@@ -22,6 +23,7 @@ public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -61,6 +63,7 @@ public class UserService implements IUserService {
         }
 
         User newUser = userMapper.createUserRequestToUser(user);
+        newUser.setPassword(passwordEncoder.encode(user.getPassword())); // Password should be hashed in a real application
 
         Role role = roleRepository.findByName(user.getRole().getName())
                 .orElseThrow(() -> {
