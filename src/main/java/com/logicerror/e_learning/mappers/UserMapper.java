@@ -10,6 +10,7 @@ import com.logicerror.e_learning.requests.CreateUserRequest;
 public interface UserMapper {
 
     @Mapping(target = "role", ignore = true)
+    @Mapping(target = "password", ignore = true)
     User createUserRequestToUser(CreateUserRequest userRequest);
 
     UserDto userToUserDto(User user);
