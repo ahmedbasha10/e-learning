@@ -37,6 +37,7 @@ public class SecurityConfig {
 
         http.csrf(AbstractHttpConfigurer::disable);
         http.formLogin(AbstractHttpConfigurer::disable);
+        http.httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
