@@ -3,12 +3,16 @@ package com.logicerror.e_learning.controllers;
 import com.logicerror.e_learning.controllers.responses.ApiResponse;
 import com.logicerror.e_learning.dto.UserDto;
 import com.logicerror.e_learning.entities.user.User;
+import com.logicerror.e_learning.requests.CreateUserRequest;
 import com.logicerror.e_learning.services.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.logicerror.e_learning.requests.CreateUserRequest;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -45,7 +49,7 @@ public class UserController {
                     )
             }
     )
-    public ResponseEntity<ApiResponse<UserDto>> registerUser(@RequestBody CreateUserRequest user){
+    public ResponseEntity<ApiResponse<UserDto>> registerUser(@RequestBody @Valid CreateUserRequest user){
         User createdUser = userService.createUser(user);
         UserDto userDto = userService.convertToDto(createdUser);
         return ResponseEntity
