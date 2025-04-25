@@ -9,6 +9,8 @@ import com.logicerror.e_learning.exceptions.UserNotFoundException;
 import com.logicerror.e_learning.mappers.UserMapper;
 import com.logicerror.e_learning.repositories.RoleRepository;
 import com.logicerror.e_learning.repositories.UserRepository;
+import com.logicerror.e_learning.requests.UpdateUserRequest;
+import com.logicerror.e_learning.services.user.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -16,6 +18,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.logicerror.e_learning.requests.CreateUserRequest;
+
+import java.util.List;
+
+import static com.logicerror.e_learning.constants.MessageConstants.USER_NOT_FOUND_WITH_ID;
 
 @Service
 @AllArgsConstructor
@@ -25,15 +31,12 @@ public class UserService implements IUserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final List<UserFieldUpdater> fieldUpdaters;
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Override
     public User getUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    logger.error("User not found with ID: {}", userId);
-                    return new UserNotFoundException("User not found with ID: " + userId);
-                });
+        return getExistingUser(userId);
     }
 
     @Override
@@ -81,13 +84,29 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User updateUser(User user) {
-        return null;
+    public User updateUser(UpdateUserRequest request, Long userId) {
+        User existingUser = getExistingUser(userId);
+
+        for (UserFieldUpdater fieldUpdater : fieldUpdaters) {
+            fieldUpdater.updateField(existingUser, request);
+        }
+
+        return userRepository.save(existingUser);
     }
+
 
     @Override
     public void deleteUser(Long userId) {
+        User existingUser = getExistingUser(userId);
+        userRepository.delete(existingUser);
+    }
 
+    private User getExistingUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    logger.error("User not found with ID: {}", userId);
+                    return new UserNotFoundException(USER_NOT_FOUND_WITH_ID + userId);
+                });
     }
 
     @Override
