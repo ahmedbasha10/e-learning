@@ -1,4 +1,4 @@
-package com.logicerror.e_learning.services;
+package com.logicerror.e_learning.services.user;
 
 import com.logicerror.e_learning.dto.UserDto;
 import com.logicerror.e_learning.entities.user.Role;
@@ -10,7 +10,6 @@ import com.logicerror.e_learning.mappers.UserMapper;
 import com.logicerror.e_learning.repositories.RoleRepository;
 import com.logicerror.e_learning.repositories.UserRepository;
 import com.logicerror.e_learning.requests.UpdateUserRequest;
-import com.logicerror.e_learning.services.user.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
