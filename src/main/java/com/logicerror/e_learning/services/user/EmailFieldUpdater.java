@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class EmailFieldUpdater implements UserFieldUpdater {
 
     private final UserRepository userRepository;
-    private static final Logger logger = LoggerFactory.getLogger(UsernameFieldUpdater.class);
+    private static final Logger logger = LoggerFactory.getLogger(EmailFieldUpdater.class);
 
     public EmailFieldUpdater(UserRepository userRepository) {
         this.userRepository = userRepository;
