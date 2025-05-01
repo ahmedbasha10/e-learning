@@ -2,9 +2,9 @@ package com.logicerror.e_learning.exceptionhandlers;
 
 import com.logicerror.e_learning.controllers.UserController;
 import com.logicerror.e_learning.controllers.responses.ApiResponse;
-import com.logicerror.e_learning.exceptions.RoleNotFoundException;
-import com.logicerror.e_learning.exceptions.UserAlreadyExistsException;
-import com.logicerror.e_learning.exceptions.UserNotFoundException;
+import com.logicerror.e_learning.exceptions.user.RoleNotFoundException;
+import com.logicerror.e_learning.exceptions.user.UserAlreadyExistsException;
+import com.logicerror.e_learning.exceptions.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

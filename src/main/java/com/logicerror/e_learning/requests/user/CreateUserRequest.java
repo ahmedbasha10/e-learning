@@ -1,4 +1,4 @@
-package com.logicerror.e_learning.requests;
+package com.logicerror.e_learning.requests.user;
 
 import com.logicerror.e_learning.dto.RoleDto;
 import jakarta.validation.Valid;

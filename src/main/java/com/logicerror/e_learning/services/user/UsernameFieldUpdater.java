@@ -1,9 +1,9 @@
 package com.logicerror.e_learning.services.user;
 
 import com.logicerror.e_learning.entities.user.User;
-import com.logicerror.e_learning.exceptions.UserAlreadyExistsException;
+import com.logicerror.e_learning.exceptions.user.UserAlreadyExistsException;
 import com.logicerror.e_learning.repositories.UserRepository;
-import com.logicerror.e_learning.requests.UpdateUserRequest;
+import com.logicerror.e_learning.requests.user.UpdateUserRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

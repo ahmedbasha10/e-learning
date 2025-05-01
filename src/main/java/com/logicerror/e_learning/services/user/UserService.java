@@ -3,20 +3,20 @@ package com.logicerror.e_learning.services.user;
 import com.logicerror.e_learning.dto.UserDto;
 import com.logicerror.e_learning.entities.user.Role;
 import com.logicerror.e_learning.entities.user.User;
-import com.logicerror.e_learning.exceptions.RoleNotFoundException;
-import com.logicerror.e_learning.exceptions.UserAlreadyExistsException;
-import com.logicerror.e_learning.exceptions.UserNotFoundException;
+import com.logicerror.e_learning.exceptions.user.RoleNotFoundException;
+import com.logicerror.e_learning.exceptions.user.UserAlreadyExistsException;
+import com.logicerror.e_learning.exceptions.user.UserNotFoundException;
 import com.logicerror.e_learning.mappers.UserMapper;
 import com.logicerror.e_learning.repositories.RoleRepository;
 import com.logicerror.e_learning.repositories.UserRepository;
-import com.logicerror.e_learning.requests.UpdateUserRequest;
+import com.logicerror.e_learning.requests.user.UpdateUserRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.logicerror.e_learning.requests.CreateUserRequest;
+import com.logicerror.e_learning.requests.user.CreateUserRequest;
 
 import static com.logicerror.e_learning.constants.MessageConstants.USER_NOT_FOUND_WITH_ID;
 

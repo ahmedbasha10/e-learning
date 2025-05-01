@@ -4,7 +4,7 @@ import com.logicerror.e_learning.dto.UserDto;
 import com.logicerror.e_learning.entities.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import com.logicerror.e_learning.requests.CreateUserRequest;
+import com.logicerror.e_learning.requests.user.CreateUserRequest;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)

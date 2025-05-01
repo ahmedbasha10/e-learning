@@ -1,4 +1,4 @@
-package com.logicerror.e_learning.requests;
+package com.logicerror.e_learning.requests.user;
 
 
 import jakarta.validation.constraints.Email;
