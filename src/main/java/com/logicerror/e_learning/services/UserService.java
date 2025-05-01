@@ -19,8 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.logicerror.e_learning.requests.CreateUserRequest;
 
-import java.util.List;
-
 import static com.logicerror.e_learning.constants.MessageConstants.USER_NOT_FOUND_WITH_ID;
 
 @Service

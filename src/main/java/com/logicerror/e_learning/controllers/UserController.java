@@ -5,7 +5,7 @@ import com.logicerror.e_learning.dto.UserDto;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.requests.CreateUserRequest;
 import com.logicerror.e_learning.requests.UpdateUserRequest;
-import com.logicerror.e_learning.services.IUserService;
+import com.logicerror.e_learning.services.user.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

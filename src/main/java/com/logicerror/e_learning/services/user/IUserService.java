@@ -1,4 +1,4 @@
-package com.logicerror.e_learning.services;
+package com.logicerror.e_learning.services.user;
 
 import com.logicerror.e_learning.dto.UserDto;
 import com.logicerror.e_learning.entities.user.User;
