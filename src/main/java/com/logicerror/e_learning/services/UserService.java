@@ -29,9 +29,10 @@ public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserUpdateService userUpdateService;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    private final List<UserFieldUpdater> fieldUpdaters;
+
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Override
@@ -87,9 +88,7 @@ public class UserService implements IUserService {
     public User updateUser(UpdateUserRequest request, Long userId) {
         User existingUser = getExistingUser(userId);
 
-        for (UserFieldUpdater fieldUpdater : fieldUpdaters) {
-            fieldUpdater.updateField(existingUser, request);
-        }
+        userUpdateService.update(existingUser, request);
 
         return userRepository.save(existingUser);
     }
