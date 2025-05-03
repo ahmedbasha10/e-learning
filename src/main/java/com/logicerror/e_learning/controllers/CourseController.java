@@ -3,12 +3,14 @@ package com.logicerror.e_learning.controllers;
 import com.logicerror.e_learning.controllers.responses.ApiResponse;
 import com.logicerror.e_learning.dto.CourseDto;
 import com.logicerror.e_learning.requests.course.CreateCourseRequest;
+import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
 import com.logicerror.e_learning.services.course.ICourseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -55,16 +57,31 @@ public class CourseController {
 
     // create course
     @PostMapping("/create")
+    @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<ApiResponse<CourseDto>> createCourse(@RequestBody @Valid CreateCourseRequest createCourseRequest) {
         // Create course
         CourseDto createdCourse = courseService.createCourse(createCourseRequest);
         // Return response
-        return ResponseEntity.status(201).body(new ApiResponse<>("Course created successfully", createdCourse));
+        return ResponseEntity.status(201).body(new ApiResponse<>("Course created successfully", null));
     }
 
     // update course
+    @PatchMapping("/{courseId}")
+    public ResponseEntity<ApiResponse<CourseDto>> updateCourse(@PathVariable Long courseId, @RequestBody @Valid UpdateCourseRequest updateCourseRequest) {
+        // Update course
+        CourseDto updatedCourse = courseService.updateCourse(courseId, updateCourseRequest);
+        // Return response
+        return ResponseEntity.ok(new ApiResponse<>("Course updated successfully", updatedCourse));
+    }
 
 
     // delete course
+    @DeleteMapping("/{courseId}")
+    public ResponseEntity<ApiResponse<Void>> deleteCourse(@PathVariable Long courseId) {
+        // Delete course
+        courseService.deleteCourse(courseId);
+        // Return response
+        return ResponseEntity.ok(new ApiResponse<>("Course deleted successfully", null));
+    }
 
 }
