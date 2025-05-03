@@ -9,6 +9,7 @@ import com.logicerror.e_learning.mappers.CourseMapper;
 import com.logicerror.e_learning.repositories.CourseRepository;
 import com.logicerror.e_learning.requests.course.CreateCourseRequest;
 import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,7 @@ public class CourseService implements ICourseService {
     }
 
     @Override
+    @Transactional
     public CourseDto createCourse(CreateCourseRequest request) {
         if (courseRepository.existsByTitle(request.getTitle())) {
             logger.error("Course creation failed: title already exists: {}", request.getTitle());
@@ -85,6 +87,7 @@ public class CourseService implements ICourseService {
     }
 
     @Override
+    @Transactional
     public CourseDto updateCourse(Long courseId, UpdateCourseRequest request) {
         logger.debug("Updating course with ID: {}", courseId);
         Course existingCourse = courseRepository.findById(courseId)
@@ -100,6 +103,7 @@ public class CourseService implements ICourseService {
     }
 
     @Override
+    @Transactional
     public void deleteCourse(Long courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> {
