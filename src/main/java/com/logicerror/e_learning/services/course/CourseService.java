@@ -29,6 +29,7 @@ public class CourseService implements ICourseService {
 
     @Override
     public CourseDto getCourseById(Long courseId) {
+        Assert.notNull(courseId, "Course ID must not be null");
         logger.debug("Fetching course with ID: {}", courseId);
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> {
@@ -40,6 +41,7 @@ public class CourseService implements ICourseService {
 
     @Override
     public CourseDto getCourseByTitle(String title) {
+        Assert.notNull(title, "Course title must not be null");
         logger.debug("Fetching course with title: {}", title);
         Course course = courseRepository.findByTitle(title)
                 .orElseThrow(() -> {
@@ -51,6 +53,7 @@ public class CourseService implements ICourseService {
 
     @Override
     public Page<CourseDto> getCoursesByCategory(String category, Pageable pageable) {
+        Assert.notNull(category, "Course category must not be null");
         Assert.notNull(pageable, "Pageable must not be null");
         logger.debug("Fetching courses by category: {}, page: {}", category, pageable.getPageNumber());
         Page<Course> courses = courseRepository.findByCategory(category, pageable);
@@ -60,6 +63,7 @@ public class CourseService implements ICourseService {
 
     @Override
     public Page<CourseDto> getCoursesByLevel(String level, Pageable pageable) {
+        Assert.notNull(level, "Course level must not be null");
         Assert.notNull(pageable, "Pageable must not be null");
         logger.debug("Fetching courses by level: {}, page: {}", level, pageable.getPageNumber());
         Page<Course> courses = courseRepository.findByLevel(level, pageable);

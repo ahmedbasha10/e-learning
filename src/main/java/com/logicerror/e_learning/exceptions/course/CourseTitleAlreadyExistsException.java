@@ -1,6 +1,8 @@
 package com.logicerror.e_learning.exceptions.course;
 
-public class CourseTitleAlreadyExistsException extends RuntimeException {
+import com.logicerror.e_learning.exceptions.general.ResourceAlreadyExistsException;
+
+public class CourseTitleAlreadyExistsException extends ResourceAlreadyExistsException {
     public CourseTitleAlreadyExistsException(String message) {
         super(message);
     }
