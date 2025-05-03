@@ -6,6 +6,7 @@ import com.logicerror.e_learning.exceptions.general.ResourceAlreadyExistsExcepti
 import com.logicerror.e_learning.exceptions.general.ResourceCreationFailedException;
 import com.logicerror.e_learning.exceptions.general.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -30,6 +31,15 @@ public class CourseExceptionHandler {
     @ExceptionHandler(ResourceCreationFailedException.class)
     public ResponseEntity<ApiResponse<Void>> handleResourceCreationFailedException(ResourceCreationFailedException ex) {
         return ResponseEntity.status(500).body(new ApiResponse<>(ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<Void>> handleValidationErrors(MethodArgumentNotValidException ex) {
+        String errorMessage = ex.getFieldErrors().stream()
+                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                .reduce((first, second) -> first + ", " + second)
+                .orElse("Validation error");
+        return ResponseEntity.status(400).body(new ApiResponse<>(errorMessage, null));
     }
 
     @ExceptionHandler(Exception.class)
