@@ -4,6 +4,7 @@ import com.logicerror.e_learning.controllers.responses.ApiResponse;
 import com.logicerror.e_learning.dto.CourseDto;
 import com.logicerror.e_learning.requests.course.CreateCourseRequest;
 import com.logicerror.e_learning.services.course.ICourseService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/courses")
+@RequestMapping("${api.base-path}/courses")
 @RequiredArgsConstructor
 public class CourseController {
     private final ICourseService courseService;
@@ -54,7 +55,7 @@ public class CourseController {
 
     // create course
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<CourseDto>> createCourse(@RequestBody CreateCourseRequest createCourseRequest) {
+    public ResponseEntity<ApiResponse<CourseDto>> createCourse(@RequestBody @Valid CreateCourseRequest createCourseRequest) {
         // Create course
         CourseDto createdCourse = courseService.createCourse(createCourseRequest);
         // Return response
@@ -62,6 +63,7 @@ public class CourseController {
     }
 
     // update course
+
 
     // delete course
 
