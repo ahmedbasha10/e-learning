@@ -5,16 +5,12 @@ import com.logicerror.e_learning.controllers.responses.ApiResponse;
 import com.logicerror.e_learning.exceptions.user.RoleNotFoundException;
 import com.logicerror.e_learning.exceptions.user.UserAlreadyExistsException;
 import com.logicerror.e_learning.exceptions.user.UserNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @ControllerAdvice(assignableTypes = UserController.class)
 public class UserExceptionHandler {
@@ -40,13 +36,11 @@ public class UserExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = ex.getFieldErrors().stream()
-                .collect(Collectors.toMap(
-                        FieldError::getField,
-                        fieldError -> fieldError.getDefaultMessage() != null ? fieldError.getDefaultMessage() : "Invalid value"
-                ));
-
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiResponse<Void>> handleValidationErrors(MethodArgumentNotValidException ex) {
+        String errorMessage = ex.getFieldErrors().stream()
+                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                .reduce((first, second) -> first + ", " + second)
+                .orElse("Validation error");
+        return ResponseEntity.status(400).body(new ApiResponse<>(errorMessage, null));
     }
 }
