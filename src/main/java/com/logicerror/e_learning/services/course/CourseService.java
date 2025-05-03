@@ -2,11 +2,15 @@ package com.logicerror.e_learning.services.course;
 
 import com.logicerror.e_learning.dto.CourseDto;
 import com.logicerror.e_learning.entities.course.Course;
+import com.logicerror.e_learning.entities.teacher.TeacherCourses;
+import com.logicerror.e_learning.entities.teacher.TeacherCoursesKey;
+import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.course.CourseCreationFailedException;
 import com.logicerror.e_learning.exceptions.course.CourseNotFoundException;
 import com.logicerror.e_learning.exceptions.course.CourseTitleAlreadyExistsException;
 import com.logicerror.e_learning.mappers.CourseMapper;
 import com.logicerror.e_learning.repositories.CourseRepository;
+import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
 import com.logicerror.e_learning.requests.course.CreateCourseRequest;
 import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
 import jakarta.transaction.Transactional;
@@ -15,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -24,6 +29,7 @@ public class CourseService implements ICourseService {
     private final CourseRepository courseRepository;
     private final CourseUpdateService courseUpdateService;
     private final CourseMapper courseMapper;
+    private final TeacherCoursesRepository teacherCoursesRepository;
     private final Logger logger = LoggerFactory.getLogger(CourseService.class);
 
 
@@ -85,6 +91,19 @@ public class CourseService implements ICourseService {
             logger.error("Course creation failed: could not generate ID");
             throw new CourseCreationFailedException("Failed to create course");
         }
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        TeacherCourses teacherCourses = TeacherCourses.builder()
+                .course(savedCourse)
+                .user(user)
+                .id(TeacherCoursesKey.builder()
+                        .courseId(savedCourse.getId())
+                        .userId(user.getId())
+                        .build())
+                .build();
+
+        teacherCoursesRepository.save(teacherCourses);
 
         logger.info("Successfully created course with ID: {}", savedCourse.getId());
         return convertToDto(savedCourse);

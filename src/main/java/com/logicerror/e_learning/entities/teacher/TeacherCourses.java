@@ -3,10 +3,7 @@ package com.logicerror.e_learning.entities.teacher;
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.entities.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -16,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class TeacherCourses {
 
     @EmbeddedId
@@ -33,4 +31,10 @@ public class TeacherCourses {
 
     @Column(name = "date", nullable = false)
     private LocalDate date;
+
+    @PrePersist
+    protected void onCreate() {
+        this.date = LocalDate.now();
+    }
+
 }
