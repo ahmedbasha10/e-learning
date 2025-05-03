@@ -2,6 +2,7 @@ package com.logicerror.e_learning.services.user;
 
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.requests.user.UpdateUserRequest;
+import com.logicerror.e_learning.services.Updater;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,6 @@ public class UserUpdateService implements Updater<User, UpdateUserRequest> {
     @Override
     public void update(User user, UpdateUserRequest request) {
         fieldUpdaters
-                .parallelStream()
                 .forEach(fieldUpdater -> fieldUpdater.updateField(user, request));
     }
 }
