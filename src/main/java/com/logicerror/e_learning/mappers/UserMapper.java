@@ -12,7 +12,6 @@ public interface UserMapper {
 
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "password", ignore = true)
-    @Mapping(target = "city", source = "city")
     User createUserRequestToUser(CreateUserRequest userRequest);
 
     UserDto userToUserDto(User user);
