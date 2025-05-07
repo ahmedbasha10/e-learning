@@ -6,7 +6,7 @@ import com.logicerror.e_learning.exceptions.general.ResourceAlreadyExistsExcepti
 import com.logicerror.e_learning.exceptions.general.ResourceCreationFailedException;
 import com.logicerror.e_learning.exceptions.general.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,8 +34,8 @@ public class CourseExceptionHandler {
         return ResponseEntity.status(500).body(new ApiResponse<>(ex.getMessage(), null));
     }
 
-    @ExceptionHandler(AuthorizationDeniedException.class)
-    public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(AuthorizationDeniedException ex) {
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(AccessDeniedException ex) {
         return ResponseEntity.status(403).body(new ApiResponse<>(ex.getMessage(), null));
     }
 
