@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
+
 @RestController
 @RequestMapping("${api.base-path}/courses")
 @RequiredArgsConstructor
@@ -57,17 +59,18 @@ public class CourseController {
 
     // create course
     @PostMapping("/create")
-    @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<ApiResponse<CourseDto>> createCourse(@RequestBody @Valid CreateCourseRequest createCourseRequest) {
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<CourseDto>> createCourse(@RequestBody @Valid CreateCourseRequest createCourseRequest) throws AccessDeniedException {
         // Create course
         CourseDto createdCourse = courseService.createCourse(createCourseRequest);
         // Return response
-        return ResponseEntity.status(201).body(new ApiResponse<>("Course created successfully", null));
+        return ResponseEntity.status(201).body(new ApiResponse<>("Course created successfully", createdCourse));
     }
 
     // update course
     @PatchMapping("/{courseId}")
-    public ResponseEntity<ApiResponse<CourseDto>> updateCourse(@PathVariable Long courseId, @RequestBody @Valid UpdateCourseRequest updateCourseRequest) {
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<CourseDto>> updateCourse(@PathVariable Long courseId, @RequestBody @Valid UpdateCourseRequest updateCourseRequest) throws AccessDeniedException {
         // Update course
         CourseDto updatedCourse = courseService.updateCourse(courseId, updateCourseRequest);
         // Return response
@@ -77,7 +80,8 @@ public class CourseController {
 
     // delete course
     @DeleteMapping("/{courseId}")
-    public ResponseEntity<ApiResponse<Void>> deleteCourse(@PathVariable Long courseId) {
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> deleteCourse(@PathVariable Long courseId) throws AccessDeniedException {
         // Delete course
         courseService.deleteCourse(courseId);
         // Return response

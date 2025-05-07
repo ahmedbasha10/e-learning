@@ -199,4 +199,16 @@ public class User implements UserDetails {
                 ", role=" + role +
                 '}';
     }
+
+    public boolean isAdmin() {
+        return role.getName().equals("ROLE_ADMIN");
+    }
+
+    public boolean isTeacher() {
+        return role.getName().equals("ROLE_TEACHER");
+    }
+
+    public boolean isStudent() {
+        return role.getName().equals("ROLE_STUDENT");
+    }
 }
