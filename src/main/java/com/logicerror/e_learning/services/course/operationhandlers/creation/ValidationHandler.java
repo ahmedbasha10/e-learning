@@ -1,4 +1,4 @@
-package com.logicerror.e_learning.services.course.operationhandlers;
+package com.logicerror.e_learning.services.course.operationhandlers.creation;
 
 import com.logicerror.e_learning.exceptions.course.CourseTitleAlreadyExistsException;
 import com.logicerror.e_learning.repositories.CourseRepository;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class ValidationHandler extends BaseCourseOperationHandler {
+public class ValidationHandler extends BaseCourseCreationHandler {
     private final CourseRepository courseRepository;
 
     @Override

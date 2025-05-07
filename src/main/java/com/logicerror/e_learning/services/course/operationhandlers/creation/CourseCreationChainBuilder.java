@@ -1,11 +1,12 @@
-package com.logicerror.e_learning.services.course.operationhandlers;
+package com.logicerror.e_learning.services.course.operationhandlers.creation;
 
+import com.logicerror.e_learning.services.course.operationhandlers.CourseOperationHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CourseOperationChainBuilder<T> {
+public class CourseCreationChainBuilder<T> {
     private final TeacherCourseAssociationHandler teacherCourseAssociationHandler;
     private final CourseCreationHandler courseCreationHandler;
     private final ValidationHandler validationHandler;

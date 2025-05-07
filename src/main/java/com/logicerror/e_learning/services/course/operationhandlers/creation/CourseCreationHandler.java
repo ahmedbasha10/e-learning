@@ -1,4 +1,4 @@
-package com.logicerror.e_learning.services.course.operationhandlers;
+package com.logicerror.e_learning.services.course.operationhandlers.creation;
 
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.exceptions.course.CourseCreationFailedException;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CourseCreationHandler extends BaseCourseOperationHandler {
+public class CourseCreationHandler extends BaseCourseCreationHandler {
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
     

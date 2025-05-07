@@ -1,11 +1,11 @@
-package com.logicerror.e_learning.services.course.operationhandlers;
+package com.logicerror.e_learning.services.course.operationhandlers.creation;
 
 import com.logicerror.e_learning.entities.user.User;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthorizationHandler extends BaseCourseOperationHandler {
+public class AuthorizationHandler extends BaseCourseCreationHandler {
 
     @Override
     protected void processRequest(CourseCreationContext context) {

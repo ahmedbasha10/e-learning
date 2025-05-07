@@ -1,9 +1,10 @@
-package com.logicerror.e_learning.services.course.operationhandlers;
+package com.logicerror.e_learning.services.course.operationhandlers.creation;
 
+import com.logicerror.e_learning.services.course.operationhandlers.CourseOperationHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class BaseCourseOperationHandler implements CourseOperationHandler {
+public abstract class BaseCourseCreationHandler implements CourseOperationHandler {
 
     protected CourseOperationHandler nextHandler;
     protected final Logger logger = LoggerFactory.getLogger(getClass());

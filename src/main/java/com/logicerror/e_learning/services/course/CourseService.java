@@ -9,8 +9,8 @@ import com.logicerror.e_learning.repositories.CourseRepository;
 import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
 import com.logicerror.e_learning.requests.course.CreateCourseRequest;
 import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
-import com.logicerror.e_learning.services.course.operationhandlers.CourseCreationContext;
-import com.logicerror.e_learning.services.course.operationhandlers.CourseOperationChainBuilder;
+import com.logicerror.e_learning.services.course.operationhandlers.creation.CourseCreationContext;
+import com.logicerror.e_learning.services.course.operationhandlers.creation.CourseCreationChainBuilder;
 import com.logicerror.e_learning.services.course.operationhandlers.CourseOperationHandler;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class CourseService implements ICourseService {
     private final CourseUpdateService courseUpdateService;
     private final CourseMapper courseMapper;
     private final TeacherCoursesRepository teacherCoursesRepository;
-    private final CourseOperationChainBuilder<CreateCourseRequest> courseOperationChainBuilder; // <CreateCourseRequest>
+    private final CourseCreationChainBuilder<CreateCourseRequest> courseOperationChainBuilder; // <CreateCourseRequest>
     private final Logger logger = LoggerFactory.getLogger(CourseService.class);
 
 

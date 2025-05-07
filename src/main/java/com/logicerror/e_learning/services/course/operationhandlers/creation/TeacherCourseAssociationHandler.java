@@ -1,4 +1,4 @@
-package com.logicerror.e_learning.services.course.operationhandlers;
+package com.logicerror.e_learning.services.course.operationhandlers.creation;
 
 import com.logicerror.e_learning.entities.teacher.TeacherCourses;
 import com.logicerror.e_learning.entities.teacher.TeacherCoursesKey;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class TeacherCourseAssociationHandler extends BaseCourseOperationHandler {
+public class TeacherCourseAssociationHandler extends BaseCourseCreationHandler {
     private final TeacherCoursesRepository teacherCoursesRepository;
 
 

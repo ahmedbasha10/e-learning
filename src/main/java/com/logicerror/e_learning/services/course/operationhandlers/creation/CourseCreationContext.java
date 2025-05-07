@@ -1,4 +1,4 @@
-package com.logicerror.e_learning.services.course.operationhandlers;
+package com.logicerror.e_learning.services.course.operationhandlers.creation;
 
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.entities.user.User;
