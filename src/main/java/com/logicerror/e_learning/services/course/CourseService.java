@@ -6,12 +6,13 @@ import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.course.CourseNotFoundException;
 import com.logicerror.e_learning.mappers.CourseMapper;
 import com.logicerror.e_learning.repositories.CourseRepository;
-import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
 import com.logicerror.e_learning.requests.course.CreateCourseRequest;
 import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
-import com.logicerror.e_learning.services.course.operationhandlers.creation.CourseCreationContext;
-import com.logicerror.e_learning.services.course.operationhandlers.creation.CourseCreationChainBuilder;
 import com.logicerror.e_learning.services.course.operationhandlers.CourseOperationHandler;
+import com.logicerror.e_learning.services.course.operationhandlers.creation.CourseCreationChainBuilder;
+import com.logicerror.e_learning.services.course.operationhandlers.creation.CourseCreationContext;
+import com.logicerror.e_learning.services.course.operationhandlers.update.CourseUpdateChainBuilder;
+import com.logicerror.e_learning.services.course.operationhandlers.update.CourseUpdateContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -30,8 +31,8 @@ public class CourseService implements ICourseService {
     private final CourseRepository courseRepository;
     private final CourseUpdateService courseUpdateService;
     private final CourseMapper courseMapper;
-    private final TeacherCoursesRepository teacherCoursesRepository;
-    private final CourseCreationChainBuilder<CreateCourseRequest> courseOperationChainBuilder; // <CreateCourseRequest>
+    private final CourseCreationChainBuilder courseOperationChainBuilder; // <CreateCourseRequest>
+    private final CourseUpdateChainBuilder courseUpdateChainBuilder; // <UpdateCourseRequest>
     private final Logger logger = LoggerFactory.getLogger(CourseService.class);
 
 
@@ -83,7 +84,7 @@ public class CourseService implements ICourseService {
     @Transactional
     public CourseDto createCourse(CreateCourseRequest request) throws AccessDeniedException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CourseOperationHandler courseOperationHandler = courseOperationChainBuilder.build();
+        CourseOperationHandler<CourseCreationContext> courseOperationHandler = courseOperationChainBuilder.build();
         CourseCreationContext context = new CourseCreationContext(request, user);
         courseOperationHandler.handle(context);
         return convertToDto(context.getCourse());
@@ -101,18 +102,11 @@ public class CourseService implements ICourseService {
     @Override
     @Transactional
     public CourseDto updateCourse(Long courseId, UpdateCourseRequest request) throws AccessDeniedException {
-        authorizeUser("User does not have permission to update a course");
-        logger.debug("Updating course with ID: {}", courseId);
-        Course existingCourse = courseRepository.findById(courseId)
-                .orElseThrow(() -> {
-                    logger.error("Course not found with ID: {}", courseId);
-                    return new CourseNotFoundException("Course not found with id: " + courseId);
-                });
-
-        courseUpdateService.update(existingCourse, request);
-        Course updatedCourse = courseRepository.save(existingCourse);
-        logger.info("Successfully updated course with ID: {}", updatedCourse.getId());
-        return convertToDto(updatedCourse);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CourseOperationHandler<CourseUpdateContext> courseOperationHandler = courseUpdateChainBuilder.build();
+        CourseUpdateContext context = new CourseUpdateContext(courseId, request, user);
+        courseOperationHandler.handle(context);
+        return convertToDto(context.getUpdatedCourse());
     }
 
     @Override

@@ -1,0 +1,28 @@
+package com.logicerror.e_learning.services.course.operationhandlers.update;
+
+import com.logicerror.e_learning.services.course.operationhandlers.CourseOperationHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public abstract class BaseCourseUpdateHandler implements CourseOperationHandler<CourseUpdateContext> {
+
+    protected CourseOperationHandler<CourseUpdateContext> nextHandler;
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+
+
+    @Override
+    public void handle(CourseUpdateContext context) {
+        processRequest(context);
+        if (nextHandler != null) {
+            nextHandler.handle(context);
+        }
+    }
+
+    @Override
+    public CourseOperationHandler<CourseUpdateContext> setNextHandler(CourseOperationHandler<CourseUpdateContext> nextHandler) {
+        this.nextHandler = nextHandler;
+        return nextHandler;
+    }
+
+    protected abstract void processRequest(CourseUpdateContext context);
+}
