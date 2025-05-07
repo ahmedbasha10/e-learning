@@ -12,6 +12,7 @@ public interface UserMapper {
 
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "password", ignore = true)
+    @Mapping(target = "country", source = "country")
     User createUserRequestToUser(CreateUserRequest userRequest);
 
     UserDto userToUserDto(User user);
