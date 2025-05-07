@@ -11,6 +11,8 @@ import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
 import com.logicerror.e_learning.services.course.operationhandlers.CourseOperationHandler;
 import com.logicerror.e_learning.services.course.operationhandlers.creation.CourseCreationChainBuilder;
 import com.logicerror.e_learning.services.course.operationhandlers.creation.CourseCreationContext;
+import com.logicerror.e_learning.services.course.operationhandlers.delete.CourseDeleteChainBuilder;
+import com.logicerror.e_learning.services.course.operationhandlers.delete.CourseDeleteContext;
 import com.logicerror.e_learning.services.course.operationhandlers.update.CourseUpdateChainBuilder;
 import com.logicerror.e_learning.services.course.operationhandlers.update.CourseUpdateContext;
 import jakarta.transaction.Transactional;
@@ -33,6 +35,7 @@ public class CourseService implements ICourseService {
     private final CourseMapper courseMapper;
     private final CourseCreationChainBuilder courseOperationChainBuilder; // <CreateCourseRequest>
     private final CourseUpdateChainBuilder courseUpdateChainBuilder; // <UpdateCourseRequest>
+    private final CourseDeleteChainBuilder courseDeleteChainBuilder; // <DeleteCourseRequest>
     private final Logger logger = LoggerFactory.getLogger(CourseService.class);
 
 
@@ -112,14 +115,10 @@ public class CourseService implements ICourseService {
     @Override
     @Transactional
     public void deleteCourse(Long courseId) {
-        authorizeUser("User does not have permission to delete a course");
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> {
-                    logger.error("Course not found with ID: {}", courseId);
-                    return new CourseNotFoundException("Course not found with id: " + courseId);
-                });
-        courseRepository.delete(course);
-        logger.info("Successfully deleted course with ID: {}", courseId);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CourseOperationHandler<CourseDeleteContext> courseOperationHandler = courseDeleteChainBuilder.build();
+        CourseDeleteContext context = new CourseDeleteContext(courseId, user);
+        courseOperationHandler.handle(context);
     }
 
     @Override
