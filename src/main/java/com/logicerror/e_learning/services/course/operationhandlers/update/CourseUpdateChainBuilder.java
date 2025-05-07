@@ -13,10 +13,10 @@ public class CourseUpdateChainBuilder {
     private final CourseUpdateHandler courseUpdateHandler;
 
     public CourseOperationHandler<CourseUpdateContext> build() {
-        validationHandler
-                .setNextHandler(authorizationHandler)
+        authorizationHandler
+                .setNextHandler(validationHandler)
                 .setNextHandler(courseUpdateHandler);
 
-        return validationHandler;
+        return authorizationHandler;
     }
 }

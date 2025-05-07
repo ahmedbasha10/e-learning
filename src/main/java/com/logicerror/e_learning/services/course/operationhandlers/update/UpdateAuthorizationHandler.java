@@ -24,7 +24,7 @@ public class UpdateAuthorizationHandler extends BaseCourseUpdateHandler{
         if(user.isTeacher()){
             boolean isOwner = teacherCoursesRepository.existsById(
                     TeacherCoursesKey.builder()
-                            .courseId(context.getExistingCourse().getId())
+                            .courseId(context.getCourseId())
                             .userId(user.getId())
                             .build()
             );
