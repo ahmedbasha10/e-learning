@@ -4,13 +4,13 @@ import com.logicerror.e_learning.services.course.operationhandlers.CourseOperati
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class BaseCourseCreationHandler implements CourseOperationHandler {
+public abstract class BaseCourseCreationHandler implements CourseOperationHandler<CourseCreationContext> {
 
-    protected CourseOperationHandler nextHandler;
+    protected CourseOperationHandler<CourseCreationContext> nextHandler;
     protected final Logger logger = LoggerFactory.getLogger(getClass());
     
     @Override
-    public CourseOperationHandler setNextHandler(CourseOperationHandler nextHandler) {
+    public CourseOperationHandler<CourseCreationContext> setNextHandler(CourseOperationHandler<CourseCreationContext> nextHandler) {
         this.nextHandler = nextHandler;
         return nextHandler;
     }

@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CourseCreationChainBuilder<T> {
+public class CourseCreationChainBuilder {
     private final TeacherCourseAssociationHandler teacherCourseAssociationHandler;
     private final CourseCreationHandler courseCreationHandler;
     private final ValidationHandler validationHandler;
     private final AuthorizationHandler authorizationHandler;
 
-    public CourseOperationHandler build() {
+    public CourseOperationHandler<CourseCreationContext> build() {
         authorizationHandler
                 .setNextHandler(validationHandler)
                 .setNextHandler(courseCreationHandler)
