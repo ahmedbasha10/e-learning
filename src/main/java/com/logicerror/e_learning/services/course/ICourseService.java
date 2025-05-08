@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 public interface ICourseService {
     CourseDto getCourseById(Long courseId);
     CourseDto getCourseByTitle(String title);
+    Page<CourseDto> getAllCourses(Pageable pageable);
     Page<CourseDto> getCoursesByCategory(String category, Pageable pageable);
     Page<CourseDto> getCoursesByLevel(String level, Pageable pageable);
 

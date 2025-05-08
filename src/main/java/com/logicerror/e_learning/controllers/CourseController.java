@@ -21,6 +21,15 @@ import java.nio.file.AccessDeniedException;
 public class CourseController {
     private final ICourseService courseService;
 
+    // get all courses
+    @GetMapping
+    public ResponseEntity<ApiResponse<Page<CourseDto>>> getAllCourses(Pageable pageable) {
+        // Fetch all courses
+        Page<CourseDto> courseDtoPage = courseService.getAllCourses(pageable);
+        // Return response
+        return ResponseEntity.ok(new ApiResponse<>("Courses fetched successfully", courseDtoPage));
+    }
+
     // get course by id
     @GetMapping("/{courseId}")
     public ResponseEntity<ApiResponse<CourseDto>> getCourseById(@PathVariable Long courseId) {

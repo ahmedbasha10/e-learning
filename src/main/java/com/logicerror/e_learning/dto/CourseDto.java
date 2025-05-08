@@ -15,4 +15,5 @@ public class CourseDto {
     private String level;
     private int duration;
     private int price;
+    private UserDto teacher;
 }

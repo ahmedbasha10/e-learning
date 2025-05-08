@@ -1,11 +1,14 @@
 package com.logicerror.e_learning.services.course;
 
 import com.logicerror.e_learning.dto.CourseDto;
+import com.logicerror.e_learning.dto.UserDto;
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.course.CourseNotFoundException;
 import com.logicerror.e_learning.mappers.CourseMapper;
+import com.logicerror.e_learning.mappers.UserMapper;
 import com.logicerror.e_learning.repositories.CourseRepository;
+import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
 import com.logicerror.e_learning.requests.course.CreateCourseRequest;
 import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
 import com.logicerror.e_learning.services.course.operationhandlers.CourseOperationHandler;
@@ -31,7 +34,8 @@ import org.springframework.util.Assert;
 @RequiredArgsConstructor
 public class CourseService implements ICourseService {
     private final CourseRepository courseRepository;
-    private final CourseUpdateService courseUpdateService;
+    private final TeacherCoursesRepository teacherCoursesRepository;
+    private final UserMapper userMapper;
     private final CourseMapper courseMapper;
     private final CourseCreationChainBuilder courseOperationChainBuilder; // <CreateCourseRequest>
     private final CourseUpdateChainBuilder courseUpdateChainBuilder; // <UpdateCourseRequest>
@@ -61,6 +65,15 @@ public class CourseService implements ICourseService {
                     return new CourseNotFoundException("Course not found with title: " + title);
                 });
         return convertToDto(course);
+    }
+
+    @Override
+    public Page<CourseDto> getAllCourses(Pageable pageable) {
+        Assert.notNull(pageable, "Pageable must not be null");
+        logger.debug("Fetching all courses, page: {}", pageable.getPageNumber());
+        Page<Course> courses = courseRepository.findAll(pageable);
+        logger.debug("Found {} courses", courses.getTotalElements());
+        return courses.map(this::convertToDto);
     }
 
     @Override
@@ -94,14 +107,6 @@ public class CourseService implements ICourseService {
     }
 
 
-    private static void authorizeUser(String message) throws AccessDeniedException {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(user.getAuthorities().stream().noneMatch(authority ->
-                authority.getAuthority().equals("ROLE_TEACHER") || authority.getAuthority().equals("ROLE_ADMIN"))) {
-            throw new AccessDeniedException(message);
-        }
-    }
-
     @Override
     @Transactional
     public CourseDto updateCourse(Long courseId, UpdateCourseRequest request) throws AccessDeniedException {
@@ -123,6 +128,8 @@ public class CourseService implements ICourseService {
 
     @Override
     public CourseDto convertToDto(Course course) {
-        return courseMapper.courseToCourseDto(course);
+        User user = teacherCoursesRepository.findByCourseId(course.getId()).getFirst().getUser();
+        UserDto teacher = userMapper.userToUserDto(user);
+        return courseMapper.courseToCourseDto(course, teacher);
     }
 }
