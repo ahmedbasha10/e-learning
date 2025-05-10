@@ -1,6 +1,5 @@
 package com.logicerror.e_learning.entities.review;
 
-import com.logicerror.e_learning.entities.course.SectionKey;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
