@@ -14,8 +14,10 @@ import lombok.Setter;
 @Setter
 public class Video {
 
-    @EmbeddedId
-    private VideoKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "video_id")
+    private Long id;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -27,14 +29,11 @@ public class Video {
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "course_id", insertable = false, updatable = false)
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
     @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "course_id", referencedColumnName = "course_id", insertable = false, updatable = false),
-            @JoinColumn(name = "section_id", referencedColumnName = "section_id", insertable = false, updatable = false)
-    })
+    @JoinColumn(name = "section_id", nullable = false)
     private Section section;
 
 }
