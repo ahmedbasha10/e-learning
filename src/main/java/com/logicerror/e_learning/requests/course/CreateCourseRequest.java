@@ -1,9 +1,12 @@
 package com.logicerror.e_learning.requests.course;
 
+import com.logicerror.e_learning.requests.course.section.CreateSectionRequest;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.util.List;
 
 @AllArgsConstructor
 @Data
@@ -30,6 +33,9 @@ public class CreateCourseRequest {
 
     @NotNull(message = "Course Price is required")
     private Integer price;
+
+    @NotNull(message = "Course Sections is required")
+    private List<CreateSectionRequest> sections;
 
     public String getTitle() {
         return title;
@@ -85,5 +91,13 @@ public class CreateCourseRequest {
 
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public List<CreateSectionRequest> getSections() {
+        return sections;
+    }
+
+    public void setSections(List<CreateSectionRequest> sections) {
+        this.sections = sections;
     }
 }
