@@ -15,5 +15,13 @@ public interface UserMapper {
     @Mapping(target = "country", source = "country")
     User createUserRequestToUser(CreateUserRequest userRequest);
 
+    @Mapping(target = "id", source = "user.id")
+    @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "email", source = "user.email")
+    @Mapping(target = "firstName", source = "user.firstName")
+    @Mapping(target = "lastName", source = "user.lastName")
+    @Mapping(target = "country", source = "user.country")
+    @Mapping(target = "city", source = "user.city")
+    @Mapping(target = "state", source = "user.state")
     UserDto userToUserDto(User user);
 }
