@@ -1,5 +1,6 @@
 package com.logicerror.e_learning.mappers;
 
+import com.logicerror.e_learning.dto.SectionDto;
 import com.logicerror.e_learning.entities.course.Section;
 import com.logicerror.e_learning.requests.course.section.CreateSectionRequest;
 import org.mapstruct.Mapper;
@@ -11,4 +12,10 @@ public interface SectionMapper {
     @Mapping(target = "duration", source = "duration")
     @Mapping(target = "order", source = "order")
     Section createSectionRequestToSection(CreateSectionRequest request);
+
+    @Mapping(target = "id", source = "section.id")
+    @Mapping(target = "title", source = "section.title")
+    @Mapping(target = "order", source = "section.order")
+    @Mapping(target = "duration", source = "section.duration")
+    SectionDto sectionToSectionDto(Section section);
 }

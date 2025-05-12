@@ -34,7 +34,6 @@ public class CreateCourseRequest {
     @NotNull(message = "Course Price is required")
     private Integer price;
 
-    @NotNull(message = "Course Sections is required")
     private List<CreateSectionRequest> sections;
 
     public String getTitle() {
