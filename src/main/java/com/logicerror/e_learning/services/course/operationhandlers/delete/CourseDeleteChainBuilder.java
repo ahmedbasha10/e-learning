@@ -1,6 +1,6 @@
 package com.logicerror.e_learning.services.course.operationhandlers.delete;
 
-import com.logicerror.e_learning.services.course.operationhandlers.CourseOperationHandler;
+import com.logicerror.e_learning.services.OperationHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ public class CourseDeleteChainBuilder {
     private final DeleteValidationHandler validationHandler;
     private final DeleteAuthorizationHandler authorizationHandler;
 
-    public CourseOperationHandler<CourseDeleteContext> build() {
+    public OperationHandler<CourseDeleteContext> build() {
         authorizationHandler
                 .setNextHandler(validationHandler)
                 .setNextHandler(courseDeleteHandler);

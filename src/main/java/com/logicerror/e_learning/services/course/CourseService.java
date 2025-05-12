@@ -11,7 +11,7 @@ import com.logicerror.e_learning.repositories.CourseRepository;
 import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
 import com.logicerror.e_learning.requests.course.CreateCourseRequest;
 import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
-import com.logicerror.e_learning.services.course.operationhandlers.CourseOperationHandler;
+import com.logicerror.e_learning.services.OperationHandler;
 import com.logicerror.e_learning.services.course.operationhandlers.creation.CourseCreationChainBuilder;
 import com.logicerror.e_learning.services.course.operationhandlers.creation.CourseCreationContext;
 import com.logicerror.e_learning.services.course.operationhandlers.delete.CourseDeleteChainBuilder;
@@ -100,7 +100,7 @@ public class CourseService implements ICourseService {
     @Transactional
     public CourseDto createCourse(CreateCourseRequest request) throws AccessDeniedException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CourseOperationHandler<CourseCreationContext> courseOperationHandler = courseOperationChainBuilder.build();
+        OperationHandler<CourseCreationContext> courseOperationHandler = courseOperationChainBuilder.build();
         CourseCreationContext context = new CourseCreationContext(request, user);
         courseOperationHandler.handle(context);
         return convertToDto(context.getCourse());
@@ -111,7 +111,7 @@ public class CourseService implements ICourseService {
     @Transactional
     public CourseDto updateCourse(Long courseId, UpdateCourseRequest request) throws AccessDeniedException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CourseOperationHandler<CourseUpdateContext> courseOperationHandler = courseUpdateChainBuilder.build();
+        OperationHandler<CourseUpdateContext> courseOperationHandler = courseUpdateChainBuilder.build();
         CourseUpdateContext context = new CourseUpdateContext(courseId, request, user);
         courseOperationHandler.handle(context);
         return convertToDto(context.getUpdatedCourse());
@@ -121,7 +121,7 @@ public class CourseService implements ICourseService {
     @Transactional
     public void deleteCourse(Long courseId) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CourseOperationHandler<CourseDeleteContext> courseOperationHandler = courseDeleteChainBuilder.build();
+        OperationHandler<CourseDeleteContext> courseOperationHandler = courseDeleteChainBuilder.build();
         CourseDeleteContext context = new CourseDeleteContext(courseId, user);
         courseOperationHandler.handle(context);
     }

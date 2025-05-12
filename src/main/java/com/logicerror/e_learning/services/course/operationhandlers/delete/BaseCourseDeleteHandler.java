@@ -1,12 +1,12 @@
 package com.logicerror.e_learning.services.course.operationhandlers.delete;
 
-import com.logicerror.e_learning.services.course.operationhandlers.CourseOperationHandler;
+import com.logicerror.e_learning.services.OperationHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public abstract class BaseCourseDeleteHandler implements CourseOperationHandler<CourseDeleteContext> {
-    protected CourseOperationHandler<CourseDeleteContext> nextHandler;
+public abstract class BaseCourseDeleteHandler implements OperationHandler<CourseDeleteContext> {
+    protected OperationHandler<CourseDeleteContext> nextHandler;
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
@@ -18,7 +18,7 @@ public abstract class BaseCourseDeleteHandler implements CourseOperationHandler<
     }
 
     @Override
-    public CourseOperationHandler<CourseDeleteContext> setNextHandler(CourseOperationHandler<CourseDeleteContext> nextHandler) {
+    public OperationHandler<CourseDeleteContext> setNextHandler(OperationHandler<CourseDeleteContext> nextHandler) {
         this.nextHandler = nextHandler;
         return nextHandler;
     }

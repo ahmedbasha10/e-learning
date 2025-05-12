@@ -1,7 +1,7 @@
 package com.logicerror.e_learning.services.course.operationhandlers.update;
 
 
-import com.logicerror.e_learning.services.course.operationhandlers.CourseOperationHandler;
+import com.logicerror.e_learning.services.OperationHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +12,7 @@ public class CourseUpdateChainBuilder {
     private final UpdateAuthorizationHandler authorizationHandler;
     private final CourseUpdateHandler courseUpdateHandler;
 
-    public CourseOperationHandler<CourseUpdateContext> build() {
+    public OperationHandler<CourseUpdateContext> build() {
         authorizationHandler
                 .setNextHandler(validationHandler)
                 .setNextHandler(courseUpdateHandler);
