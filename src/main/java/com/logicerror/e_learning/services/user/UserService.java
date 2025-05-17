@@ -9,14 +9,16 @@ import com.logicerror.e_learning.exceptions.user.UserNotFoundException;
 import com.logicerror.e_learning.mappers.UserMapper;
 import com.logicerror.e_learning.repositories.RoleRepository;
 import com.logicerror.e_learning.repositories.UserRepository;
+import com.logicerror.e_learning.requests.user.CreateUserRequest;
 import com.logicerror.e_learning.requests.user.UpdateUserRequest;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.logicerror.e_learning.requests.user.CreateUserRequest;
 
 import static com.logicerror.e_learning.constants.MessageConstants.USER_NOT_FOUND_WITH_ID;
 
@@ -31,6 +33,13 @@ public class UserService implements IUserService {
     private final UserMapper userMapper;
 
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
+
+
+    @Override
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
 
     @Override
     public User getUserById(Long userId) {

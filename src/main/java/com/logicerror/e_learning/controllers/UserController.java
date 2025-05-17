@@ -6,9 +6,10 @@ import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.requests.user.CreateUserRequest;
 import com.logicerror.e_learning.requests.user.UpdateUserRequest;
 import com.logicerror.e_learning.services.user.IUserService;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,33 +21,6 @@ public class UserController {
     private final IUserService userService;
 
     @PostMapping("/register")
-    @Operation(
-            summary = "Register a new user",
-            description = "This endpoint allows you to register a new user in the system. " +
-                    "You need to provide the user details in the request body.",
-            responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "201",
-                            description = "User registered successfully"
-                    ),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "409",
-                            description = "Email or username already in use"
-                    ),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "404",
-                            description = "Role not found"
-                    ),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "400",
-                            description = "Invalid input data"
-                    ),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "500",
-                            description = "Internal server error"
-                    )
-            }
-    )
     public ResponseEntity<ApiResponse<UserDto>> registerUser(@RequestBody @Valid CreateUserRequest user){
         User createdUser = userService.createUser(user);
         UserDto userDto = userService.convertToDto(createdUser);
@@ -55,22 +29,18 @@ public class UserController {
                 .body(new ApiResponse<>("User registered successfully", userDto));
     }
 
+    // Get all users
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<Page<UserDto>>> getAllUsers(Pageable pageable){
+        Page<User> userPage = userService.getAllUsers(pageable);
+        Page<UserDto> userDtoPage = userPage.map(userService::convertToDto);
+        return ResponseEntity
+                .ok()
+                .body(new ApiResponse<>("Users retrieved successfully", userDtoPage));
+    }
+
     // Get user
     @GetMapping("/user/username/{username}")
-    @Operation(
-            summary = "Get user by username",
-            description = "This endpoint allows you to retrieve a user by their username.",
-            responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "200",
-                            description = "User retrieved successfully"
-                    ),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "404",
-                            description = "User not found"
-                    )
-            }
-    )
     public ResponseEntity<ApiResponse<UserDto>> getUserByUsername(@PathVariable String username){
         System.out.println("here");
         User user = userService.getUserByUsername(username);
@@ -81,20 +51,6 @@ public class UserController {
     }
 
     @GetMapping("/user/id/{userId}")
-    @Operation(
-            summary = "Get user by ID",
-            description = "This endpoint allows you to retrieve a user by their ID.",
-            responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "200",
-                            description = "User retrieved successfully"
-                    ),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "404",
-                            description = "User not found"
-                    )
-            }
-    )
     public ResponseEntity<ApiResponse<UserDto>> getUserById(@PathVariable Long userId){
         User user = userService.getUserById(userId);
         UserDto userDto = userService.convertToDto(user);
@@ -104,20 +60,6 @@ public class UserController {
     }
 
     @GetMapping("/user/email/{email}")
-    @Operation(
-            summary = "Get user by email",
-            description = "This endpoint allows you to retrieve a user by their email.",
-            responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "200",
-                            description = "User retrieved successfully"
-                    ),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "404",
-                            description = "User not found"
-                    )
-            }
-    )
     public ResponseEntity<ApiResponse<UserDto>> getUserByEmail(@PathVariable String email){
         User user = userService.getUserByEmail(email);
         UserDto userDto = userService.convertToDto(user);
@@ -128,24 +70,6 @@ public class UserController {
 
     // Update user
     @PatchMapping("/user/update/{userId}")
-    @Operation(
-            summary = "Update user",
-            description = "This endpoint allows you to update a user's details.",
-            responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "200",
-                            description = "User updated successfully"
-                    ),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "404",
-                            description = "User not found"
-                    ),
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "400",
-                            description = "Invalid input data"
-                    )
-            }
-    )
     public ResponseEntity<ApiResponse<UserDto>> updateUser(@PathVariable Long userId ,@RequestBody @Valid UpdateUserRequest request){
         User updatedUser = userService.updateUser(request, userId);
         UserDto userDto = userService.convertToDto(updatedUser);
