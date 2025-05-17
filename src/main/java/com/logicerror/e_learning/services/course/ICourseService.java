@@ -8,15 +8,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ICourseService {
-    CourseDto getCourseById(Long courseId);
-    CourseDto getCourseByTitle(String title);
-    Page<CourseDto> getAllCourses(Pageable pageable);
-    Page<CourseDto> getCoursesByCategory(String category, Pageable pageable);
-    Page<CourseDto> getCoursesByLevel(String level, Pageable pageable);
+    Course getCourseById(Long courseId);
+    Course getCourseByTitle(String title);
+    Page<Course> getAllCourses(Pageable pageable);
+    Page<Course> getCoursesByCategory(String category, Pageable pageable);
+    Page<Course> getCoursesByLevel(String level, Pageable pageable);
 
-    CourseDto createCourse(CreateCourseRequest createCourseRequest);
+    Course createCourse(CreateCourseRequest createCourseRequest);
 
-    CourseDto updateCourse(Long courseId, UpdateCourseRequest courseDto);
+    Course updateCourse(Long courseId, UpdateCourseRequest Course);
 
     void deleteCourse(Long courseId);
 

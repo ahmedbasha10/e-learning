@@ -44,77 +44,75 @@ public class CourseService implements ICourseService {
 
 
     @Override
-    public CourseDto getCourseById(Long courseId) {
+    public Course getCourseById(Long courseId) {
         Assert.notNull(courseId, "Course ID must not be null");
         logger.debug("Fetching course with ID: {}", courseId);
-        Course course = courseRepository.findById(courseId)
+        return courseRepository.findById(courseId)
                 .orElseThrow(() -> {
                     logger.error("Course not found with ID: {}", courseId);
                     return new CourseNotFoundException("Course not found with id: " + courseId);
                 });
-        return convertToDto(course);
     }
 
     @Override
-    public CourseDto getCourseByTitle(String title) {
+    public Course getCourseByTitle(String title) {
         Assert.notNull(title, "Course title must not be null");
         logger.debug("Fetching course with title: {}", title);
-        Course course = courseRepository.findByTitle(title)
+        return courseRepository.findByTitle(title)
                 .orElseThrow(() -> {
                     logger.error("Course not found with title: {}", title);
                     return new CourseNotFoundException("Course not found with title: " + title);
                 });
-        return convertToDto(course);
     }
 
     @Override
-    public Page<CourseDto> getAllCourses(Pageable pageable) {
+    public Page<Course> getAllCourses(Pageable pageable) {
         Assert.notNull(pageable, "Pageable must not be null");
         logger.debug("Fetching all courses, page: {}", pageable.getPageNumber());
         Page<Course> courses = courseRepository.findAll(pageable);
         logger.debug("Found {} courses", courses.getTotalElements());
-        return courses.map(this::convertToDto);
+        return courses;
     }
 
     @Override
-    public Page<CourseDto> getCoursesByCategory(String category, Pageable pageable) {
+    public Page<Course> getCoursesByCategory(String category, Pageable pageable) {
         Assert.notNull(category, "Course category must not be null");
         Assert.notNull(pageable, "Pageable must not be null");
         logger.debug("Fetching courses by category: {}, page: {}", category, pageable.getPageNumber());
         Page<Course> courses = courseRepository.findByCategory(category, pageable);
         logger.debug("Found {} courses in category: {}", courses.getTotalElements(), category);
-        return courses.map(this::convertToDto);
+        return courses;
     }
 
     @Override
-    public Page<CourseDto> getCoursesByLevel(String level, Pageable pageable) {
+    public Page<Course> getCoursesByLevel(String level, Pageable pageable) {
         Assert.notNull(level, "Course level must not be null");
         Assert.notNull(pageable, "Pageable must not be null");
         logger.debug("Fetching courses by level: {}, page: {}", level, pageable.getPageNumber());
         Page<Course> courses = courseRepository.findByLevel(level, pageable);
         logger.debug("Found {} courses with level: {}", courses.getTotalElements(), level);
-        return courses.map(this::convertToDto);
+        return courses;
     }
 
     @Override
     @Transactional
-    public CourseDto createCourse(CreateCourseRequest request) throws AccessDeniedException {
+    public Course createCourse(CreateCourseRequest request) throws AccessDeniedException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         OperationHandler<CourseCreationContext> courseOperationHandler = courseOperationChainBuilder.build();
         CourseCreationContext context = new CourseCreationContext(request, user);
         courseOperationHandler.handle(context);
-        return convertToDto(context.getCourse());
+        return context.getCourse();
     }
 
 
     @Override
     @Transactional
-    public CourseDto updateCourse(Long courseId, UpdateCourseRequest request) throws AccessDeniedException {
+    public Course updateCourse(Long courseId, UpdateCourseRequest request) throws AccessDeniedException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         OperationHandler<CourseUpdateContext> courseOperationHandler = courseUpdateChainBuilder.build();
         CourseUpdateContext context = new CourseUpdateContext(courseId, request, user);
         courseOperationHandler.handle(context);
-        return convertToDto(context.getUpdatedCourse());
+        return context.getUpdatedCourse();
     }
 
     @Override
