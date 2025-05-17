@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -18,18 +16,12 @@ public class SectionCreationValidationHandler extends BaseSectionCreationHandler
     protected void processRequest(SectionCreationContext context) {
         log.debug("Validating section creation request");
 
-        Map<String, Boolean> result = sectionRepository.checkDuplicates(
-                context.getCourseId(),
-                context.getRequest().getTitle(),
-                context.getRequest().getOrder()
-        );
-
-        if(Boolean.TRUE.equals(result.get("titleExists"))) {
+        if(sectionRepository.existsByCourseIdAndTitle(context.getCourseId(), context.getRequest().getTitle())) {
             log.error("Section with the same title already exists");
             throw new SectionAlreadyExistsException("Section with the same title already exists");
         }
 
-        if (Boolean.TRUE.equals(result.get("orderExists"))) {
+        if (sectionRepository.existsByCourseIdAndOrder(context.getCourseId(), context.getRequest().getOrder())) {
             log.error("Section with the same order already exists");
             throw new SectionAlreadyExistsException("Section with the same order already exists");
         }

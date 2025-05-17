@@ -33,11 +33,11 @@ public class CreateUserRequest {
     @Size(min = 2, max = 20, message = "Last name must be between 2 and 20 characters")
     private String lastName;
 
-    @NotNull(message = "Country name is required")
+    @NotNull(message = "Country is required")
     @Size(min = 2, max = 20, message = "Country name must be between 2 and 20 characters")
     private String country;
 
-    @NotNull(message = "City name is required")
+    @NotNull(message = "City is required")
     @Size(min = 2, max = 20, message = "City name must be between 2 and 20 characters")
     private String city;
 

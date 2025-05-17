@@ -56,7 +56,7 @@ public class UserController {
     }
 
     // Get user
-    @GetMapping("/username/{username}")
+    @GetMapping("/user/username/{username}")
     @Operation(
             summary = "Get user by username",
             description = "This endpoint allows you to retrieve a user by their username.",
