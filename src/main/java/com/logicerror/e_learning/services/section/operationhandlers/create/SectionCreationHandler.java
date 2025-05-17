@@ -1,10 +1,12 @@
 package com.logicerror.e_learning.services.section.operationhandlers.create;
 
+import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.entities.course.Section;
 import com.logicerror.e_learning.exceptions.section.SectionCreationFailedException;
 import com.logicerror.e_learning.mappers.SectionMapper;
 import com.logicerror.e_learning.repositories.SectionRepository;
 import com.logicerror.e_learning.requests.course.section.CreateSectionRequest;
+import com.logicerror.e_learning.services.course.CourseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -15,13 +17,15 @@ import org.springframework.stereotype.Component;
 public class SectionCreationHandler extends BaseSectionCreationHandler {
     private final SectionMapper sectionMapper;
     private final SectionRepository sectionRepository;
+    private final CourseService courseService;
 
     @Override
     protected void processRequest(SectionCreationContext context) {
         log.debug("Creating new section with title: {}", context.getRequest().getTitle());
         CreateSectionRequest request = context.getRequest();
         Section section = sectionMapper.createSectionRequestToSection(request);
-        section.setCourse(context.getCourse());
+        Course course = courseService.getCourseById(context.getCourseId());
+        section.setCourse(course);
         Section savedSection = sectionRepository.save(section);
         context.setCreatedSection(savedSection);
         if (savedSection.getId() == null) {

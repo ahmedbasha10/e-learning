@@ -26,7 +26,7 @@ public class SectionCreationAuthorizationHandler extends BaseSectionCreationHand
 
         boolean isOwner = teacherCoursesRepository.existsById(
                 TeacherCoursesKey.builder()
-                        .courseId(context.getCourse().getId())
+                        .courseId(context.getCourseId())
                         .userId(user.getId())
                         .build()
         );

@@ -1,7 +1,6 @@
 package com.logicerror.e_learning.services.section;
 
 import com.logicerror.e_learning.dto.SectionDto;
-import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.entities.course.Section;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.section.SectionNotFoundException;
@@ -45,8 +44,7 @@ public class SectionService implements ISectionService{
     public Section createSection(CreateSectionRequest createSectionRequest, Long courseId) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         OperationHandler<SectionCreationContext> operationHandler = sectionCreationChainBuilder.build();
-        Course course = courseService.getCourseById(courseId);
-        SectionCreationContext context = new SectionCreationContext(createSectionRequest, course, user);
+        SectionCreationContext context = new SectionCreationContext(createSectionRequest, courseId, user);
         operationHandler.handle(context);
         return context.getCreatedSection();
     }

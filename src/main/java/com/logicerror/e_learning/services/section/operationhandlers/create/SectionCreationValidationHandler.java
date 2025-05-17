@@ -19,7 +19,7 @@ public class SectionCreationValidationHandler extends BaseSectionCreationHandler
         log.debug("Validating section creation request");
 
         Map<String, Boolean> result = sectionRepository.checkDuplicates(
-                context.getCourse().getId(),
+                context.getCourseId(),
                 context.getRequest().getTitle(),
                 context.getRequest().getOrder()
         );
