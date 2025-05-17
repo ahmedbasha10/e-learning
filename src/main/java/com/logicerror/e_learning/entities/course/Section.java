@@ -8,7 +8,10 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "sections")
+@Table(name = "sections", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"course_id", "title"}),
+        @UniqueConstraint(columnNames = {"course_id", "section_order"})
+})
 @NoArgsConstructor
 @Getter
 @Setter
