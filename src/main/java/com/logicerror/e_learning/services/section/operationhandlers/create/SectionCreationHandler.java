@@ -1,0 +1,33 @@
+package com.logicerror.e_learning.services.section.operationhandlers.create;
+
+import com.logicerror.e_learning.entities.course.Section;
+import com.logicerror.e_learning.exceptions.section.SectionCreationFailedException;
+import com.logicerror.e_learning.mappers.SectionMapper;
+import com.logicerror.e_learning.repositories.SectionRepository;
+import com.logicerror.e_learning.requests.course.section.CreateSectionRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+@Slf4j
+@RequiredArgsConstructor
+@Component
+public class SectionCreationHandler extends BaseSectionCreationHandler {
+    private final SectionMapper sectionMapper;
+    private final SectionRepository sectionRepository;
+
+    @Override
+    protected void processRequest(SectionCreationContext context) {
+        log.debug("Creating new section with title: {}", context.getRequest().getTitle());
+        CreateSectionRequest request = context.getRequest();
+        Section section = sectionMapper.createSectionRequestToSection(request);
+        section.setCourse(context.getCourse());
+        Section savedSection = sectionRepository.save(section);
+        context.setCreatedSection(savedSection);
+        if (savedSection.getId() == null) {
+            log.error("Section creation failed: could not generate ID");
+            throw new SectionCreationFailedException("Failed to create section");
+        }
+        log.info("Successfully created section with ID: {}", savedSection.getId());
+    }
+}
