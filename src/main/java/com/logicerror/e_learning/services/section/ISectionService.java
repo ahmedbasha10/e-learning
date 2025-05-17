@@ -6,9 +6,9 @@ import com.logicerror.e_learning.requests.course.section.CreateSectionRequest;
 
 public interface ISectionService {
 
-    SectionDto getSectionById(Long sectionId);
-    SectionDto getSectionByTitle(String title);
-    SectionDto createSection(CreateSectionRequest createSectionRequest, Long courseId);
+    Section getSectionById(Long sectionId);
+    Section getSectionByTitle(String title);
+    Section createSection(CreateSectionRequest createSectionRequest, Long courseId);
 
     SectionDto convertToDto(Section section);
 }
