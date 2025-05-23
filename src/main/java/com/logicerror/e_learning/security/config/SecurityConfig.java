@@ -1,12 +1,13 @@
 package com.logicerror.e_learning.security.config;
 
+import com.logicerror.e_learning.security.exceptionhandlers.CustomAccessDeniedHandler;
+import com.logicerror.e_learning.security.exceptionhandlers.CustomAuthenticationEntryPoint;
 import com.logicerror.e_learning.security.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -33,13 +34,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authenticationProvider(createAuthenticationProvider());
         http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/login","/api/v1/users/register","/api/v1/users/", "/error" ,"/css/**", "/js/**", "/images/**").permitAll();
+            auth.requestMatchers("/login/**","/api/v1/users/register/**", "/error", "/css/**", "/js/**", "/images/**").permitAll();
+            auth.requestMatchers("api/v1/admin/**").hasRole("ADMIN");
             auth.anyRequest().authenticated();
         });
 
         http.csrf(AbstractHttpConfigurer::disable);
         http.formLogin(AbstractHttpConfigurer::disable);
-        http.httpBasic(Customizer.withDefaults());
+        http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+        http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
 
         return http.build();
     }
