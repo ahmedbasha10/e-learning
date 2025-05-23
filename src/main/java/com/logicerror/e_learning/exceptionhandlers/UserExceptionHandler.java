@@ -6,6 +6,7 @@ import com.logicerror.e_learning.exceptions.user.RoleNotFoundException;
 import com.logicerror.e_learning.exceptions.user.UserAlreadyExistsException;
 import com.logicerror.e_learning.exceptions.user.UserNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,8 +16,13 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@ControllerAdvice(assignableTypes = UserController.class)
+@ControllerAdvice(assignableTypes = UserController.class )
 public class UserExceptionHandler {
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(AccessDeniedException ex) {
+        return ResponseEntity.status(403).body(new ApiResponse<>(ex.getMessage(), null));
+    }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ApiResponse<Void>> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
