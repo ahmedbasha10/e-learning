@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -500,5 +501,49 @@ public class UserControllerTest {
                         .content(objectMapper.writeValueAsString(updateUserRequest)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("User not found with ID: 999999"));
+    }
+
+
+    /// Security Tests
+    @Test
+    @WithMockUser(username = "user", roles = {"STUDENT"})
+    void getAllUsers_notAuthorized() throws Exception {
+        mockMvc.perform(get("/api/v1/admin/users/all"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("Access Denied"))
+                .andExpect(jsonPath("$.path").value("/api/v1/admin/users/all"))
+                .andExpect(jsonPath("$.error").value("Forbidden"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void getAllUsers_authorized() throws Exception {
+        mockMvc.perform(get("/api/v1/admin/users/all"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Users retrieved successfully"));
+    }
+
+    @Test
+    @WithMockUser(username = "ahmed", roles = {"STUDENT"})
+    void getUserByUsername_notAuthorized_notSameUser() throws Exception {
+        mockMvc.perform(get("/api/v1/users/user/username/student"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("Access Denied"));
+    }
+
+    @Test
+    @WithUserDetails("student")
+    void getUserByUsername_authorized_sameUser() throws Exception {
+        mockMvc.perform(get("/api/v1/users/user/username/student"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("User retrieved successfully"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void getUserByUsername_authorized_admin() throws Exception {
+        mockMvc.perform(get("/api/v1/users/user/username/student"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("User retrieved successfully"));
     }
 }
