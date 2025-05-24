@@ -91,6 +91,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @Transactional
     public User updateUser(UpdateUserRequest request, Long userId) {
         User existingUser = getExistingUser(userId);
 
@@ -101,6 +102,7 @@ public class UserService implements IUserService {
 
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
         User existingUser = getExistingUser(userId);
         userRepository.delete(existingUser);
