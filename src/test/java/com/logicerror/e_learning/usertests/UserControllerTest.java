@@ -15,6 +15,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -490,7 +491,7 @@ public class UserControllerTest {
     void updateUser_shouldReturn404WhenUserNotFound() throws Exception {
         UpdateUserRequest updateUserRequest = new UpdateUserRequest(
                 "Ahmed Updated",
-                "ahmed Updated" + "@gmail.com",
+                "ahmedUpdated" + "@gmail.com",
                 "Password_123w34",
                 "Ahmed",
                 "Bashaasdasd"
@@ -546,4 +547,55 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("User retrieved successfully"));
     }
+
+    @Test
+    @WithMockUser(username = "ahmed", roles = {"STUDENT"})
+    void getUserByEmail_notAuthorized_notSameUser() throws Exception {
+        mockMvc.perform(get("/api/v1/users/user/email/student@localhost"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("Access Denied"));
+    }
+
+    @Test
+    @WithUserDetails("student")
+    void getUserByEmail_authorized_sameUser() throws Exception {
+        mockMvc.perform(get("/api/v1/users/user/email/student@localhost"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("User retrieved successfully"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void getUserByEmail_authorized_admin() throws Exception {
+        mockMvc.perform(get("/api/v1/users/user/email/student@localhost"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("User retrieved successfully"));
+    }
+
+    @Test
+    @WithMockUser(username = "ahmed", roles = {"STUDENT"})
+    void getUserById_notAuthorized_notSameUser() throws Exception {
+        mockMvc.perform(get("/api/v1/users/user/id/1"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("Access Denied"));
+    }
+
+    @Test
+    @WithUserDetails("student")
+    void getUserById_authorized_sameUser() throws Exception {
+        MvcResult result = mockMvc.perform(get("/api/v1/users/user/id/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("User retrieved successfully")).andReturn();
+
+        System.out.println("response -> " + result.getResponse().getContentAsString());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void getUserById_authorized_admin() throws Exception {
+        mockMvc.perform(get("/api/v1/users/user/id/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("User retrieved successfully"));
+    }
+
 }
