@@ -1,5 +1,6 @@
 package com.logicerror.e_learning.security.config;
 
+import com.logicerror.e_learning.constants.RoleConstants;
 import com.logicerror.e_learning.security.exceptionhandlers.CustomAccessDeniedHandler;
 import com.logicerror.e_learning.security.exceptionhandlers.CustomAuthenticationEntryPoint;
 import com.logicerror.e_learning.security.services.CustomUserDetailsService;
@@ -35,7 +36,7 @@ public class SecurityConfig {
         http.authenticationProvider(createAuthenticationProvider());
         http.authorizeHttpRequests(auth -> {
             auth.requestMatchers("/login/**","/api/v1/users/register/**", "/error", "/css/**", "/js/**", "/images/**").permitAll();
-            auth.requestMatchers("api/v1/admin/**").hasRole("ADMIN");
+            auth.requestMatchers("/api/v1/admin/**").hasRole(RoleConstants.ROLE_ADMIN);
             auth.anyRequest().authenticated();
         });
 

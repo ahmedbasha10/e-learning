@@ -1,5 +1,6 @@
 package com.logicerror.e_learning.security.utils;
 
+import com.logicerror.e_learning.constants.RoleConstants;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -14,16 +15,43 @@ public class UserSecurityUtils {
     private final UserRepository userRepository;
 
 
-    public boolean isAdmin(String role) {
-        return role.equals("ADMIN");
+    public boolean canAccessUserById(Long userId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Check if admin
+        if (authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals(RoleConstants.ROLE_ADMIN_WITH_PREFIX))) {
+            return true;
+        }
+
+        // Check if owner
+        return isOwnerById(userId);
     }
 
-    public boolean isTeacher(String role) {
-        return role.equals("TEACHER");
+    public boolean canAccessUserByUsername(String username) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Check if admin
+        if (authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals(RoleConstants.ROLE_ADMIN_WITH_PREFIX))) {
+            return true;
+        }
+
+        // Check if owner
+        return isOwnerByUsername(username);
     }
 
-    public boolean isStudent(String role) {
-        return role.equals("STUDENT");
+    public boolean canAccessUserByEmail(String email) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Check if admin
+        if (authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals(RoleConstants.ROLE_ADMIN_WITH_PREFIX))) {
+            return true;
+        }
+
+        // Check if owner
+        return isOwnerByEmail(email);
     }
 
     public boolean isOwnerById(Long userId){

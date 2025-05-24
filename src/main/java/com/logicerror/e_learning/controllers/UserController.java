@@ -31,7 +31,7 @@ public class UserController {
     
     // Get user
     @GetMapping("/user/username/{username}")
-    @PreAuthorize("hasRole('ADMIN') or @userSecurityUtils.isOwnerByUsername(#username)")
+    @PreAuthorize("@userSecurityUtils.canAccessUserByUsername(#username)")
     public ResponseEntity<ApiResponse<UserDto>> getUserByUsername(@PathVariable String username){
         System.out.println("here");
         User user = userService.getUserByUsername(username);
@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping("/user/id/{userId}")
-    @PreAuthorize("hasRole('ADMIN') or @userSecurityUtils.isOwnerById(#userId)")
+    @PreAuthorize("@userSecurityUtils.canAccessUserById(#userId)")
     public ResponseEntity<ApiResponse<UserDto>> getUserById(@PathVariable Long userId){
         User user = userService.getUserById(userId);
         UserDto userDto = userService.convertToDto(user);
@@ -52,7 +52,7 @@ public class UserController {
     }
 
     @GetMapping("/user/email/{email}")
-    @PreAuthorize("hasRole('ADMIN') or @userSecurityUtils.isOwnerByEmail(#email)")
+    @PreAuthorize("@userSecurityUtils.canAccessUserByEmail(#email)")
     public ResponseEntity<ApiResponse<UserDto>> getUserByEmail(@PathVariable String email){
         User user = userService.getUserByEmail(email);
         UserDto userDto = userService.convertToDto(user);
@@ -63,7 +63,7 @@ public class UserController {
 
     // Update user
     @PatchMapping("/user/update/{userId}")
-    @PreAuthorize("hasRole('ADMIN') or @userSecurityUtils.isOwnerById(#userId)")
+    @PreAuthorize("@userSecurityUtils.canAccessUserById(#userId)")
     public ResponseEntity<ApiResponse<UserDto>> updateUser(@PathVariable Long userId ,@RequestBody @Valid UpdateUserRequest request){
         User updatedUser = userService.updateUser(request, userId);
         UserDto userDto = userService.convertToDto(updatedUser);
@@ -74,7 +74,7 @@ public class UserController {
 
     // Delete user
     @DeleteMapping("/user/delete/{userId}")
-    @PreAuthorize("hasRole('ADMIN') or @userSecurityUtils.isOwnerById(#userId)")
+    @PreAuthorize("@userSecurityUtils.canAccessUserById(#userId)")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable Long userId){
         userService.deleteUser(userId);
         return ResponseEntity
