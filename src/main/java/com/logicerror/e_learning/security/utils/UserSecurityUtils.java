@@ -14,6 +14,11 @@ import lombok.RequiredArgsConstructor;
 public class UserSecurityUtils {
     private final UserRepository userRepository;
 
+    public boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals(RoleConstants.ROLE_ADMIN_WITH_PREFIX));
+    }
 
     public boolean canAccessUserById(Long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

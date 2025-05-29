@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,17 +37,20 @@ public class UserService implements IUserService {
 
 
     @Override
+    @PreAuthorize("@userSecurityUtils.isAdmin()")
     public Page<User> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
 
     @Override
+    @PreAuthorize("@userSecurityUtils.canAccessUserById(#userId)")
     public User getUserById(Long userId) {
         return getExistingUser(userId);
     }
 
     @Override
+    @PreAuthorize("@userSecurityUtils.canAccessUserByEmail(#email)")
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> {
@@ -56,6 +60,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @PreAuthorize("@userSecurityUtils.canAccessUserByUsername(#username)")
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> {
@@ -92,6 +97,7 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
+    @PreAuthorize("@userSecurityUtils.canAccessUserById(#userId)")
     public User updateUser(UpdateUserRequest request, Long userId) {
         User existingUser = getExistingUser(userId);
 
@@ -103,6 +109,7 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
+    @PreAuthorize("@userSecurityUtils.canAccessUserById(#userId)")
     public void deleteUser(Long userId) {
         User existingUser = getExistingUser(userId);
         userRepository.delete(existingUser);
