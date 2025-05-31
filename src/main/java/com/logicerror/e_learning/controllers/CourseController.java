@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
@@ -79,8 +78,7 @@ public class CourseController {
 
     // create course
     @PostMapping("/create")
-    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<CourseDto>> createCourse(@RequestBody @Valid CreateCourseRequest createCourseRequest) throws AccessDeniedException {
+    public ResponseEntity<ApiResponse<CourseDto>> createCourse(@RequestBody @Valid CreateCourseRequest createCourseRequest) {
         // Create course
         Course createdCourse = courseService.createCourse(createCourseRequest);
         // Convert to DTO
@@ -91,7 +89,6 @@ public class CourseController {
 
     // update course
     @PatchMapping("/{courseId}")
-    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<CourseDto>> updateCourse(@PathVariable Long courseId, @RequestBody @Valid UpdateCourseRequest updateCourseRequest) throws AccessDeniedException {
         // Update course
         Course updatedCourse = courseService.updateCourse(courseId, updateCourseRequest);
@@ -104,7 +101,6 @@ public class CourseController {
 
     // delete course
     @DeleteMapping("/{courseId}")
-    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteCourse(@PathVariable Long courseId) throws AccessDeniedException {
         // Delete course
         courseService.deleteCourse(courseId);

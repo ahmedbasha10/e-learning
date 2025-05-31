@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -96,6 +97,7 @@ public class CourseService implements ICourseService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
     public Course createCourse(CreateCourseRequest request) throws AccessDeniedException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         OperationHandler<CourseCreationContext> courseOperationHandler = courseOperationChainBuilder.build();
@@ -107,6 +109,7 @@ public class CourseService implements ICourseService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
     public Course updateCourse(Long courseId, UpdateCourseRequest request) throws AccessDeniedException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         OperationHandler<CourseUpdateContext> courseOperationHandler = courseUpdateChainBuilder.build();
@@ -117,6 +120,7 @@ public class CourseService implements ICourseService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public void deleteCourse(Long courseId) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         OperationHandler<CourseDeleteContext> courseOperationHandler = courseDeleteChainBuilder.build();
