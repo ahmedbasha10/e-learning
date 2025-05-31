@@ -16,12 +16,15 @@ public class DeleteCourseHandler extends BaseCourseDeleteHandler{
     @Override
     protected void processRequest(CourseDeleteContext context) {
         logger.debug("Deleting course with ID: {}", context.getCourseId());
-        teacherCoursesRepository.deleteById(
-                TeacherCoursesKey.builder()
-                        .courseId(context.getCourseId())
-                        .userId(context.getUser().getId())
-                        .build()
-        );
+        for(Long teacherId : context.getTeachersId()) {
+            logger.debug("Deleting teacher-course association for teacher ID: {}", teacherId);
+            teacherCoursesRepository.deleteById(
+                    TeacherCoursesKey.builder()
+                            .courseId(context.getCourseId())
+                            .userId(teacherId)
+                            .build()
+            );
+        }
         courseRepository.deleteById(context.getCourseId());
         logger.debug("Course with ID: {} deleted successfully", context.getCourseId());
     }
