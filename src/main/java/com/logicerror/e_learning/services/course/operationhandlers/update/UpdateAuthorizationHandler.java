@@ -16,23 +16,21 @@ public class UpdateAuthorizationHandler extends BaseCourseUpdateHandler{
     protected void processRequest(CourseUpdateContext context) {
         logger.debug("Checking authorization for course update");
         User user = context.getUser();
-        if (!user.isAdmin() && !user.isTeacher()) {
+        if (!user.isTeacher()) {
             logger.error("User does not have permission to update a course");
             throw new AccessDeniedException("User does not have permission to update a course");
         }
 
-        if(user.isTeacher()){
-            boolean isOwner = teacherCoursesRepository.existsById(
-                    TeacherCoursesKey.builder()
-                            .courseId(context.getCourseId())
-                            .userId(user.getId())
-                            .build()
-            );
+        boolean isOwner = teacherCoursesRepository.existsById(
+                TeacherCoursesKey.builder()
+                        .courseId(context.getCourseId())
+                        .userId(user.getId())
+                        .build()
+        );
 
-            if (!isOwner) {
-                logger.error("User is not the owner of the course");
-                throw new AccessDeniedException("User is not the owner of the course");
-            }
+        if (!isOwner) {
+            logger.error("User is not the owner of the course");
+            throw new AccessDeniedException("User is not the owner of the course");
         }
 
         logger.debug("User has permission to update the course");

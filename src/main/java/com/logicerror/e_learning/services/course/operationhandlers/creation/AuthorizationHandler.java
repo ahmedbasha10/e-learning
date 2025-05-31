@@ -11,7 +11,7 @@ public class AuthorizationHandler extends BaseCourseCreationHandler {
     protected void processRequest(CourseCreationContext context) {
         logger.debug("Checking authorization for course creation");
         User user = context.getUser();
-        if (!user.isAdmin() && !user.isTeacher()) {
+        if (!user.isTeacher()) {
             logger.error("User does not have permission to create a course");
             throw new AccessDeniedException("User does not have permission to create a course");
         }
