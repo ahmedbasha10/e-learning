@@ -19,7 +19,7 @@ public class SectionCreationAuthorizationHandler extends BaseSectionCreationHand
     protected void processRequest(SectionCreationContext context) {
         User user = context.getUser();
 
-        if (!user.isAdmin() && !user.isTeacher()) {
+        if (!user.isTeacher()) {
             log.error("User does not have permission to create a section");
             throw new AccessDeniedException("User does not have permission to create a section");
         }
