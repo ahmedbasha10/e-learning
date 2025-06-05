@@ -8,9 +8,10 @@ import com.logicerror.e_learning.requests.course.section.UpdateSectionRequest;
 public interface ISectionService {
 
     Section getSectionById(Long sectionId);
-    Section getSectionByTitle(String title);
+    Section getSectionByTitle(Long courseId, String title);
     Section createSection(CreateSectionRequest createSectionRequest, Long courseId);
     Section updateSection(UpdateSectionRequest updateSectionRequest, Long sectionId);
+    void deleteSection(Long sectionId);
 
     SectionDto convertToDto(Section section);
 }

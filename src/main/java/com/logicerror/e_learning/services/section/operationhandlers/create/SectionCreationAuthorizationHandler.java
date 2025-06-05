@@ -24,6 +24,7 @@ public class SectionCreationAuthorizationHandler extends BaseSectionCreationHand
             throw new AccessDeniedException("User does not have permission to create a section");
         }
 
+
         boolean isOwner = teacherCoursesRepository.existsById(
                 TeacherCoursesKey.builder()
                         .courseId(context.getCourseId())
@@ -35,6 +36,7 @@ public class SectionCreationAuthorizationHandler extends BaseSectionCreationHand
             log.error("User is not the owner of the course");
             throw new AccessDeniedException("User is not the owner of the course");
         }
+
 
         log.debug("User has permission to create a section");
     }

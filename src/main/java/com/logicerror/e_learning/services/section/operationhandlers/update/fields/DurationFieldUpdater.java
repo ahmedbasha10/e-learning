@@ -4,7 +4,7 @@ import com.logicerror.e_learning.entities.course.Section;
 import com.logicerror.e_learning.requests.course.section.UpdateSectionRequest;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("sectionDurationFieldUpdater")
 public class DurationFieldUpdater implements SectionFieldUpdater{
     @Override
     public void updateField(Section section, UpdateSectionRequest request) {

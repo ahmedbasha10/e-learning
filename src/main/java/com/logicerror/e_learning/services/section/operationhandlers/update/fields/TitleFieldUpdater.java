@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
-@Component
+@Component("sectionTitleFieldUpdater")
 public class TitleFieldUpdater implements SectionFieldUpdater{
     private final SectionRepository sectionRepository;
 

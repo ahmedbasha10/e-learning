@@ -9,11 +9,13 @@ import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class SectionUpdateAuthorizationHandler extends BaseSectionUpdateHandler{
     private final SectionRepository sectionRepository;
     private final TeacherCoursesRepository teacherCoursesRepository;
@@ -22,7 +24,7 @@ public class SectionUpdateAuthorizationHandler extends BaseSectionUpdateHandler{
     protected void processRequest(SectionUpdateContext context) {
         log.debug("Processing section update authorization for section ID: {}", context.getSectionId());
         User user = context.getUser();
-        if (!user.isTeacher()) {
+        if (!user.isTeacher() && !user.isAdmin()) {
             throw new AccessDeniedException("User does not have permission to update a section");
         }
 
@@ -31,16 +33,19 @@ public class SectionUpdateAuthorizationHandler extends BaseSectionUpdateHandler{
             throw new SectionNotFoundException("Section is not found with id: " + context.getSectionId());
         }
 
-        boolean isOwner = teacherCoursesRepository.existsById(
-                TeacherCoursesKey.builder()
-                        .courseId(section.get().getCourse().getId())
-                        .userId(user.getId())
-                        .build()
-        );
+        if (user.isTeacher()) {
+            boolean isOwner = teacherCoursesRepository.existsById(
+                    TeacherCoursesKey.builder()
+                            .courseId(section.get().getCourse().getId())
+                            .userId(user.getId())
+                            .build()
+            );
 
-        if (!isOwner) {
-            throw new AccessDeniedException("User is not the owner of the course");
+            if (!isOwner) {
+                throw new AccessDeniedException("User is not the owner of the course");
+            }
         }
+
 
         context.setUpdatedSection(section.get());
         log.debug("User has permission to update the section with ID: {}", context.getSectionId());
