@@ -65,11 +65,11 @@ public class SectionService implements ISectionService{
 
     @Override
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
-    public Section updateSection(UpdateSectionRequest updateSectionRequest, Long courseId) {
-        log.debug("Creating section with title: {} for course ID: {}", updateSectionRequest.getTitle(), courseId);
+    public Section updateSection(UpdateSectionRequest updateSectionRequest, Long sectionId) {
+        log.debug("Creating section with title: {} for course ID: {}", updateSectionRequest.getTitle(), sectionId);
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         OperationHandler<SectionUpdateContext> operationHandler = sectionUpdateChainBuilder.build();
-        SectionUpdateContext context = new SectionUpdateContext(updateSectionRequest, courseId, user);
+        SectionUpdateContext context = new SectionUpdateContext(updateSectionRequest, sectionId, user);
         operationHandler.handle(context);
         log.info("Section created successfully with title: {}", context.getUpdatedSection().getTitle());
         return context.getUpdatedSection();
