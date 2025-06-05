@@ -109,7 +109,7 @@ public class CourseService implements ICourseService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public Course updateCourse(Long courseId, UpdateCourseRequest request) throws AccessDeniedException {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         OperationHandler<CourseUpdateContext> courseOperationHandler = courseUpdateChainBuilder.build();
