@@ -37,17 +37,19 @@ public class CourseCreationHandler extends BaseCourseCreationHandler {
         context.setCourse(savedCourse);
 
         List<CreateSectionRequest> sectionsRequest = request.getSections();
+        if(sectionsRequest != null) {
+            for(CreateSectionRequest sectionRequest : sectionsRequest) {
+                logger.info("Creating section with title: {}", sectionRequest.getTitle());
+                // Assuming you have a method to create sections
+                Section section = sectionMapper.createSectionRequestToSection(sectionRequest);
+                // createSection(savedCourse, sectionRequest);
+                section.setCourse(savedCourse);
 
-        for(CreateSectionRequest sectionRequest : sectionsRequest) {
-            logger.info("Creating section with title: {}", sectionRequest.getTitle());
-            // Assuming you have a method to create sections
-            Section section = sectionMapper.createSectionRequestToSection(sectionRequest);
-            // createSection(savedCourse, sectionRequest);
-            section.setCourse(savedCourse);
-
-            Section savedSection = sectionRepository.save(section);
-            savedCourse.addSection(savedSection);
+                Section savedSection = sectionRepository.save(section);
+                savedCourse.addSection(savedSection);
+            }
         }
+
 
         logger.info("Successfully created course with ID: {}", savedCourse.getId());
     }
