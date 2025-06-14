@@ -1,5 +1,6 @@
 package com.logicerror.e_learning.services.video;
 
+import com.logicerror.e_learning.config.StorageProperties;
 import com.logicerror.e_learning.dto.VideoDto;
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.entities.course.Section;
@@ -14,16 +15,20 @@ import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
 import com.logicerror.e_learning.repositories.VideoRepository;
 import com.logicerror.e_learning.requests.course.video.CreateVideoRequest;
 import com.logicerror.e_learning.requests.course.video.UpdateVideoRequest;
+import com.logicerror.e_learning.services.FileManagementService;
 import com.logicerror.e_learning.services.video.fields.VideoFieldsUpdateService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 @Service
 @Slf4j
@@ -33,6 +38,8 @@ public class VideoService implements IVideoService {
     private final SectionRepository sectionRepository;
     private final TeacherCoursesRepository teacherCoursesRepository;
     private final VideoFieldsUpdateService videoFieldsUpdateService;
+    private final FileManagementService fileManagementService;
+    private final StorageProperties storageProperties;
     private final VideoMapper videoMapper;
 
     @Override
@@ -58,24 +65,49 @@ public class VideoService implements IVideoService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole(TEACHER)")
-    public Video createVideo(CreateVideoRequest request, Long sectionId) {
-        log.debug("Creating video with title: '{}' for section ID: {}", request.getTitle(), sectionId);
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        doTeacherAccessCheck(user);
+    @PreAuthorize("hasRole('TEACHER')")
+    public Video createVideo(CreateVideoRequest request, Long sectionId, MultipartFile videoFile) {
+        User teacher = (User) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
 
-        Section section = sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new SectionNotFoundException("Section not found with id: " + sectionId));
+        doTeacherAccessCheck(teacher);
+        Section section = findSectionOrThrow(sectionId);
 
         Video video = videoMapper.createVideoRequestToVideo(request, section, section.getCourse());
-        Video savedVideo = videoRepository.save(video);
-
-        if(savedVideo.getId() == null || savedVideo.getId() <= 0) {
-            log.error("Failed to create video with title: '{}' for section ID: {}", request.getTitle(), sectionId);
-            throw new RuntimeException("Failed to create video");
+        video = videoRepository.save(video);
+        if (video.getId() == null) {
+            throw new RuntimeException("Failed to create video.");
         }
-        log.info("Video created successfully with ID: {}", savedVideo.getId());
-        return video;
+        String directory = buildFilePath(teacher, section, video, videoFile);
+        String filePath = storeFile(videoFile, directory);
+        video.setUrl(filePath);
+        return videoRepository.save(video);
+    }
+
+    private Section findSectionOrThrow(Long sectionId) {
+        return sectionRepository.findById(sectionId)
+                .orElseThrow(() -> new SectionNotFoundException("Section not found with id: " + sectionId));
+    }
+
+    private String buildFilePath(User teacher, Section section, Video video, MultipartFile videoFile) {
+        return storageProperties.getVideoPath()
+                + File.separator
+                + teacher.getUsername()
+                + File.separator
+                + section.getTitle()
+                + File.separator
+                + video.getId()
+                + File.separator
+                + videoFile.getOriginalFilename();
+    }
+
+    private String storeFile(MultipartFile videoFile, String filePath) {
+        try (InputStream input = videoFile.getInputStream()) {
+            return fileManagementService.uploadFile(input, filePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to store video file.", e);
+        }
     }
 
     private static void doTeacherAccessCheck(User user) {
@@ -84,7 +116,7 @@ public class VideoService implements IVideoService {
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole(TEACHER) or hasRole(ADMIN)")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public Video updateVideo(UpdateVideoRequest request, Long videoId) {
         log.debug("Updating video with ID: {}", videoId);
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
