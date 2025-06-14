@@ -20,15 +20,14 @@ import com.logicerror.e_learning.services.video.fields.VideoFieldsUpdateService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mp4parser.IsoFile;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 @Service
 @Slf4j
@@ -81,7 +80,9 @@ public class VideoService implements IVideoService {
         }
         String directory = buildFilePath(teacher, section, video, videoFile);
         String filePath = storeFile(videoFile, directory);
+        int durationInMinutes = extractDurationInMinutes(filePath);
         video.setUrl(filePath);
+        video.setDuration(durationInMinutes);
         return videoRepository.save(video);
     }
 
@@ -175,6 +176,18 @@ public class VideoService implements IVideoService {
     private static void doAccessCheck(User user) {
         if(!user.isTeacher() && !user.isAdmin()) {
             throw new AccessDeniedException("User does not have permission to update videos");
+        }
+    }
+
+    private int extractDurationInMinutes(String filePath){
+        try (IsoFile isoFile = new IsoFile(new File(filePath))){
+            int durationInSeconds = (int) Math.ceil(
+                    (double) isoFile.getMovieBox().getMovieHeaderBox().getDuration() /
+                    isoFile.getMovieBox().getMovieHeaderBox().getTimescale());
+            return durationInSeconds / 60;
+        } catch (IOException e) {
+            log.error("Error extracting video duration from file: {}", filePath, e);
+            throw new RuntimeException("Failed to extract video duration", e);
         }
     }
 }

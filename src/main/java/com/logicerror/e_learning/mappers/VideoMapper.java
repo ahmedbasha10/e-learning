@@ -12,8 +12,8 @@ import org.mapstruct.Mapping;
 public interface VideoMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "duration", ignore = true)
     @Mapping(target = "title", source = "request.title")
-    @Mapping(target = "duration", source = "request.duration")
     @Mapping(target = "section", source = "section")
     @Mapping(target = "course", source = "course")
     Video createVideoRequestToVideo(CreateVideoRequest request, Section section, Course course);

@@ -14,7 +14,7 @@ public class Video {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "duration", nullable = false)
+    @Column(name = "duration")
     private int duration;
 
     @Column(name = "url")
