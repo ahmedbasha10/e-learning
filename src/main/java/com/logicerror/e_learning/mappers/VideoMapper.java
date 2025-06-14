@@ -11,8 +11,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface VideoMapper {
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "title", source = "request.title")
-    @Mapping(target = "url", source = "request.url")
     @Mapping(target = "duration", source = "request.duration")
     @Mapping(target = "section", source = "section")
     @Mapping(target = "course", source = "course")
