@@ -1,9 +1,7 @@
 package com.logicerror.e_learning.entities.course;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 import java.util.List;
 
@@ -12,9 +10,6 @@ import java.util.List;
         @UniqueConstraint(columnNames = {"course_id", "title"}),
         @UniqueConstraint(columnNames = {"course_id", "section_order"})
 })
-@NoArgsConstructor
-@Getter
-@Setter
 public class Section {
 
     @Id
@@ -37,6 +32,9 @@ public class Section {
 
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Video> videos;
+
+    public Section() {
+    }
 
     public Section(String title, Integer order, Integer duration) {
         this.title = title;

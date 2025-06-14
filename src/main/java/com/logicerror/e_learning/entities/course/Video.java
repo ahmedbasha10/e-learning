@@ -1,17 +1,9 @@
 package com.logicerror.e_learning.entities.course;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "videos")
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class Video {
 
     @Id
@@ -25,7 +17,7 @@ public class Video {
     @Column(name = "duration", nullable = false)
     private int duration;
 
-    @Column(name = "url", nullable = false)
+    @Column(name = "url")
     private String url;
 
     @ManyToOne
@@ -36,4 +28,62 @@ public class Video {
     @JoinColumn(name = "section_id", nullable = false)
     private Section section;
 
+    public Video() {
+    }
+
+    public Video(String title, int duration, String url, Course course, Section section) {
+        this.title = title;
+        this.duration = duration;
+        this.url = url;
+        this.course = course;
+        this.section = section;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public Section getSection() {
+        return section;
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
+    }
 }

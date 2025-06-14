@@ -2,20 +2,12 @@ package com.logicerror.e_learning.entities.course;
 
 import com.logicerror.e_learning.entities.review.Review;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "courses")
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class Course {
 
     @Id
@@ -52,6 +44,21 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Review> reviews;
+
+    public Course() {
+    }
+
+    public Course(String title, String description, String imageUrl, String category, String level, int duration, int price) {
+        this.title = title;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.category = category;
+        this.level = level;
+        this.duration = duration;
+        this.price = price;
+        this.sections = new ArrayList<>();
+        this.reviews = new ArrayList<>();
+    }
 
     public Long getId() {
         return id;
