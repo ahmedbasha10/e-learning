@@ -5,6 +5,7 @@ import com.logicerror.e_learning.dto.VideoDto;
 import com.logicerror.e_learning.requests.course.video.CreateVideoRequest;
 import com.logicerror.e_learning.services.video.IVideoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,16 +38,14 @@ public class VideoController {
     }
 
 
-    // Post
-    // To create a video, send video metadata in the request body and the section ID as a request parameter.
-    // send video file is a request param multipart file
-
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<VideoDto>> createVideo(@RequestPart("details") CreateVideoRequest request,
                                                              @RequestPart("videoFile") MultipartFile videoFile,
                                                              @RequestParam Long sectionId) {
         VideoDto videoDto = videoService.convertToDto(videoService.createVideo(request, sectionId, videoFile));
-        return ResponseEntity.ok(new ApiResponse<>("Video created successfully", videoDto));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ApiResponse<>("Video created successfully", videoDto));
     }
 
     // Patch
