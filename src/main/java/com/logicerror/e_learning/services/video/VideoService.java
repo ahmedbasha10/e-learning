@@ -8,7 +8,9 @@ import com.logicerror.e_learning.entities.course.Video;
 import com.logicerror.e_learning.entities.teacher.TeacherCoursesKey;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.section.SectionNotFoundException;
+import com.logicerror.e_learning.exceptions.video.VideoCreationFailedException;
 import com.logicerror.e_learning.exceptions.video.VideoNotFoundException;
+import com.logicerror.e_learning.exceptions.video.VideoTitleAlreadyExistsException;
 import com.logicerror.e_learning.mappers.VideoMapper;
 import com.logicerror.e_learning.repositories.SectionRepository;
 import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
@@ -72,11 +74,12 @@ public class VideoService implements IVideoService {
 
         doTeacherAccessCheck(teacher);
         Section section = findSectionOrThrow(sectionId);
+        doVideoExistsCheck(request.getTitle(), section.getCourse().getId());
 
         Video video = videoMapper.createVideoRequestToVideo(request, section, section.getCourse());
         video = videoRepository.save(video);
         if (video.getId() == null) {
-            throw new RuntimeException("Failed to create video.");
+            throw new VideoCreationFailedException("Failed to create video.");
         }
         String directory = buildFilePath(teacher, section, video, videoFile);
         String filePath = storeFile(videoFile, directory);
@@ -84,6 +87,12 @@ public class VideoService implements IVideoService {
         video.setUrl(filePath);
         video.setDuration(durationInMinutes);
         return videoRepository.save(video);
+    }
+
+    private void doVideoExistsCheck(String title, Long courseId) {
+        if(videoRepository.existsByTitleAndCourseId(title, courseId)) {
+            throw new VideoTitleAlreadyExistsException("Video with title '" + title + "' already exists in course with ID: " + courseId);
+        }
     }
 
     private Section findSectionOrThrow(Long sectionId) {
@@ -107,7 +116,7 @@ public class VideoService implements IVideoService {
         try (InputStream input = videoFile.getInputStream()) {
             return fileManagementService.uploadFile(input, filePath);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to store video file.", e);
+            throw new VideoCreationFailedException("Failed to store video file: " + e.getMessage());
         }
     }
 
@@ -155,7 +164,6 @@ public class VideoService implements IVideoService {
     public VideoDto convertToDto(Video video) {
         return videoMapper.videoToVideoDto(video);
     }
-
 
 
     private void doOwnerCheck(User user, Video video) {
