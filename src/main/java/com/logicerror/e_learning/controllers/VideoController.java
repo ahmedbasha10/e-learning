@@ -4,18 +4,23 @@ import com.logicerror.e_learning.controllers.responses.ApiResponse;
 import com.logicerror.e_learning.dto.VideoDto;
 import com.logicerror.e_learning.requests.course.video.CreateVideoRequest;
 import com.logicerror.e_learning.services.video.IVideoService;
+import com.logicerror.e_learning.services.video.VideoStreamingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("${api.base-path}/videos")
 @RequiredArgsConstructor
 public class VideoController {
     private final IVideoService videoService;
+    private final VideoStreamingService videoStreamingService;
 
     // Get Methods
     // Get by ID
@@ -36,6 +41,13 @@ public class VideoController {
         VideoDto videoDto = videoService.convertToDto(videoService.getVideoByTitleAndSection(title, sectionId));
         return ResponseEntity.ok(new ApiResponse<>("Video fetched successfully", videoDto));
     }
+
+    @GetMapping("/stream/{videoId}")
+    public ResponseEntity<Resource> streamVideo(@PathVariable Long videoId,
+                                                @RequestHeader(value = "Range", required = false) String rangeHeader) throws IOException {
+        return videoStreamingService.streamVideo(videoId, rangeHeader);
+    }
+
 
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
