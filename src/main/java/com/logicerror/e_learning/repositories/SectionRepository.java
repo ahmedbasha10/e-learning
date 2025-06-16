@@ -1,6 +1,8 @@
 package com.logicerror.e_learning.repositories;
 
 import com.logicerror.e_learning.entities.course.Section;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,6 +14,8 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
 
     @Query("SELECT s FROM Section s JOIN s.course c WHERE c.id = :courseId AND s.title = :title")
     Optional<Section> findByTitleWithCourseId(Long courseId, String title);
+
+    Page<Section> findAllByCourseId(Long courseId, Pageable pageable);
 
     @Query("SELECT COUNT(c) > 0 FROM Course c LEFT JOIN c.sections s WHERE c.id = :courseId AND s.title = :sectionTitle")
     boolean existsByCourseIdAndTitle(@Param("courseId") Long courseId, @Param("sectionTitle") String sectionTitle);

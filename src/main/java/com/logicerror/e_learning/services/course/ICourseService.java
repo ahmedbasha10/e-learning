@@ -2,6 +2,7 @@ package com.logicerror.e_learning.services.course;
 
 import com.logicerror.e_learning.dto.CourseDto;
 import com.logicerror.e_learning.entities.course.Course;
+import com.logicerror.e_learning.entities.course.Section;
 import com.logicerror.e_learning.requests.course.CreateCourseRequest;
 import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,8 @@ public interface ICourseService {
     Page<Course> getAllCourses(Pageable pageable);
     Page<Course> getCoursesByCategory(String category, Pageable pageable);
     Page<Course> getCoursesByLevel(String level, Pageable pageable);
+    Page<Section> getCourseSections(Long courseId, Pageable pageable);
+
 
     Course createCourse(CreateCourseRequest createCourseRequest);
 

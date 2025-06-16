@@ -2,10 +2,13 @@ package com.logicerror.e_learning.controllers;
 
 import com.logicerror.e_learning.controllers.responses.ApiResponse;
 import com.logicerror.e_learning.dto.CourseDto;
+import com.logicerror.e_learning.dto.SectionDto;
 import com.logicerror.e_learning.entities.course.Course;
+import com.logicerror.e_learning.entities.course.Section;
 import com.logicerror.e_learning.requests.course.CreateCourseRequest;
 import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
 import com.logicerror.e_learning.services.course.ICourseService;
+import com.logicerror.e_learning.services.section.SectionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +23,7 @@ import java.nio.file.AccessDeniedException;
 @RequiredArgsConstructor
 public class CourseController {
     private final ICourseService courseService;
+    private final SectionService sectionService;
 
     // get all courses
     @GetMapping
@@ -74,6 +78,13 @@ public class CourseController {
         Page<CourseDto> courseDtoPage = coursePage.map(courseService::convertToDto);
         // Return response
         return ResponseEntity.ok(new ApiResponse<>("Courses fetched successfully", courseDtoPage));
+    }
+
+    @GetMapping("/{courseId}/sections")
+    public ResponseEntity<ApiResponse<Page<SectionDto>>> getCourseSections(@PathVariable Long courseId, Pageable pageable) {
+        Page<Section> sectionPage = courseService.getCourseSections(courseId, pageable);
+        Page<SectionDto> sectionDtoPage = sectionPage.map(sectionService::convertToDto);
+        return ResponseEntity.ok(new ApiResponse<>("Sections fetched successfully", sectionDtoPage));
     }
 
     // create course

@@ -3,11 +3,13 @@ package com.logicerror.e_learning.services.course;
 import com.logicerror.e_learning.dto.CourseDto;
 import com.logicerror.e_learning.dto.UserDto;
 import com.logicerror.e_learning.entities.course.Course;
+import com.logicerror.e_learning.entities.course.Section;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.course.CourseNotFoundException;
 import com.logicerror.e_learning.mappers.CourseMapper;
 import com.logicerror.e_learning.mappers.UserMapper;
 import com.logicerror.e_learning.repositories.CourseRepository;
+import com.logicerror.e_learning.repositories.SectionRepository;
 import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
 import com.logicerror.e_learning.requests.course.CreateCourseRequest;
 import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
@@ -35,6 +37,7 @@ import org.springframework.util.Assert;
 @RequiredArgsConstructor
 public class CourseService implements ICourseService {
     private final CourseRepository courseRepository;
+    private final SectionRepository sectionRepository;
     private final TeacherCoursesRepository teacherCoursesRepository;
     private final UserMapper userMapper;
     private final CourseMapper courseMapper;
@@ -93,6 +96,14 @@ public class CourseService implements ICourseService {
         Page<Course> courses = courseRepository.findByLevel(level, pageable);
         logger.debug("Found {} courses with level: {}", courses.getTotalElements(), level);
         return courses;
+    }
+
+    @Override
+    public Page<Section> getCourseSections(Long courseId, Pageable pageable) {
+        Assert.notNull(courseId, "Course ID must not be null");
+        Assert.notNull(pageable, "Pageable must not be null");
+        logger.debug("Fetching sections for course ID: {}, page: {}", courseId, pageable.getPageNumber());
+        return sectionRepository.findAllByCourseId(courseId, pageable);
     }
 
     @Override
