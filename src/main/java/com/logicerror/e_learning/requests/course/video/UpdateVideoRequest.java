@@ -7,6 +7,4 @@ import lombok.Data;
 @Data
 public class UpdateVideoRequest {
     private String title;
-    private String url;
-    private Integer duration;
 }

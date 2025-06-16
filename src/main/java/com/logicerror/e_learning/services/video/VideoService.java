@@ -81,7 +81,7 @@ public class VideoService implements IVideoService {
         if (video.getId() == null) {
             throw new VideoCreationFailedException("Failed to create video.");
         }
-        String directory = buildFilePath(teacher, section, video, videoFile);
+        String directory = buildFilePath(teacher, video, videoFile);
         String filePath = storeFile(videoFile, directory);
         int durationInMinutes = extractDurationInMinutes(filePath);
         video.setUrl(filePath);
@@ -100,12 +100,16 @@ public class VideoService implements IVideoService {
                 .orElseThrow(() -> new SectionNotFoundException("Section not found with id: " + sectionId));
     }
 
-    private String buildFilePath(User teacher, Section section, Video video, MultipartFile videoFile) {
+    private String buildFilePath(User teacher, Video video, MultipartFile videoFile) {
+        Section videoSection = video.getSection();
+        Course videoCourse = video.getCourse();
         return storageProperties.getVideoPath()
                 + File.separator
                 + teacher.getUsername()
                 + File.separator
-                + section.getTitle()
+                + videoCourse.getTitle()
+                + File.separator
+                + videoSection.getTitle()
                 + File.separator
                 + video.getId()
                 + File.separator
@@ -127,7 +131,7 @@ public class VideoService implements IVideoService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
-    public Video updateVideo(UpdateVideoRequest request, Long videoId) {
+    public Video updateVideo(UpdateVideoRequest request, MultipartFile videoFile, Long videoId) {
         log.debug("Updating video with ID: {}", videoId);
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -140,11 +144,26 @@ public class VideoService implements IVideoService {
 
         videoFieldsUpdateService.update(video, request);
 
+        if(videoFile != null && !videoFile.isEmpty()) {
+            updateVideoContent(video, videoFile);
+        }
+
         Video updatedVideo = videoRepository.save(video);
 
         log.info("Video updated successfully with ID: {}", updatedVideo.getId());
 
         return updatedVideo;
+    }
+
+    private void updateVideoContent(Video video, MultipartFile videoFile) {
+        fileManagementService.deleteFile(video.getUrl());
+        String directory = buildFilePath((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
+                                         video,
+                                         videoFile);
+        String filePath = storeFile(videoFile, directory);
+        int durationInMinutes = extractDurationInMinutes(filePath);
+        video.setUrl(filePath);
+        video.setDuration(durationInMinutes);
     }
 
 

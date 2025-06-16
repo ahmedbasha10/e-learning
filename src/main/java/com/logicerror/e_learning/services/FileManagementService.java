@@ -36,4 +36,16 @@ public class FileManagementService {
     }
 
 
+    public void deleteFile(String url) {
+        if (url == null || url.isBlank()) {
+            throw new IllegalArgumentException("File URL must not be null or empty");
+        }
+
+        Path filePath = Path.of(url);
+        try {
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete file: " + url, e);
+        }
+    }
 }

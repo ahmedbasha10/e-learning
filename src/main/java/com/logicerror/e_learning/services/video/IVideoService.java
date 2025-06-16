@@ -16,7 +16,7 @@ public interface IVideoService {
     Video createVideo(CreateVideoRequest request, Long sectionId, MultipartFile videoFile);
 
     // Patch
-    Video updateVideo(UpdateVideoRequest request, Long videoId);
+    Video updateVideo(UpdateVideoRequest request, MultipartFile videoFile, Long videoId);
 
     // Delete
     void deleteVideo(Long videoId);
