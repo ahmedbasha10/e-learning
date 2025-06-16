@@ -44,6 +44,7 @@ public class FileManagementService {
         Path filePath = Path.of(url);
         try {
             Files.deleteIfExists(filePath);
+            Files.deleteIfExists(filePath.getParent());
         } catch (IOException e) {
             throw new RuntimeException("Failed to delete file: " + url, e);
         }

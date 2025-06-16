@@ -156,7 +156,7 @@ public class VideoService implements IVideoService {
     }
 
     private void updateVideoContent(Video video, MultipartFile videoFile) {
-        fileManagementService.deleteFile(video.getUrl());
+        deleteVideoFile(video);
         String directory = buildFilePath((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
                                          video,
                                          videoFile);
@@ -166,17 +166,23 @@ public class VideoService implements IVideoService {
         video.setDuration(durationInMinutes);
     }
 
+    private void deleteVideoFile(Video video) {
+        fileManagementService.deleteFile(video.getUrl());
+    }
+
 
     @Override
     @Transactional
-    @PreAuthorize("hasRole(TEACHER) or hasRole(ADMIN)")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public void deleteVideo(Long videoId) {
         log.debug("Deleting video with ID: {}", videoId);
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(!user.isTeacher() && !user.isAdmin()) throw new AccessDeniedException("User does not have permission to delete videos");
+        doAccessCheck(user);
         Video video = videoRepository.findById(videoId).orElseThrow(() -> new VideoNotFoundException("Video not found with id: " + videoId));
         doOwnerCheck(user, video);
         videoRepository.delete(video);
+        deleteVideoFile(video);
+        log.info("Video deleted successfully with ID: {}", videoId);
     }
 
     @Override

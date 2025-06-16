@@ -73,4 +73,9 @@ public class VideoController {
     }
 
     // Delete
+    @DeleteMapping("/{videoId}")
+    public ResponseEntity<ApiResponse<Void>> deleteVideo(@PathVariable Long videoId) {
+        videoService.deleteVideo(videoId);
+        return ResponseEntity.ok(new ApiResponse<>("Video deleted successfully", null));
+    }
 }
