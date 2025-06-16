@@ -2,12 +2,14 @@ package com.logicerror.e_learning.services.section;
 
 import com.logicerror.e_learning.dto.SectionDto;
 import com.logicerror.e_learning.entities.course.Section;
+import com.logicerror.e_learning.entities.course.Video;
 import com.logicerror.e_learning.entities.teacher.TeacherCoursesKey;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.section.SectionNotFoundException;
 import com.logicerror.e_learning.mappers.SectionMapper;
 import com.logicerror.e_learning.repositories.SectionRepository;
 import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
+import com.logicerror.e_learning.repositories.VideoRepository;
 import com.logicerror.e_learning.requests.course.section.CreateSectionRequest;
 import com.logicerror.e_learning.requests.course.section.UpdateSectionRequest;
 import com.logicerror.e_learning.services.OperationHandler;
@@ -17,16 +19,20 @@ import com.logicerror.e_learning.services.section.operationhandlers.update.Secti
 import com.logicerror.e_learning.services.section.operationhandlers.update.SectionUpdateContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class SectionService implements ISectionService{
     private final SectionRepository sectionRepository;
+    private final VideoRepository videoRepository;
     private final SectionMapper sectionMapper;
     private final SectionCreationChainBuilder sectionCreationChainBuilder;
     private final SectionUpdateChainBuilder sectionUpdateChainBuilder;
@@ -49,6 +55,14 @@ public class SectionService implements ISectionService{
                 .orElseThrow(() -> new SectionNotFoundException("Section not found with title: " + title));
         log.info("Section found: {}", section.getTitle());
         return section;
+    }
+
+    @Override
+    public Page<Video> getSectionVideos(Long sectionId, Pageable pageable) {
+        Assert.notNull(sectionId, "Section ID must not be null");
+        Assert.notNull(pageable, "Pageable must not be null");
+        log.debug("Fetching videos for section with ID: {}", sectionId);
+        return videoRepository.findAllBySectionId(sectionId, pageable);
     }
 
     @Override
@@ -105,4 +119,6 @@ public class SectionService implements ISectionService{
     public SectionDto convertToDto(Section section) {
         return sectionMapper.sectionToSectionDto(section);
     }
+
+
 }
