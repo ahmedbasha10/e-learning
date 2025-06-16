@@ -2,7 +2,9 @@ package com.logicerror.e_learning.controllers;
 
 import com.logicerror.e_learning.controllers.responses.ApiResponse;
 import com.logicerror.e_learning.dto.VideoDto;
+import com.logicerror.e_learning.entities.course.Video;
 import com.logicerror.e_learning.requests.course.video.CreateVideoRequest;
+import com.logicerror.e_learning.requests.course.video.UpdateVideoRequest;
 import com.logicerror.e_learning.services.video.IVideoService;
 import com.logicerror.e_learning.services.video.VideoStreamingService;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +63,14 @@ public class VideoController {
     }
 
     // Patch
+    @PatchMapping(value = "/{videoId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<VideoDto>> updateVideo(@RequestPart("details") UpdateVideoRequest request,
+                                                             @RequestPart(value = "videoFile", required = false) MultipartFile videoFile,
+                                                             @PathVariable Long videoId) {
+        Video updateVideo = videoService.updateVideo(request, videoFile, videoId);
+        VideoDto videoDto = videoService.convertToDto(updateVideo);
+        return ResponseEntity.ok(new ApiResponse<>("Video updated successfully", videoDto));
+    }
 
     // Delete
 }
