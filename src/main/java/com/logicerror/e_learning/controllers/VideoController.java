@@ -7,6 +7,7 @@ import com.logicerror.e_learning.requests.course.video.CreateVideoRequest;
 import com.logicerror.e_learning.requests.course.video.UpdateVideoRequest;
 import com.logicerror.e_learning.services.video.IVideoService;
 import com.logicerror.e_learning.services.video.VideoStreamingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -53,7 +54,7 @@ public class VideoController {
 
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<VideoDto>> createVideo(@RequestPart("details") CreateVideoRequest request,
+    public ResponseEntity<ApiResponse<VideoDto>> createVideo(@Valid @RequestPart("details") CreateVideoRequest request,
                                                              @RequestPart("videoFile") MultipartFile videoFile,
                                                              @RequestParam Long sectionId) {
         VideoDto videoDto = videoService.convertToDto(videoService.createVideo(request, sectionId, videoFile));
@@ -64,7 +65,7 @@ public class VideoController {
 
     // Patch
     @PatchMapping(value = "/{videoId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<VideoDto>> updateVideo(@RequestPart("details") UpdateVideoRequest request,
+    public ResponseEntity<ApiResponse<VideoDto>> updateVideo(@Valid @RequestPart("details") UpdateVideoRequest request,
                                                              @RequestPart(value = "videoFile", required = false) MultipartFile videoFile,
                                                              @PathVariable Long videoId) {
         Video updateVideo = videoService.updateVideo(request, videoFile, videoId);

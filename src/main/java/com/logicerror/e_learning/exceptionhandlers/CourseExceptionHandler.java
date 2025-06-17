@@ -7,9 +7,13 @@ import com.logicerror.e_learning.exceptions.general.ResourceCreationFailedExcept
 import com.logicerror.e_learning.exceptions.general.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @ControllerAdvice(assignableTypes = CourseController.class)
 public class CourseExceptionHandler {
@@ -40,12 +44,14 @@ public class CourseExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleValidationErrors(MethodArgumentNotValidException ex) {
-        String errorMessage = ex.getFieldErrors().stream()
-                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
-                .reduce((first, second) -> first + ", " + second)
-                .orElse("Validation error");
-        return ResponseEntity.status(400).body(new ApiResponse<>(errorMessage, null));
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationErrors(MethodArgumentNotValidException ex) {
+        Map<String, String> errorData = ex.getFieldErrors().stream()
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        fieldError -> fieldError.getDefaultMessage() != null ? fieldError.getDefaultMessage()
+                                : "Invalid value"
+                ));
+        return ResponseEntity.status(400).body(new ApiResponse<>("Invalid input data", errorData));
     }
 
     @ExceptionHandler(Exception.class)
