@@ -14,12 +14,15 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.SecretKey;
@@ -58,18 +61,68 @@ public class UserController {
                 SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
                 jwt = Jwts.builder().issuer("LogicError E-Learning")
                         .subject("JWT Token")
-                        .claim("username", authenticationResponse.getName())
+                        .claim("username", authenticationResponse.getPrincipal().toString())
                         .claim("authorities", authenticationResponse.getAuthorities().stream()
                                 .map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
                         .issuedAt(new Date())
                         .expiration(new Date((new Date()).getTime() + 30000000))
                         .signWith(secretKey).compact();
             }
+
+            ResponseCookie jwtCookie = ResponseCookie.from(ApplicationConstants.JWT_COOKIE_NAME, jwt)
+                    .httpOnly(true)
+                    .secure(false)
+                    .sameSite("Strict")
+                    .path("/")
+                    .maxAge(86400)
+                    .build();
+
+            SecurityContextHolder.getContext().setAuthentication(authenticationResponse);
+
+            User user = userService.getUserByUsername(authenticationResponse.getPrincipal().toString());
+            UserDto userDto = userService.convertToDto(user);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                    .body(new LoginResponseDto(userDto, HttpStatus.OK.getReasonPhrase()));
         }
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .header(ApplicationConstants.JWT_HEADER, jwt)
-                .body(new LoginResponseDto(HttpStatus.OK.getReasonPhrase(), jwt));
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new LoginResponseDto(null, HttpStatus.UNAUTHORIZED.getReasonPhrase()));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout() {
+        ResponseCookie jwtCookie = ResponseCookie.from(ApplicationConstants.JWT_COOKIE_NAME, "")
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Strict")
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        SecurityContextHolder.clearContext();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                .body(new ApiResponse<>("User logged out successfully", null));
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<ApiResponse<UserDto>> getCurrentUser(){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.getUserByUsername(username);
+        UserDto userDto = userService.convertToDto(user);
+
+        if (userDto == null) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>("User not authenticated", null));
+        }
+        return ResponseEntity
+                .ok()
+                .body(new ApiResponse<>("User retrieved successfully", userDto));
     }
 
     

@@ -2,9 +2,11 @@ package com.logicerror.e_learning.security.config;
 
 import com.logicerror.e_learning.constants.RoleConstants;
 import com.logicerror.e_learning.filters.JWTValidatorFilter;
+import com.logicerror.e_learning.mappers.UserMapper;
 import com.logicerror.e_learning.security.exceptionhandlers.CustomAccessDeniedHandler;
 import com.logicerror.e_learning.security.exceptionhandlers.CustomAuthenticationEntryPoint;
 import com.logicerror.e_learning.security.services.CustomUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -26,7 +29,9 @@ import java.util.Collections;
 
 @Configuration
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final UserMapper userMapper;
 
 
     @Bean
@@ -44,19 +49,19 @@ public class SecurityConfig {
         });
         http.cors(cors -> cors.configurationSource(request -> {
             CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedOrigins(Collections.singletonList("http://localhost:8080"));
+            config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
             config.setAllowedMethods(Collections.singletonList("*"));
             config.setAllowCredentials(true);
             config.setAllowedHeaders(Collections.singletonList("*"));
-            config.setExposedHeaders(Arrays.asList("Authorization"));
+            config.setExposedHeaders(Arrays.asList("Authorization", "Set-Cookie"));
             config.setMaxAge(3600L);
             return config;
         }));
 
-        http.addFilterBefore(new JWTValidatorFilter(), BasicAuthenticationFilter.class);
+        http.addFilterBefore(new JWTValidatorFilter(), UsernamePasswordAuthenticationFilter.class);
         http.csrf(AbstractHttpConfigurer::disable);
         http.formLogin(AbstractHttpConfigurer::disable);
-        http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+        http.httpBasic(AbstractHttpConfigurer::disable);
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
 
         return http.build();
@@ -64,9 +69,9 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-        CustomAuthenticationProvider authenticationProvider = new CustomAuthenticationProvider(userDetailsService, passwordEncoder);
+        CustomAuthenticationProvider authenticationProvider = new CustomAuthenticationProvider(userDetailsService, passwordEncoder, userMapper);
         ProviderManager providerManager = new ProviderManager(authenticationProvider);
-        providerManager.setEraseCredentialsAfterAuthentication(false);
+        providerManager.setEraseCredentialsAfterAuthentication(true);
         return providerManager;
     }
 

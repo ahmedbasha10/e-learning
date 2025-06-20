@@ -1,4 +1,4 @@
 package com.logicerror.e_learning.dto;
 
-public record LoginResponseDto(String status, String jwtToken) {
+public record LoginResponseDto(UserDto user, String status) {
 }
