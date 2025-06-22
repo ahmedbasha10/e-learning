@@ -34,6 +34,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -79,6 +83,32 @@ public class CourseService implements ICourseService {
         logger.debug("Fetching all courses, page: {}", pageable.getPageNumber());
         Page<Course> courses = courseRepository.findAll(pageable);
         logger.debug("Found {} courses", courses.getTotalElements());
+        return courses;
+    }
+
+    @Override
+    public Page<Course> getAllCoursesWithStudentsCount(Pageable pageable) {
+        logger.debug("Fetching all courses with students count, page: {}", pageable.getPageNumber());
+        Assert.notNull(pageable, "Pageable must not be null");
+        Page<Course> courses = courseRepository.findAll(pageable);
+
+        List<Long> courseIds = courses.stream()
+                .map(Course::getId)
+                .toList();
+
+        logger.debug("Found {} courses, fetching students count", courses.getTotalElements());
+        Map<Long, Integer> studentsCountMap = courseRepository.findCoursesWithStudentsCount(courseIds)
+                .stream()
+                .collect(Collectors.toMap(
+                        result -> ((Course) result[0]).getId(),
+                        result -> ((Long) result[1]).intValue()
+                ));
+
+        courses.forEach(course -> {
+            course.setStudentsCount(studentsCountMap.getOrDefault(course.getId(), 0));
+        });
+
+        logger.debug("Found {} courses with students count", courses.getTotalElements());
         return courses;
     }
 

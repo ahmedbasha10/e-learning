@@ -29,10 +29,9 @@ public class CourseController {
     @GetMapping
     public ResponseEntity<ApiResponse<Page<CourseDto>>> getAllCourses(Pageable pageable) {
         // Fetch all courses
-        Page<Course> coursePage = courseService.getAllCourses(pageable);
+        Page<Course> coursePage = courseService.getAllCoursesWithStudentsCount(pageable);
         // Convert to DTO
         Page<CourseDto> courseDtoPage = coursePage.map(courseService::convertToDto);
-        courseDtoPage.forEach(courseDto -> courseDto.setStudentsCount(courseService.getCourseStudentsCount(courseDto.getId())));
         // Return response
         return ResponseEntity.ok(new ApiResponse<>("Courses fetched successfully", courseDtoPage));
     }

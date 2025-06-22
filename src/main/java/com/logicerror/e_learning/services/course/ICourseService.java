@@ -12,6 +12,7 @@ public interface ICourseService {
     Course getCourseById(Long courseId);
     Course getCourseByTitle(String title);
     Page<Course> getAllCourses(Pageable pageable);
+    Page<Course> getAllCoursesWithStudentsCount(Pageable pageable);
     Page<Course> getCoursesByCategory(String category, Pageable pageable);
     Page<Course> getCoursesByLevel(String level, Pageable pageable);
     Page<Section> getCourseSections(Long courseId, Pageable pageable);

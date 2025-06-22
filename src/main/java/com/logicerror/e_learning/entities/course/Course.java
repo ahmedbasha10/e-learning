@@ -37,6 +37,9 @@ public class Course {
     @Column(name = "price", nullable = false)
     private int price;
 
+    @Transient
+    private Integer studentsCount;
+
 
     //TODO: Fetch lazy
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -145,5 +148,13 @@ public class Course {
             this.sections = new ArrayList<>();
         }
         this.sections.add(section);
+    }
+
+    public Integer getStudentsCount() {
+        return studentsCount;
+    }
+
+    public void setStudentsCount(Integer studentsCount) {
+        this.studentsCount = studentsCount;
     }
 }
