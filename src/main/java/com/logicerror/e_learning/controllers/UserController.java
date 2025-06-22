@@ -55,15 +55,14 @@ public class UserController {
                 unauthenticated(loginRequest.username(), loginRequest.password());
         Authentication authenticationResponse = authenticationManager.authenticate(authentication);
         if(authenticationResponse != null && authenticationResponse.isAuthenticated()) {
-            User user = (User) authenticationResponse.getPrincipal();
             if(env != null) {
                 String secret = env.getProperty(ApplicationConstants.JWT_SECRET_KEY,
                         ApplicationConstants.JWT_SECRET_DEFAULT_VALUE);
                 SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
                 jwt = Jwts.builder().issuer("LogicError E-Learning")
                         .subject("JWT Token")
-                        .claim("username", user.getUsername())
-                        .claim("authorities", user.getAuthorities().stream()
+                        .claim("username", authenticationResponse.getName())
+                        .claim("authorities", authenticationResponse.getAuthorities().stream()
                                 .map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
                         .issuedAt(new Date())
                         .expiration(new Date((new Date()).getTime() + 30000000))
@@ -80,6 +79,7 @@ public class UserController {
 
             SecurityContextHolder.getContext().setAuthentication(authenticationResponse);
 
+            User user = userService.getAuthenticatedUser();
             UserDto userDto = userService.convertToDto(user);
 
             return ResponseEntity.status(HttpStatus.OK)
