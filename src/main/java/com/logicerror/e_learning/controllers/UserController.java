@@ -55,14 +55,15 @@ public class UserController {
                 unauthenticated(loginRequest.username(), loginRequest.password());
         Authentication authenticationResponse = authenticationManager.authenticate(authentication);
         if(authenticationResponse != null && authenticationResponse.isAuthenticated()) {
+            User user = (User) authenticationResponse.getPrincipal();
             if(env != null) {
                 String secret = env.getProperty(ApplicationConstants.JWT_SECRET_KEY,
                         ApplicationConstants.JWT_SECRET_DEFAULT_VALUE);
                 SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
                 jwt = Jwts.builder().issuer("LogicError E-Learning")
                         .subject("JWT Token")
-                        .claim("username", authenticationResponse.getPrincipal().toString())
-                        .claim("authorities", authenticationResponse.getAuthorities().stream()
+                        .claim("username", user.getUsername())
+                        .claim("authorities", user.getAuthorities().stream()
                                 .map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
                         .issuedAt(new Date())
                         .expiration(new Date((new Date()).getTime() + 30000000))
@@ -79,7 +80,6 @@ public class UserController {
 
             SecurityContextHolder.getContext().setAuthentication(authenticationResponse);
 
-            User user = userService.getUserByUsername(authenticationResponse.getPrincipal().toString());
             UserDto userDto = userService.convertToDto(user);
 
             return ResponseEntity.status(HttpStatus.OK)
@@ -111,8 +111,7 @@ public class UserController {
 
     @GetMapping("/user")
     public ResponseEntity<ApiResponse<UserDto>> getCurrentUser(){
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.getUserByUsername(username);
+        User user = userService.getAuthenticatedUser();
         UserDto userDto = userService.convertToDto(user);
 
         if (userDto == null) {
@@ -129,7 +128,6 @@ public class UserController {
     // Get user
     @GetMapping("/user/username/{username}")
     public ResponseEntity<ApiResponse<UserDto>> getUserByUsername(@PathVariable String username){
-        System.out.println("here");
         User user = userService.getUserByUsername(username);
         UserDto userDto = userService.convertToDto(user);
         return ResponseEntity

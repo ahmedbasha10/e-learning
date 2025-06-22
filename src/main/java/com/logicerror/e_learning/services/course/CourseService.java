@@ -20,6 +20,7 @@ import com.logicerror.e_learning.services.course.operationhandlers.delete.Course
 import com.logicerror.e_learning.services.course.operationhandlers.delete.CourseDeleteContext;
 import com.logicerror.e_learning.services.course.operationhandlers.update.CourseUpdateChainBuilder;
 import com.logicerror.e_learning.services.course.operationhandlers.update.CourseUpdateContext;
+import com.logicerror.e_learning.services.user.IUserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -28,7 +29,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -36,6 +36,7 @@ import org.springframework.util.Assert;
 @Service
 @RequiredArgsConstructor
 public class CourseService implements ICourseService {
+    private final IUserService userService;
     private final CourseRepository courseRepository;
     private final SectionRepository sectionRepository;
     private final TeacherCoursesRepository teacherCoursesRepository;
@@ -110,7 +111,7 @@ public class CourseService implements ICourseService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public Course createCourse(CreateCourseRequest request) throws AccessDeniedException {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getAuthenticatedUser();
         OperationHandler<CourseCreationContext> courseOperationHandler = courseOperationChainBuilder.build();
         CourseCreationContext context = new CourseCreationContext(request, user);
         courseOperationHandler.handle(context);
@@ -122,7 +123,7 @@ public class CourseService implements ICourseService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public Course updateCourse(Long courseId, UpdateCourseRequest request) throws AccessDeniedException {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getAuthenticatedUser();
         OperationHandler<CourseUpdateContext> courseOperationHandler = courseUpdateChainBuilder.build();
         CourseUpdateContext context = new CourseUpdateContext(courseId, request, user);
         courseOperationHandler.handle(context);
@@ -133,7 +134,7 @@ public class CourseService implements ICourseService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public void deleteCourse(Long courseId) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getAuthenticatedUser();
         OperationHandler<CourseDeleteContext> courseOperationHandler = courseDeleteChainBuilder.build();
         CourseDeleteContext context = new CourseDeleteContext(courseId, user);
         courseOperationHandler.handle(context);

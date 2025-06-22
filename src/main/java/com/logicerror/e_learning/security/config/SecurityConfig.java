@@ -2,12 +2,8 @@ package com.logicerror.e_learning.security.config;
 
 import com.logicerror.e_learning.constants.RoleConstants;
 import com.logicerror.e_learning.filters.JWTValidatorFilter;
-import com.logicerror.e_learning.mappers.UserMapper;
 import com.logicerror.e_learning.security.exceptionhandlers.CustomAccessDeniedHandler;
-import com.logicerror.e_learning.security.exceptionhandlers.CustomAuthenticationEntryPoint;
-import com.logicerror.e_learning.security.services.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Arrays;
@@ -31,8 +26,6 @@ import java.util.Collections;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final UserMapper userMapper;
-
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -69,7 +62,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-        CustomAuthenticationProvider authenticationProvider = new CustomAuthenticationProvider(userDetailsService, passwordEncoder, userMapper);
+        CustomAuthenticationProvider authenticationProvider = new CustomAuthenticationProvider(userDetailsService, passwordEncoder);
         ProviderManager providerManager = new ProviderManager(authenticationProvider);
         providerManager.setEraseCredentialsAfterAuthentication(true);
         return providerManager;
