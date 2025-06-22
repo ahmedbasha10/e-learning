@@ -15,6 +15,7 @@ public interface ICourseService {
     Page<Course> getCoursesByCategory(String category, Pageable pageable);
     Page<Course> getCoursesByLevel(String level, Pageable pageable);
     Page<Section> getCourseSections(Long courseId, Pageable pageable);
+    int getCourseStudentsCount(Long courseId);
 
 
     Course createCourse(CreateCourseRequest createCourseRequest);

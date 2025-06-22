@@ -8,12 +8,12 @@ import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.mappers.EnrollmentMapper;
 import com.logicerror.e_learning.repositories.UserEnrollmentsRepository;
 import com.logicerror.e_learning.services.course.ICourseService;
+import com.logicerror.e_learning.services.user.IUserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class EnrollmentServiceImpl implements EnrollmentService {
     private final ICourseService courseService;
+    private final IUserService userService;
     private final UserEnrollmentsRepository userEnrollmentsRepository;
     private final EnrollmentMapper enrollmentMapper;
 
@@ -39,6 +40,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         log.info("User enrolled successfully in course: {}", course.getTitle());
         return savedEnrollment; // Placeholder return statement
     }
+
 
     private UserEnrollment constructUserEnrollment(Long courseId, User currentUser, Course course) {
         UserEnrollment userEnrollment = new UserEnrollment();
@@ -60,7 +62,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
 
     private User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userService.getAuthenticatedUser();
     }
 
     private void doStudentCheck(User currentUser) {

@@ -19,6 +19,7 @@ public class CourseDto {
     private int price;
     private UserDto teacher;
     private List<SectionDto> sections;
+    private int studentsCount;
 
     public Long getId() {
         return id;
@@ -90,5 +91,13 @@ public class CourseDto {
 
     public void setSections(List<SectionDto> sections) {
         this.sections = sections;
+    }
+
+    public int getStudentsCount() {
+        return studentsCount;
+    }
+
+    public void setStudentsCount(int studentsCount) {
+        this.studentsCount = studentsCount;
     }
 }

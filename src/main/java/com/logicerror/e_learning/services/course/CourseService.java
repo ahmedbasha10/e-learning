@@ -11,6 +11,7 @@ import com.logicerror.e_learning.mappers.UserMapper;
 import com.logicerror.e_learning.repositories.CourseRepository;
 import com.logicerror.e_learning.repositories.SectionRepository;
 import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
+import com.logicerror.e_learning.repositories.UserEnrollmentsRepository;
 import com.logicerror.e_learning.requests.course.CreateCourseRequest;
 import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
 import com.logicerror.e_learning.services.OperationHandler;
@@ -20,6 +21,7 @@ import com.logicerror.e_learning.services.course.operationhandlers.delete.Course
 import com.logicerror.e_learning.services.course.operationhandlers.delete.CourseDeleteContext;
 import com.logicerror.e_learning.services.course.operationhandlers.update.CourseUpdateChainBuilder;
 import com.logicerror.e_learning.services.course.operationhandlers.update.CourseUpdateContext;
+import com.logicerror.e_learning.services.enrollment.EnrollmentService;
 import com.logicerror.e_learning.services.user.IUserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,7 @@ public class CourseService implements ICourseService {
     private final CourseRepository courseRepository;
     private final SectionRepository sectionRepository;
     private final TeacherCoursesRepository teacherCoursesRepository;
+    private final UserEnrollmentsRepository userEnrollmentsRepository;
     private final UserMapper userMapper;
     private final CourseMapper courseMapper;
     private final CourseCreationChainBuilder courseOperationChainBuilder; // <CreateCourseRequest>
@@ -99,12 +102,22 @@ public class CourseService implements ICourseService {
         return courses;
     }
 
+
     @Override
     public Page<Section> getCourseSections(Long courseId, Pageable pageable) {
         Assert.notNull(courseId, "Course ID must not be null");
         Assert.notNull(pageable, "Pageable must not be null");
         logger.debug("Fetching sections for course ID: {}, page: {}", courseId, pageable.getPageNumber());
         return sectionRepository.findAllByCourseId(courseId, pageable);
+    }
+
+    @Override
+    public int getCourseStudentsCount(Long courseId) {
+        Assert.notNull(courseId, "Course ID must not be null");
+        logger.debug("Fetching student count for course ID: {}", courseId);
+        int studentCount = userEnrollmentsRepository.countStudentsByCourseId(courseId);
+        logger.debug("Found {} students for course ID: {}", studentCount, courseId);
+        return studentCount;
     }
 
     @Override

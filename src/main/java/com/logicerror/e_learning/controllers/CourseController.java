@@ -32,6 +32,7 @@ public class CourseController {
         Page<Course> coursePage = courseService.getAllCourses(pageable);
         // Convert to DTO
         Page<CourseDto> courseDtoPage = coursePage.map(courseService::convertToDto);
+        courseDtoPage.forEach(courseDto -> courseDto.setStudentsCount(courseService.getCourseStudentsCount(courseDto.getId())));
         // Return response
         return ResponseEntity.ok(new ApiResponse<>("Courses fetched successfully", courseDtoPage));
     }
