@@ -28,6 +28,7 @@ public class CourseCreationHandler extends BaseCourseCreationHandler {
         CreateCourseRequest request = context.getRequest();
         logger.info("Creating new course with title: {}", request.getTitle());
         Course course = courseMapper.createCourseRequestToCourse(request);
+        course.setImageUrl("storage/images/courses/default.png");
         Course savedCourse = courseRepository.save(course);
         
         if (savedCourse.getId() == null) {

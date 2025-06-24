@@ -25,8 +25,6 @@ public class CreateCourseRequest {
     @NotNull(message = "Course Level is required")
     private String level;
 
-    @NotNull(message = "Course Image URL is required")
-    private String imageUrl;
 
     @NotNull(message = "Course Duration is required")
     private Integer duration;
@@ -68,13 +66,6 @@ public class CreateCourseRequest {
         this.level = level;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 
     public Integer getDuration() {
         return duration;
