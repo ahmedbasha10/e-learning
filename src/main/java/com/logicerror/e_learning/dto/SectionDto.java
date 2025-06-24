@@ -1,10 +1,13 @@
 package com.logicerror.e_learning.dto;
 
+import java.util.List;
+
 public class SectionDto {
     private Long id;
     private String title;
     private Integer order;
     private Integer duration;
+    private List<VideoDto> videos;
 
     public Long getId() {
         return id;
@@ -36,5 +39,13 @@ public class SectionDto {
 
     public void setDuration(Integer duration) {
         this.duration = duration;
+    }
+
+    public List<VideoDto> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(List<VideoDto> videos) {
+        this.videos = videos;
     }
 }

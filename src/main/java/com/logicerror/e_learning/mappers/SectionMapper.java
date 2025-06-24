@@ -17,5 +17,6 @@ public interface SectionMapper {
     @Mapping(target = "title", source = "section.title")
     @Mapping(target = "order", source = "section.order")
     @Mapping(target = "duration", source = "section.duration")
+    @Mapping(target = "videos", source = "section.videos")
     SectionDto sectionToSectionDto(Section section);
 }
