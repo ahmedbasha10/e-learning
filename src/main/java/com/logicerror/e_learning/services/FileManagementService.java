@@ -1,6 +1,8 @@
 package com.logicerror.e_learning.services;
 
 import com.logicerror.e_learning.config.StorageProperties;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -16,6 +18,23 @@ public class FileManagementService {
 
     public FileManagementService(StorageProperties storageProperties) {
         this.rootLocation = Path.of(storageProperties.getBasePath());
+    }
+
+    public Resource loadFileAsResource(String filePath) {
+        if (filePath == null || filePath.isBlank()) {
+            throw new IllegalArgumentException("File path must not be null or empty");
+        }
+
+        Path file = rootLocation.resolve(filePath).normalize().toAbsolutePath();
+        if (!Files.exists(file)) {
+            throw new RuntimeException("File not found: " + filePath);
+        }
+
+        try {
+            return new UrlResource(file.toUri());
+        } catch (Exception e) {
+            throw new RuntimeException("Could not read file: " + filePath, e);
+        }
     }
 
     public String uploadFile(InputStream inputStream, String filePath) throws IOException {

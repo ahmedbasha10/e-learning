@@ -28,3 +28,4 @@ logging:
 
 api:
   base-path: /api/v1
+  base-host: http://localhost:5000

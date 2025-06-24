@@ -15,6 +15,7 @@ public class CourseDto {
     private String description;
     private String category;
     private String level;
+    private String imageUrl;
     private int duration;
     private int price;
     private UserDto teacher;

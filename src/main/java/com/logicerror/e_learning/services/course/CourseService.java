@@ -21,12 +21,12 @@ import com.logicerror.e_learning.services.course.operationhandlers.delete.Course
 import com.logicerror.e_learning.services.course.operationhandlers.delete.CourseDeleteContext;
 import com.logicerror.e_learning.services.course.operationhandlers.update.CourseUpdateChainBuilder;
 import com.logicerror.e_learning.services.course.operationhandlers.update.CourseUpdateContext;
-import com.logicerror.e_learning.services.enrollment.EnrollmentService;
 import com.logicerror.e_learning.services.user.IUserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,6 +34,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,6 +53,8 @@ public class CourseService implements ICourseService {
     private final CourseCreationChainBuilder courseOperationChainBuilder; // <CreateCourseRequest>
     private final CourseUpdateChainBuilder courseUpdateChainBuilder; // <UpdateCourseRequest>
     private final CourseDeleteChainBuilder courseDeleteChainBuilder; // <DeleteCourseRequest>
+    @Value("${api.base-host}")
+    private String baseHost;
     private final Logger logger = LoggerFactory.getLogger(CourseService.class);
 
 
@@ -59,22 +62,26 @@ public class CourseService implements ICourseService {
     public Course getCourseById(Long courseId) {
         Assert.notNull(courseId, "Course ID must not be null");
         logger.debug("Fetching course with ID: {}", courseId);
-        return courseRepository.findById(courseId)
+        Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> {
                     logger.error("Course not found with ID: {}", courseId);
                     return new CourseNotFoundException("Course not found with id: " + courseId);
                 });
+        addServerHostToCourseImage(course);
+        return course;
     }
 
     @Override
     public Course getCourseByTitle(String title) {
         Assert.notNull(title, "Course title must not be null");
         logger.debug("Fetching course with title: {}", title);
-        return courseRepository.findByTitle(title)
+        Course course = courseRepository.findByTitle(title)
                 .orElseThrow(() -> {
                     logger.error("Course not found with title: {}", title);
                     return new CourseNotFoundException("Course not found with title: " + title);
                 });
+        addServerHostToCourseImage(course);
+        return course;
     }
 
     @Override
@@ -83,6 +90,7 @@ public class CourseService implements ICourseService {
         logger.debug("Fetching all courses, page: {}", pageable.getPageNumber());
         Page<Course> courses = courseRepository.findAll(pageable);
         logger.debug("Found {} courses", courses.getTotalElements());
+        courses.forEach(this::addServerHostToCourseImage);
         return courses;
     }
 
@@ -91,6 +99,7 @@ public class CourseService implements ICourseService {
         logger.debug("Fetching all courses with students count, page: {}", pageable.getPageNumber());
         Assert.notNull(pageable, "Pageable must not be null");
         Page<Course> courses = courseRepository.findAll(pageable);
+
 
         List<Long> courseIds = courses.stream()
                 .map(Course::getId)
@@ -106,6 +115,7 @@ public class CourseService implements ICourseService {
 
         courses.forEach(course -> {
             course.setStudentsCount(studentsCountMap.getOrDefault(course.getId(), 0));
+            addServerHostToCourseImage(course);
         });
 
         logger.debug("Found {} courses with students count", courses.getTotalElements());
@@ -119,6 +129,7 @@ public class CourseService implements ICourseService {
         logger.debug("Fetching courses by category: {}, page: {}", category, pageable.getPageNumber());
         Page<Course> courses = courseRepository.findByCategory(category, pageable);
         logger.debug("Found {} courses in category: {}", courses.getTotalElements(), category);
+        courses.forEach(this::addServerHostToCourseImage);
         return courses;
     }
 
@@ -129,9 +140,14 @@ public class CourseService implements ICourseService {
         logger.debug("Fetching courses by level: {}, page: {}", level, pageable.getPageNumber());
         Page<Course> courses = courseRepository.findByLevel(level, pageable);
         logger.debug("Found {} courses with level: {}", courses.getTotalElements(), level);
+        courses.forEach(this::addServerHostToCourseImage);
         return courses;
     }
 
+    private void addServerHostToCourseImage(Course course){
+        String filePath = baseHost + File.separator + course.getImageUrl();
+        course.setImageUrl(filePath.replace("\\", "/"));
+    }
 
     @Override
     public Page<Section> getCourseSections(Long courseId, Pageable pageable) {
