@@ -8,5 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserEnrollmentsRepository extends JpaRepository<UserEnrollment, UserEnrollmentsKey> {
     boolean existsByUserAndCourse(User currentUser, Course course);
+    boolean existsByUserIdAndCourseId(Long userId, Long courseId);
     int countStudentsByCourseId(Long courseId);
 }

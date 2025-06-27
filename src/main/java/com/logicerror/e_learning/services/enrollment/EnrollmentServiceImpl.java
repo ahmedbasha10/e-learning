@@ -25,6 +25,16 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final UserEnrollmentsRepository userEnrollmentsRepository;
     private final EnrollmentMapper enrollmentMapper;
 
+    @Override
+    public boolean isUserEnrolledForCourse(Long courseId) {
+        log.info("Fetching user enrollment for course ID: {}", courseId);
+        User currentUser = getCurrentUser();
+        doStudentCheck(currentUser);
+        boolean isEnrolled = userEnrollmentsRepository.existsByUserIdAndCourseId(currentUser.getId(), courseId);
+        log.info("User enrollment status for course ID {}: {}", courseId, isEnrolled);
+        return isEnrolled;
+    }
+
     // Implement the methods defined in the EnrollmentService interface
     @PreAuthorize("hasRole('STUDENT')")
     @Transactional
