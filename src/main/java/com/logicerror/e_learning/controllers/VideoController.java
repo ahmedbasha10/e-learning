@@ -45,13 +45,6 @@ public class VideoController {
         return ResponseEntity.ok(new ApiResponse<>("Video fetched successfully", videoDto));
     }
 
-    @GetMapping("/stream/{videoId}")
-    public ResponseEntity<Resource> streamVideo(@PathVariable Long videoId,
-                                                @RequestHeader(value = "Range", required = false) String rangeHeader) throws IOException {
-        return videoStreamingService.streamVideo(videoId, rangeHeader);
-    }
-
-
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<VideoDto>> createVideo(@Valid @RequestPart("details") CreateVideoRequest request,

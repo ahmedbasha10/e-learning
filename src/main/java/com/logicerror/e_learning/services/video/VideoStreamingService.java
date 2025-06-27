@@ -1,11 +1,10 @@
 package com.logicerror.e_learning.services.video;
 
-import com.logicerror.e_learning.entities.course.Video;
-import com.logicerror.e_learning.exceptions.video.VideoNotFoundException;
+import com.logicerror.e_learning.config.StorageProperties;
+import com.logicerror.e_learning.services.FileManagementService;
 import com.logicerror.e_learning.services.video.models.RangeRequest;
 import com.logicerror.e_learning.services.video.models.VideoFileInfo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -16,16 +15,17 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 @Service
 @RequiredArgsConstructor
 public class VideoStreamingService {
-    private final IVideoService videoService;
+    private final StorageProperties storageProperties;
+    private final FileManagementService fileManagementService;
 
-    public ResponseEntity<Resource> streamVideo(Long videoId, String rangeHeader) throws IOException {
+    public ResponseEntity<Resource> streamVideo(Path videoPath, String rangeHeader) throws IOException {
         // Get video metadata
-        Video video = videoService.getVideoById(videoId);
-        VideoFileInfo fileInfo = validateAndGetFileInfo(video);
+        VideoFileInfo fileInfo = validateAndGetFileInfo(videoPath);
         // Handle range request
         if (rangeHeader != null && rangeHeader.startsWith("bytes=")) {
             return handleRangeRequest(fileInfo, rangeHeader);
@@ -34,15 +34,10 @@ public class VideoStreamingService {
         return buildFullVideoResponse(fileInfo);
     }
 
-    private VideoFileInfo validateAndGetFileInfo(Video video) throws IOException {
-        File videoFile = new File(video.getUrl());
-
-        if (!videoFile.exists()) {
-            throw new VideoNotFoundException("Video file not found: " + video.getUrl());
-        }
-
-        Resource videoResource = new FileSystemResource(videoFile);
-        String contentType = determineContentType(videoFile);
+    private VideoFileInfo validateAndGetFileInfo(Path videoPath) throws IOException {
+        String fullPath = storageProperties.getVideoPath() + File.separator + videoPath.toString();
+        Resource videoResource = fileManagementService.loadFileAsResource(fullPath);
+        String contentType = determineContentType(videoResource.getFile());
 
         return new VideoFileInfo(videoResource, videoResource.contentLength(), contentType);
     }
