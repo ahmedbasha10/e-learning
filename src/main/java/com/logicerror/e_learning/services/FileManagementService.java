@@ -1,8 +1,8 @@
 package com.logicerror.e_learning.services;
 
 import com.logicerror.e_learning.config.StorageProperties;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class FileManagementService {
         }
 
         try {
-            return new UrlResource(file.toUri());
+            return new FileSystemResource(file);
         } catch (Exception e) {
             throw new RuntimeException("Could not read file: " + filePath, e);
         }
