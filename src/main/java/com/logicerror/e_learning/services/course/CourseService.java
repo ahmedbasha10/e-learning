@@ -67,7 +67,7 @@ public class CourseService implements ICourseService {
                     logger.error("Course not found with ID: {}", courseId);
                     return new CourseNotFoundException("Course not found with id: " + courseId);
                 });
-        addServerHostToCourseImage(course);
+        addServerHostToCourseResources(course);
         return course;
     }
 
@@ -80,7 +80,7 @@ public class CourseService implements ICourseService {
                     logger.error("Course not found with title: {}", title);
                     return new CourseNotFoundException("Course not found with title: " + title);
                 });
-        addServerHostToCourseImage(course);
+        addServerHostToCourseResources(course);
         return course;
     }
 
@@ -90,7 +90,7 @@ public class CourseService implements ICourseService {
         logger.debug("Fetching all courses, page: {}", pageable.getPageNumber());
         Page<Course> courses = courseRepository.findAll(pageable);
         logger.debug("Found {} courses", courses.getTotalElements());
-        courses.forEach(this::addServerHostToCourseImage);
+        courses.forEach(this::addServerHostToCourseResources);
         return courses;
     }
 
@@ -115,7 +115,7 @@ public class CourseService implements ICourseService {
 
         courses.forEach(course -> {
             course.setStudentsCount(studentsCountMap.getOrDefault(course.getId(), 0));
-            addServerHostToCourseImage(course);
+            addServerHostToCourseResources(course);
         });
 
         logger.debug("Found {} courses with students count", courses.getTotalElements());
@@ -129,7 +129,7 @@ public class CourseService implements ICourseService {
         logger.debug("Fetching courses by category: {}, page: {}", category, pageable.getPageNumber());
         Page<Course> courses = courseRepository.findByCategory(category, pageable);
         logger.debug("Found {} courses in category: {}", courses.getTotalElements(), category);
-        courses.forEach(this::addServerHostToCourseImage);
+        courses.forEach(this::addServerHostToCourseResources);
         return courses;
     }
 
@@ -140,13 +140,22 @@ public class CourseService implements ICourseService {
         logger.debug("Fetching courses by level: {}, page: {}", level, pageable.getPageNumber());
         Page<Course> courses = courseRepository.findByLevel(level, pageable);
         logger.debug("Found {} courses with level: {}", courses.getTotalElements(), level);
-        courses.forEach(this::addServerHostToCourseImage);
+        courses.forEach(this::addServerHostToCourseResources);
         return courses;
     }
 
-    private void addServerHostToCourseImage(Course course){
+    private void addServerHostToCourseResources(Course course){
         String filePath = baseHost + File.separator + course.getImageUrl();
         course.setImageUrl(filePath.replace("\\", "/"));
+        course.getSections().forEach(this::addServerHostToVideoUrl);
+    }
+
+    private void addServerHostToVideoUrl(Section section) {
+        section.getVideos()
+                .forEach(video -> {
+                    String videoFilePath = baseHost + File.separator + video.getUrl();
+                    video.setUrl(videoFilePath.replace("\\", "/"));
+                });
     }
 
     @Override
