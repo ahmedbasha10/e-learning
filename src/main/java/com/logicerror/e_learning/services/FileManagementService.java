@@ -42,9 +42,9 @@ public class FileManagementService {
             throw new IllegalArgumentException("Input stream and file name must not be null or empty");
         }
 
-        Path destinationFile = rootLocation.resolve(filePath).normalize().toAbsolutePath();
+        Path destinationFile = rootLocation.resolve(filePath).normalize();
 
-        if (!destinationFile.startsWith(rootLocation.toAbsolutePath())) {
+        if (!destinationFile.startsWith(rootLocation)) {
             throw new SecurityException("Cannot store file outside current directory.");
         }
 
