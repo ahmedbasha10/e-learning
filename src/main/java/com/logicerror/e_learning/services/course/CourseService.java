@@ -1,6 +1,7 @@
 package com.logicerror.e_learning.services.course;
 
 import com.logicerror.e_learning.dto.CourseDto;
+import com.logicerror.e_learning.dto.SectionDto;
 import com.logicerror.e_learning.dto.UserDto;
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.entities.course.Section;
@@ -62,26 +63,22 @@ public class CourseService implements ICourseService {
     public Course getCourseById(Long courseId) {
         Assert.notNull(courseId, "Course ID must not be null");
         logger.debug("Fetching course with ID: {}", courseId);
-        Course course = courseRepository.findById(courseId)
+        return courseRepository.findById(courseId)
                 .orElseThrow(() -> {
                     logger.error("Course not found with ID: {}", courseId);
                     return new CourseNotFoundException("Course not found with id: " + courseId);
                 });
-        addServerHostToCourseResources(course);
-        return course;
     }
 
     @Override
     public Course getCourseByTitle(String title) {
         Assert.notNull(title, "Course title must not be null");
         logger.debug("Fetching course with title: {}", title);
-        Course course = courseRepository.findByTitle(title)
+        return courseRepository.findByTitle(title)
                 .orElseThrow(() -> {
                     logger.error("Course not found with title: {}", title);
                     return new CourseNotFoundException("Course not found with title: " + title);
                 });
-        addServerHostToCourseResources(course);
-        return course;
     }
 
     @Override
@@ -90,7 +87,6 @@ public class CourseService implements ICourseService {
         logger.debug("Fetching all courses, page: {}", pageable.getPageNumber());
         Page<Course> courses = courseRepository.findAll(pageable);
         logger.debug("Found {} courses", courses.getTotalElements());
-        courses.forEach(this::addServerHostToCourseResources);
         return courses;
     }
 
@@ -115,7 +111,6 @@ public class CourseService implements ICourseService {
 
         courses.forEach(course -> {
             course.setStudentsCount(studentsCountMap.getOrDefault(course.getId(), 0));
-            addServerHostToCourseResources(course);
         });
 
         logger.debug("Found {} courses with students count", courses.getTotalElements());
@@ -129,7 +124,6 @@ public class CourseService implements ICourseService {
         logger.debug("Fetching courses by category: {}, page: {}", category, pageable.getPageNumber());
         Page<Course> courses = courseRepository.findByCategory(category, pageable);
         logger.debug("Found {} courses in category: {}", courses.getTotalElements(), category);
-        courses.forEach(this::addServerHostToCourseResources);
         return courses;
     }
 
@@ -140,22 +134,7 @@ public class CourseService implements ICourseService {
         logger.debug("Fetching courses by level: {}, page: {}", level, pageable.getPageNumber());
         Page<Course> courses = courseRepository.findByLevel(level, pageable);
         logger.debug("Found {} courses with level: {}", courses.getTotalElements(), level);
-        courses.forEach(this::addServerHostToCourseResources);
         return courses;
-    }
-
-    private void addServerHostToCourseResources(Course course){
-        String filePath = baseHost + File.separator + course.getImageUrl();
-        course.setImageUrl(filePath.replace("\\", "/"));
-        course.getSections().forEach(this::addServerHostToVideoUrl);
-    }
-
-    private void addServerHostToVideoUrl(Section section) {
-        section.getVideos()
-                .forEach(video -> {
-                    String videoFilePath = baseHost + File.separator + video.getUrl();
-                    video.setUrl(videoFilePath.replace("\\", "/"));
-                });
     }
 
     @Override
@@ -167,12 +146,27 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public int getCourseStudentsCount(Long courseId) {
-        Assert.notNull(courseId, "Course ID must not be null");
-        logger.debug("Fetching student count for course ID: {}", courseId);
-        int studentCount = userEnrollmentsRepository.countStudentsByCourseId(courseId);
-        logger.debug("Found {} students for course ID: {}", studentCount, courseId);
-        return studentCount;
+    public void calculateEnrolledStudentsCount(CourseDto course) {
+        Assert.notNull(course, "Course must not be null");
+        logger.debug("Fetching student count for course ID: {}", course.getId());
+        int studentsCount = userEnrollmentsRepository.countStudentsByCourseId(course.getId());
+        logger.debug("Found {} students for course ID: {}", studentsCount, course.getId());
+        course.setStudentsCount(studentsCount);
+    }
+
+    @Override
+    public void addServerHostToCourseResources(CourseDto course){
+        String filePath = baseHost + File.separator + course.getImageUrl();
+        course.setImageUrl(filePath.replace("\\", "/"));
+        course.getSections().forEach(this::addServerHostToVideoUrl);
+    }
+
+    private void addServerHostToVideoUrl(SectionDto section) {
+        section.getVideos()
+                .forEach(video -> {
+                    String videoFilePath = baseHost + File.separator + video.getUrl();
+                    video.setUrl(videoFilePath.replace("\\", "/"));
+                });
     }
 
     @Override
@@ -199,6 +193,19 @@ public class CourseService implements ICourseService {
     }
 
     @Override
+    public void updateCourseDuration(Course course) {
+        Assert.notNull(course, "Course must not be null");
+        logger.debug("Updating duration for course with ID: {}", course.getId());
+        Long totalDuration = sectionRepository.findAllByCourseId(course.getId())
+                .stream()
+                .mapToLong(Section::getDuration)
+                .sum();
+        course.setDuration(totalDuration.intValue());
+        logger.debug("Updated duration for course ID: {} to {}", course.getId(), totalDuration);
+        courseRepository.save(course);
+    }
+
+    @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public void deleteCourse(Long courseId) {
@@ -212,6 +219,9 @@ public class CourseService implements ICourseService {
     public CourseDto convertToDto(Course course) {
         User user = teacherCoursesRepository.findByCourseId(course.getId()).getFirst().getUser();
         UserDto teacher = userMapper.userToUserDto(user);
-        return courseMapper.courseToCourseDto(course, teacher);
+        CourseDto courseDto = courseMapper.courseToCourseDto(course, teacher);
+        addServerHostToCourseResources(courseDto);
+        calculateEnrolledStudentsCount(courseDto);
+        return courseDto;
     }
 }

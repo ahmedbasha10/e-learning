@@ -29,6 +29,7 @@ public class CourseCreationHandler extends BaseCourseCreationHandler {
         logger.info("Creating new course with title: {}", request.getTitle());
         Course course = courseMapper.createCourseRequestToCourse(request);
         course.setImageUrl("storage/images/courses/default.png");
+        course.setDuration(0);
         Course savedCourse = courseRepository.save(course);
         
         if (savedCourse.getId() == null) {
@@ -45,6 +46,7 @@ public class CourseCreationHandler extends BaseCourseCreationHandler {
                 Section section = sectionMapper.createSectionRequestToSection(sectionRequest);
                 // createSection(savedCourse, sectionRequest);
                 section.setCourse(savedCourse);
+                section.setDuration(0);
 
                 Section savedSection = sectionRepository.save(section);
                 savedCourse.addSection(savedSection);

@@ -16,6 +16,5 @@ public class UpdateCourseRequest {
 
     private String category;
     private String level;
-    private Integer duration;
     private Integer price;
 }

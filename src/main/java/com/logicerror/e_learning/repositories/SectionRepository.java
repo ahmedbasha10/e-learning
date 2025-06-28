@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SectionRepository extends JpaRepository<Section, Long> {
@@ -16,6 +17,7 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
     Optional<Section> findByTitleWithCourseId(Long courseId, String title);
 
     Page<Section> findAllByCourseId(Long courseId, Pageable pageable);
+    List<Section> findAllByCourseId(Long courseId);
 
     @Query("SELECT COUNT(c) > 0 FROM Course c LEFT JOIN c.sections s WHERE c.id = :courseId AND s.title = :sectionTitle")
     boolean existsByCourseIdAndTitle(@Param("courseId") Long courseId, @Param("sectionTitle") String sectionTitle);

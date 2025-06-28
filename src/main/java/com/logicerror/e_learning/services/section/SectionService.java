@@ -17,13 +17,13 @@ import com.logicerror.e_learning.services.section.operationhandlers.create.Secti
 import com.logicerror.e_learning.services.section.operationhandlers.create.SectionCreationContext;
 import com.logicerror.e_learning.services.section.operationhandlers.update.SectionUpdateChainBuilder;
 import com.logicerror.e_learning.services.section.operationhandlers.update.SectionUpdateContext;
+import com.logicerror.e_learning.services.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -31,6 +31,7 @@ import org.springframework.util.Assert;
 @RequiredArgsConstructor
 @Slf4j
 public class SectionService implements ISectionService{
+    private final IUserService userService;
     private final SectionRepository sectionRepository;
     private final VideoRepository videoRepository;
     private final SectionMapper sectionMapper;
@@ -69,7 +70,7 @@ public class SectionService implements ISectionService{
     @PreAuthorize("hasRole('TEACHER')")
     public Section createSection(CreateSectionRequest createSectionRequest, Long courseId) {
         log.debug("Creating section with title: {} for course ID: {}", createSectionRequest.getTitle(), courseId);
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getAuthenticatedUser();
         OperationHandler<SectionCreationContext> operationHandler = sectionCreationChainBuilder.build();
         SectionCreationContext context = new SectionCreationContext(createSectionRequest, courseId, user);
         operationHandler.handle(context);
@@ -81,7 +82,7 @@ public class SectionService implements ISectionService{
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public Section updateSection(UpdateSectionRequest updateSectionRequest, Long sectionId) {
         log.debug("Creating section with title: {} for course ID: {}", updateSectionRequest.getTitle(), sectionId);
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getAuthenticatedUser();
         OperationHandler<SectionUpdateContext> operationHandler = sectionUpdateChainBuilder.build();
         SectionUpdateContext context = new SectionUpdateContext(updateSectionRequest, sectionId, user);
         operationHandler.handle(context);
@@ -90,10 +91,23 @@ public class SectionService implements ISectionService{
     }
 
     @Override
+    public void updateSectionDuration(Section section) {
+        Assert.notNull(section, "Section must not be null");
+        log.debug("Updating duration for section with ID: {}", section.getId());
+        Long totalDuration = videoRepository.findAllBySectionId(section.getId())
+                .stream()
+                .mapToLong(Video::getDuration)
+                .sum();
+        section.setDuration(totalDuration.intValue());
+        sectionRepository.save(section);
+        log.info("Updated duration for section with ID: {} to {}", section.getId(), totalDuration);
+    }
+
+    @Override
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public void deleteSection(Long sectionId) {
         log.debug("Deleting section with ID: {}", sectionId);
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getAuthenticatedUser();
         if(!user.isTeacher() && !user.isAdmin()){
             throw new AccessDeniedException("User does not have permission to delete sections");
         }
@@ -119,6 +133,4 @@ public class SectionService implements ISectionService{
     public SectionDto convertToDto(Section section) {
         return sectionMapper.sectionToSectionDto(section);
     }
-
-
 }

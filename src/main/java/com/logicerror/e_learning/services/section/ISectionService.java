@@ -15,6 +15,7 @@ public interface ISectionService {
     Page<Video> getSectionVideos(Long sectionId, Pageable pageable);
     Section createSection(CreateSectionRequest createSectionRequest, Long courseId);
     Section updateSection(UpdateSectionRequest updateSectionRequest, Long sectionId);
+    void updateSectionDuration(Section section);
     void deleteSection(Long sectionId);
 
     SectionDto convertToDto(Section section);

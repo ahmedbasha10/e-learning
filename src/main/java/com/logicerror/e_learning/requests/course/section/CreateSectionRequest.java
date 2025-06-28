@@ -16,9 +16,6 @@ public class CreateSectionRequest {
     @Min(value = 1, message = "Order must be at least 1")
     private Integer order;
 
-    @NotNull(message = "Duration is required")
-    @Min(value = 1, message = "Duration must be at least 1 minute")
-    private Integer duration;
 
     public String getTitle() {
         return title;
@@ -36,11 +33,4 @@ public class CreateSectionRequest {
         this.order = order;
     }
 
-    public Integer getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
-    }
 }

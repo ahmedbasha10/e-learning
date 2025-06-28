@@ -16,15 +16,18 @@ public interface ICourseService {
     Page<Course> getCoursesByCategory(String category, Pageable pageable);
     Page<Course> getCoursesByLevel(String level, Pageable pageable);
     Page<Section> getCourseSections(Long courseId, Pageable pageable);
-    int getCourseStudentsCount(Long courseId);
+    void calculateEnrolledStudentsCount(CourseDto course);
+    void addServerHostToCourseResources(CourseDto course);
 
 
     Course createCourse(CreateCourseRequest createCourseRequest);
 
     Course updateCourse(Long courseId, UpdateCourseRequest Course);
+    void updateCourseDuration(Course course);
 
     void deleteCourse(Long courseId);
 
     CourseDto convertToDto(Course course);
+
 
 }

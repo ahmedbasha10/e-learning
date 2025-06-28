@@ -25,10 +25,6 @@ public class CreateCourseRequest {
     @NotNull(message = "Course Level is required")
     private String level;
 
-
-    @NotNull(message = "Course Duration is required")
-    private Integer duration;
-
     @NotNull(message = "Course Price is required")
     private Integer price;
 
@@ -64,15 +60,6 @@ public class CreateCourseRequest {
 
     public void setLevel(String level) {
         this.level = level;
-    }
-
-
-    public Integer getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
     }
 
     public Integer getPrice() {

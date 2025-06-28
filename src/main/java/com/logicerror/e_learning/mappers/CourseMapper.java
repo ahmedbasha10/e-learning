@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {SectionMapper.class})
 public interface CourseMapper {
+    @Mapping(target = "duration", ignore = true)
     @Mapping(target = "title", source = "title")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "reviews", ignore = true) 

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface VideoRepository extends JpaRepository<Video, Long> {
@@ -13,6 +14,7 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
     Optional<Video> findByTitleAndSectionId(String title, Long sectionId);
 
     Page<Video> findAllBySectionId(Long sectionId, Pageable pageable);
+    List<Video> findAllBySectionId(Long sectionId);
 
     boolean existsByTitleAndCourseId(String title, Long courseId);
 }

@@ -8,8 +8,8 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface SectionMapper {
+    @Mapping(target = "duration", ignore = true)
     @Mapping(target = "title", source = "title")
-    @Mapping(target = "duration", source = "duration")
     @Mapping(target = "order", source = "order")
     Section createSectionRequestToSection(CreateSectionRequest request);
 

@@ -26,6 +26,7 @@ public class SectionCreationHandler extends BaseSectionCreationHandler {
         Section section = sectionMapper.createSectionRequestToSection(request);
         Course course = courseService.getCourseById(context.getCourseId());
         section.setCourse(course);
+        section.setDuration(0);
         Section savedSection = sectionRepository.save(section);
         context.setCreatedSection(savedSection);
         if (savedSection.getId() == null) {

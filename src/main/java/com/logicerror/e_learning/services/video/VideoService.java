@@ -18,6 +18,9 @@ import com.logicerror.e_learning.repositories.VideoRepository;
 import com.logicerror.e_learning.requests.course.video.CreateVideoRequest;
 import com.logicerror.e_learning.requests.course.video.UpdateVideoRequest;
 import com.logicerror.e_learning.services.FileManagementService;
+import com.logicerror.e_learning.services.course.CourseService;
+import com.logicerror.e_learning.services.section.SectionService;
+import com.logicerror.e_learning.services.user.IUserService;
 import com.logicerror.e_learning.services.video.fields.VideoFieldsUpdateService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +40,9 @@ import java.io.*;
 public class VideoService implements IVideoService {
     private final VideoRepository videoRepository;
     private final SectionRepository sectionRepository;
+    private final SectionService sectionService;
+    private final CourseService courseService;
+    private final IUserService userService;
     private final TeacherCoursesRepository teacherCoursesRepository;
     private final VideoFieldsUpdateService videoFieldsUpdateService;
     private final FileManagementService fileManagementService;
@@ -68,9 +74,7 @@ public class VideoService implements IVideoService {
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public Video createVideo(CreateVideoRequest request, Long sectionId, MultipartFile videoFile) {
-        User teacher = (User) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+        User teacher = userService.getAuthenticatedUser();
 
         doTeacherAccessCheck(teacher);
         Section section = findSectionOrThrow(sectionId);
@@ -86,7 +90,12 @@ public class VideoService implements IVideoService {
         int durationInMinutes = extractDurationInMinutes(filePath);
         video.setUrl(filePath);
         video.setDuration(durationInMinutes);
-        return videoRepository.save(video);
+
+        Video savedVideo = videoRepository.save(video);
+        log.info("Video created successfully with ID: {}", savedVideo.getId());
+        sectionService.updateSectionDuration(section);
+        courseService.updateCourseDuration(savedVideo.getCourse());
+        return savedVideo;
     }
 
     private void doVideoExistsCheck(String title, Long courseId) {
@@ -133,7 +142,7 @@ public class VideoService implements IVideoService {
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public Video updateVideo(UpdateVideoRequest request, MultipartFile videoFile, Long videoId) {
         log.debug("Updating video with ID: {}", videoId);
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getAuthenticatedUser();
 
         doAccessCheck(user);
 
@@ -151,6 +160,9 @@ public class VideoService implements IVideoService {
         Video updatedVideo = videoRepository.save(video);
 
         log.info("Video updated successfully with ID: {}", updatedVideo.getId());
+
+        sectionService.updateSectionDuration(updatedVideo.getSection());
+        courseService.updateCourseDuration(updatedVideo.getCourse());
 
         return updatedVideo;
     }
@@ -176,13 +188,15 @@ public class VideoService implements IVideoService {
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public void deleteVideo(Long videoId) {
         log.debug("Deleting video with ID: {}", videoId);
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getAuthenticatedUser();
         doAccessCheck(user);
         Video video = videoRepository.findById(videoId).orElseThrow(() -> new VideoNotFoundException("Video not found with id: " + videoId));
         doOwnerCheck(user, video);
         videoRepository.delete(video);
         deleteVideoFile(video);
         log.info("Video deleted successfully with ID: {}", videoId);
+        sectionService.updateSectionDuration(video.getSection());
+        courseService.updateCourseDuration(video.getCourse());
     }
 
     @Override
