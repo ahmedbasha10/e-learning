@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -71,6 +72,22 @@ public class VideoService implements IVideoService {
     }
 
     @Override
+    public List<Video> getCourseVideos(Long courseId) {
+        log.debug("Fetching videos for course with ID: {}", courseId);
+        List<Video> videos = videoRepository.findByCourseId(courseId);
+        log.info("Found {} videos for course with ID: {}", videos.size(), courseId);
+        return videos;
+    }
+
+    @Override
+    public int countVideosInCourse(Long courseId) {
+        log.debug("Counting videos in course with ID: {}", courseId);
+        int count = videoRepository.countByCourseId(courseId);
+        log.info("Counted {} videos in course with ID: {}", count, courseId);
+        return count;
+    }
+
+    @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public Video createVideo(CreateVideoRequest request, Long sectionId, MultipartFile videoFile) {
@@ -87,9 +104,9 @@ public class VideoService implements IVideoService {
         }
         String directory = buildFilePath(teacher, video, videoFile);
         String filePath = storeFile(videoFile, directory);
-        int durationInMinutes = extractDurationInMinutes(filePath);
+        int durationInSeconds = extractDurationInSeconds(filePath);
         video.setUrl(filePath);
-        video.setDuration(durationInMinutes);
+        video.setDuration(durationInSeconds);
 
         Video savedVideo = videoRepository.save(video);
         log.info("Video created successfully with ID: {}", savedVideo.getId());
@@ -167,13 +184,24 @@ public class VideoService implements IVideoService {
         return updatedVideo;
     }
 
+    @Override
+    public VideoDto markVideoAsCompleted(Long videoId) {
+    log.debug("Marking video as completed with ID: {}", videoId);
+        User user = userService.getAuthenticatedUser();
+        doAccessCheck(user);
+        Video video = videoRepository.findById(videoId)
+                .orElseThrow(() -> new VideoNotFoundException("Video not found with id: " + videoId));
+        doOwnerCheck(user, video);
+        return null;
+    }
+
     private void updateVideoContent(Video video, MultipartFile videoFile) {
         deleteVideoFile(video);
         String directory = buildFilePath((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
                                          video,
                                          videoFile);
         String filePath = storeFile(videoFile, directory);
-        int durationInMinutes = extractDurationInMinutes(filePath);
+        int durationInMinutes = extractDurationInSeconds(filePath);
         video.setUrl(filePath);
         video.setDuration(durationInMinutes);
     }
@@ -226,12 +254,11 @@ public class VideoService implements IVideoService {
         }
     }
 
-    private int extractDurationInMinutes(String filePath){
+    private int extractDurationInSeconds(String filePath){
         try (IsoFile isoFile = new IsoFile(new File(filePath))){
-            int durationInSeconds = (int) Math.ceil(
+            return (int) Math.ceil(
                     (double) isoFile.getMovieBox().getMovieHeaderBox().getDuration() /
                     isoFile.getMovieBox().getMovieHeaderBox().getTimescale());
-            return durationInSeconds / 60;
         } catch (IOException e) {
             log.error("Error extracting video duration from file: {}", filePath, e);
             throw new RuntimeException("Failed to extract video duration", e);

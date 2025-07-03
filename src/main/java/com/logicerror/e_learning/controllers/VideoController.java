@@ -66,6 +66,12 @@ public class VideoController {
         return ResponseEntity.ok(new ApiResponse<>("Video updated successfully", videoDto));
     }
 
+    @PatchMapping("/{videoId}/complete")
+    public ResponseEntity<ApiResponse<VideoDto>> markVideoAsCompleted(@PathVariable Long videoId) {
+        VideoDto videoDto = videoService.markVideoAsCompleted(videoId);
+        return ResponseEntity.ok(new ApiResponse<>("Video marked as completed", videoDto));
+    }
+
     // Delete
     @DeleteMapping("/{videoId}")
     public ResponseEntity<ApiResponse<Void>> deleteVideo(@PathVariable Long videoId) {

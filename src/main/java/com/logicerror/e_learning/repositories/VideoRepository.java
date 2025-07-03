@@ -17,4 +17,8 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
     List<Video> findAllBySectionId(Long sectionId);
 
     boolean existsByTitleAndCourseId(String title, Long courseId);
+
+    int countByCourseId(Long courseId);
+
+    List<Video> findByCourseId(Long courseId);
 }

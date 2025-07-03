@@ -31,17 +31,24 @@ public class UserEnrollment {
     private User user;
 
     @Column(name = "status", nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private EnrollmentStatus status;
 
     @Column(name = "progress", nullable = false)
     private int progress;
+
+    @Column(name = "completed_videos", nullable = false)
+    private int completedVideos;
+
+    @Column(name = "total_videos", nullable = false)
+    private int totalVideos;
 
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
     @PrePersist
     private void onCreate() {
-        this.status = "ENROLLED";
+        this.status = EnrollmentStatus.ENROLLED;
         this.progress = 0;
         this.date = LocalDate.now();
     }
@@ -70,11 +77,11 @@ public class UserEnrollment {
         this.user = user;
     }
 
-    public String getStatus() {
+    public EnrollmentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(EnrollmentStatus status) {
         this.status = status;
     }
 
@@ -92,5 +99,21 @@ public class UserEnrollment {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public int getCompletedVideos() {
+        return completedVideos;
+    }
+
+    public void setCompletedVideos(int completedVideos) {
+        this.completedVideos = completedVideos;
+    }
+
+    public int getTotalVideos() {
+        return totalVideos;
+    }
+
+    public void setTotalVideos(int totalVideos) {
+        this.totalVideos = totalVideos;
     }
 }

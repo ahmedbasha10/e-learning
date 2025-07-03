@@ -6,7 +6,7 @@ public class VideoDto {
     private int duration;
     private String url;
 
-    public VideoDto(Long id, String title, int duration, String url) {
+    public VideoDto(Long id, String title, int duration, String url, boolean completed) {
         this.id = id;
         this.title = title;
         this.duration = duration;
