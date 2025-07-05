@@ -24,6 +24,8 @@ public class DeleteValidationHandler extends BaseCourseDeleteHandler{
                     .stream()
                     .map(teacherCourse -> teacherCourse.getUser().getId())
                     .forEach(context::addTeacherId);
+        } else {
+            context.addTeacherId(context.getUser().getId());
         }
         logger.debug("Course validation successful");
     }
