@@ -4,6 +4,7 @@ public class UserDto {
     private Long id;
     private String username;
     private String email;
+    private RoleDto role;
     private String firstName;
     private String lastName;
     private String country;
@@ -35,6 +36,14 @@ public class UserDto {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public RoleDto getRole() {
+        return role;
+    }
+
+    public void setRole(RoleDto role) {
+        this.role = role;
     }
 
     public String getEmail() {
