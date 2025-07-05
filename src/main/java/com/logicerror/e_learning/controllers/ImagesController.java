@@ -19,12 +19,14 @@ public class ImagesController {
     private final FileManagementService fileManagementService;
     private final StorageProperties storageProperties;
 
-    @GetMapping("/courses/{fileName}")
-    public ResponseEntity<Resource> getCourseImage(@PathVariable String fileName) {
-        Path filePath = Path.of(storageProperties.getImagePath(), "courses", fileName);
+    @GetMapping("/courses/{title}/{fileName}")
+    public ResponseEntity<Resource> getCourseImage(@PathVariable String title, @PathVariable String fileName) {
+        Path filePath = Path.of(storageProperties.getImagePath(), "courses", title, fileName);
         Resource resource = fileManagementService.loadFileAsResource(filePath.toString());
         return ResponseEntity.ok()
                 .header("Content-Disposition", "inline; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
+
+
 }

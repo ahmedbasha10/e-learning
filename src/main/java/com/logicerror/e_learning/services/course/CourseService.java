@@ -5,6 +5,7 @@ import com.logicerror.e_learning.dto.SectionDto;
 import com.logicerror.e_learning.dto.UserDto;
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.entities.course.Section;
+import com.logicerror.e_learning.entities.teacher.TeacherCourses;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.course.CourseNotFoundException;
 import com.logicerror.e_learning.mappers.CourseMapper;
@@ -34,6 +35,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.List;
@@ -138,6 +140,23 @@ public class CourseService implements ICourseService {
     }
 
     @Override
+    @PreAuthorize("hasRole('TEACHER')")
+    public Page<Course> getCoursesByAuthenticatedTeacher(Pageable pageable) {
+        User user = userService.getAuthenticatedUser();
+        Assert.notNull(user, "Authenticated user must not be null");
+        if(!user.isTeacher()) {
+            logger.error("User {} is not a teacher", user.getUsername());
+            throw new AccessDeniedException("User is not a teacher");
+        }
+        logger.debug("Fetching courses for authenticated teacher: {}, page: {}", user.getUsername(), pageable.getPageNumber());
+//        Page<TeacherCourses> teacherCourses = teacherCoursesRepository.findByTeacherId(user.getId(), pageable);
+
+        Page<Course> courses = teacherCoursesRepository.findTeacherCoursesByTeacherId(user.getId(), pageable);
+
+        return courses;
+    }
+
+    @Override
     public Page<Section> getCourseSections(Long courseId, Pageable pageable) {
         Assert.notNull(courseId, "Course ID must not be null");
         Assert.notNull(pageable, "Pageable must not be null");
@@ -158,7 +177,8 @@ public class CourseService implements ICourseService {
     public void addServerHostToCourseResources(CourseDto course){
         String filePath = baseHost + File.separator + course.getImageUrl();
         course.setImageUrl(filePath.replace("\\", "/"));
-        course.getSections().forEach(this::addServerHostToVideoUrl);
+        if(course.getSections() != null)
+            course.getSections().forEach(this::addServerHostToVideoUrl);
     }
 
     private void addServerHostToVideoUrl(SectionDto section) {
@@ -172,10 +192,10 @@ public class CourseService implements ICourseService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public Course createCourse(CreateCourseRequest request) throws AccessDeniedException {
+    public Course createCourse(CreateCourseRequest request, MultipartFile thumbnail) throws AccessDeniedException {
         User user = userService.getAuthenticatedUser();
         OperationHandler<CourseCreationContext> courseOperationHandler = courseOperationChainBuilder.build();
-        CourseCreationContext context = new CourseCreationContext(request, user);
+        CourseCreationContext context = new CourseCreationContext(request, thumbnail, user);
         courseOperationHandler.handle(context);
         return context.getCourse();
     }

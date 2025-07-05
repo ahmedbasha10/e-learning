@@ -13,8 +13,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.AccessDeniedException;
 
@@ -87,14 +89,25 @@ public class CourseController {
         return ResponseEntity.ok(new ApiResponse<>("Sections fetched successfully", sectionDtoPage));
     }
 
-    // create course
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse<CourseDto>> createCourse(@RequestBody @Valid CreateCourseRequest createCourseRequest) {
-        // Create course
-        Course createdCourse = courseService.createCourse(createCourseRequest);
+    @GetMapping("/teacher")
+    public ResponseEntity<ApiResponse<Page<CourseDto>>> getCoursesByTeacher(Pageable pageable) {
+        // Fetch courses by authenticated teacher
+        Page<Course> coursePage = courseService.getCoursesByAuthenticatedTeacher(pageable);
         // Convert to DTO
-        CourseDto courseDto = courseService.convertToDto(createdCourse);
+        Page<CourseDto> courseDtoPage = coursePage.map(courseService::convertToDto);
         // Return response
+        return ResponseEntity.ok(new ApiResponse<>("Courses fetched successfully", courseDtoPage));
+    }
+
+    // create course
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<CourseDto>> createCourse(@RequestPart("course") @Valid CreateCourseRequest createCourseRequest,
+                                                               @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail) {
+        // Create course
+        Course createdCourse = courseService.createCourse(createCourseRequest, thumbnail);
+//        // Convert to DTO
+        CourseDto courseDto = courseService.convertToDto(createdCourse);
+//        // Return response
         return ResponseEntity.status(201).body(new ApiResponse<>("Course created successfully", courseDto));
     }
 
