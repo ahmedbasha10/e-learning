@@ -5,6 +5,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -15,8 +16,10 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class FileManagementService {
     private final Path rootLocation;
+    private final StorageProperties storageProperties;
 
     public FileManagementService(StorageProperties storageProperties) {
+        this.storageProperties = storageProperties;
         this.rootLocation = Path.of(storageProperties.getBasePath());
     }
 
@@ -67,5 +70,9 @@ public class FileManagementService {
         } catch (IOException e) {
             throw new RuntimeException("Failed to delete file: " + url, e);
         }
+    }
+
+    public String getCourseImagesPath() {
+        return storageProperties.getImagePath() + File.separator + storageProperties.getCoursesPath();
     }
 }

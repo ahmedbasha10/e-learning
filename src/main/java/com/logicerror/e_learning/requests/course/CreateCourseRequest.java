@@ -1,15 +1,10 @@
 package com.logicerror.e_learning.requests.course;
 
-import com.logicerror.e_learning.requests.course.section.CreateSectionRequest;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import java.util.List;
 
 @AllArgsConstructor
-@Data
 public class CreateCourseRequest {
     @NotNull(message = "Title is required")
     @Size(min = 2, max = 100, message = "Title must be between 2 and 100 characters")
@@ -28,7 +23,6 @@ public class CreateCourseRequest {
     @NotNull(message = "Course Price is required")
     private Integer price;
 
-    private List<CreateSectionRequest> sections;
 
     public String getTitle() {
         return title;
@@ -70,11 +64,4 @@ public class CreateCourseRequest {
         this.price = price;
     }
 
-    public List<CreateSectionRequest> getSections() {
-        return sections;
-    }
-
-    public void setSections(List<CreateSectionRequest> sections) {
-        this.sections = sections;
-    }
 }
