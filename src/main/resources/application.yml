@@ -23,6 +23,9 @@ logging:
   pattern:
     console: ${LOGPATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}
 
+app:
+  course:
+    default-thumbnail: storage/images/courses/default.png
 
 api:
   base-path: /api/v1
