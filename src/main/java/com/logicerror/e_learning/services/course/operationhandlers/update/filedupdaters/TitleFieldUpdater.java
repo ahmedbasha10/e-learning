@@ -1,4 +1,4 @@
-package com.logicerror.e_learning.services.course;
+package com.logicerror.e_learning.services.course.operationhandlers.update.filedupdaters;
 
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.exceptions.course.CourseTitleAlreadyExistsException;
