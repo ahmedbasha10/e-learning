@@ -3,6 +3,7 @@ package com.logicerror.e_learning.services.course;
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
 import com.logicerror.e_learning.services.Updater;
+import com.logicerror.e_learning.services.course.operationhandlers.update.filedupdaters.CourseFieldUpdater;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
