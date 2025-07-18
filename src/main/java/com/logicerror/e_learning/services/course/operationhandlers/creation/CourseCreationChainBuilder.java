@@ -1,7 +1,7 @@
 package com.logicerror.e_learning.services.course.operationhandlers.creation;
 
 import com.logicerror.e_learning.services.OperationHandler;
-import com.logicerror.e_learning.services.course.operationhandlers.AbstractChainBuilder;
+import com.logicerror.e_learning.services.AbstractOperationHandlerChainBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class CourseCreationChainBuilder extends AbstractChainBuilder<CourseCreationContext> {
+public class CourseCreationChainBuilder extends AbstractOperationHandlerChainBuilder<CourseCreationContext> {
     private final TeacherCourseAssociationHandler teacherCourseAssociationHandler;
     private final CourseCreationHandler courseCreationHandler;
     private final ValidationHandler validationHandler;

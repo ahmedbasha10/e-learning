@@ -17,13 +17,13 @@ public class SectionCreationValidationHandler extends BaseSectionCreationHandler
         log.debug("Validating section creation request");
 
         if(sectionRepository.existsByCourseIdAndTitle(context.getCourseId(), context.getRequest().getTitle())) {
-            log.error("Section with the same title already exists");
-            throw new SectionAlreadyExistsException("Section with the same title already exists");
+            log.error("Section with title {} already exists" , context.getRequest().getTitle());
+            throw new SectionAlreadyExistsException(String.format("Section with title %s already exists", context.getRequest().getTitle()));
         }
 
         if (sectionRepository.existsByCourseIdAndOrder(context.getCourseId(), context.getRequest().getOrder())) {
-            log.error("Section with the same order already exists");
-            throw new SectionAlreadyExistsException("Section with the same order already exists");
+            log.error("Section with order {} already exists", context.getRequest().getOrder());
+            throw new SectionAlreadyExistsException(String.format("Section with order %s already exists", context.getRequest().getOrder()));
         }
 
         log.debug("Section creation request is valid");

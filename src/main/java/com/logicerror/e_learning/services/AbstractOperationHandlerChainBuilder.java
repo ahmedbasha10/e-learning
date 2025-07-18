@@ -1,10 +1,8 @@
-package com.logicerror.e_learning.services.course.operationhandlers;
-
-import com.logicerror.e_learning.services.OperationHandler;
+package com.logicerror.e_learning.services;
 
 import java.util.List;
 
-public abstract class AbstractChainBuilder<T> {
+public abstract class AbstractOperationHandlerChainBuilder<T> {
 
     public OperationHandler<T> build() {
         List<OperationHandler<T>> operationHandlers = getOperationHandlers();

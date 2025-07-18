@@ -22,17 +22,25 @@ public class SectionCreationHandler extends BaseSectionCreationHandler {
     @Override
     protected void processRequest(SectionCreationContext context) {
         log.debug("Creating new section with title: {}", context.getRequest().getTitle());
+        Section savedSection = createSection(context);
+        checkSectionCreationStatus(savedSection);
+        context.setCreatedSection(savedSection);
+        log.info("Successfully created section with ID: {}", savedSection.getId());
+    }
+
+    private Section createSection(SectionCreationContext context) {
         CreateSectionRequest request = context.getRequest();
         Section section = sectionMapper.createSectionRequestToSection(request);
         Course course = courseService.getCourseById(context.getCourseId());
         section.setCourse(course);
         section.setDuration(0);
-        Section savedSection = sectionRepository.save(section);
-        context.setCreatedSection(savedSection);
+        return sectionRepository.save(section);
+    }
+
+    private void checkSectionCreationStatus(Section savedSection) {
         if (savedSection.getId() == null) {
             log.error("Section creation failed: could not generate ID");
             throw new SectionCreationFailedException("Failed to create section");
         }
-        log.info("Successfully created section with ID: {}", savedSection.getId());
     }
 }

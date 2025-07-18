@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 @Service
@@ -68,6 +69,7 @@ public class SectionService implements ISectionService{
 
     @Override
     @PreAuthorize("hasRole('TEACHER')")
+    @Transactional
     public Section createSection(CreateSectionRequest createSectionRequest, Long courseId) {
         log.debug("Creating section with title: {} for course ID: {}", createSectionRequest.getTitle(), courseId);
         User user = userService.getAuthenticatedUser();
@@ -80,6 +82,7 @@ public class SectionService implements ISectionService{
 
     @Override
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    @Transactional
     public Section updateSection(UpdateSectionRequest updateSectionRequest, Long sectionId) {
         log.debug("Creating section with title: {} for course ID: {}", updateSectionRequest.getTitle(), sectionId);
         User user = userService.getAuthenticatedUser();
@@ -91,6 +94,7 @@ public class SectionService implements ISectionService{
     }
 
     @Override
+    @Transactional
     public void updateSectionDuration(Section section) {
         Assert.notNull(section, "Section must not be null");
         log.debug("Updating duration for section with ID: {}", section.getId());
@@ -105,6 +109,7 @@ public class SectionService implements ISectionService{
 
     @Override
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    @Transactional
     public void deleteSection(Long sectionId) {
         log.debug("Deleting section with ID: {}", sectionId);
         User user = userService.getAuthenticatedUser();

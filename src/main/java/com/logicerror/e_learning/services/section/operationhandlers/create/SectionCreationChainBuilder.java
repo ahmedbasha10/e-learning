@@ -1,21 +1,25 @@
 package com.logicerror.e_learning.services.section.operationhandlers.create;
 
+import com.logicerror.e_learning.services.AbstractOperationHandlerChainBuilder;
 import com.logicerror.e_learning.services.OperationHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Component
-public class SectionCreationChainBuilder {
+public class SectionCreationChainBuilder extends AbstractOperationHandlerChainBuilder<SectionCreationContext> {
     private final SectionCreationAuthorizationHandler authorizationHandler;
     private final SectionCreationValidationHandler validationHandler;
     private final SectionCreationHandler sectionCreationHandler;
 
-    public OperationHandler<SectionCreationContext> build() {
-        authorizationHandler
-                .setNextHandler(validationHandler)
-                .setNextHandler(sectionCreationHandler);
-
-        return authorizationHandler;
+    @Override
+    protected List<OperationHandler<SectionCreationContext>> getOperationHandlers() {
+        return List.of(
+                authorizationHandler,
+                validationHandler,
+                sectionCreationHandler
+        );
     }
 }
