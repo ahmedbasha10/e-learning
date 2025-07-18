@@ -5,7 +5,6 @@ import com.logicerror.e_learning.dto.SectionDto;
 import com.logicerror.e_learning.dto.UserDto;
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.entities.course.Section;
-import com.logicerror.e_learning.entities.teacher.TeacherCourses;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.course.CourseNotFoundException;
 import com.logicerror.e_learning.mappers.CourseMapper;
@@ -53,7 +52,7 @@ public class CourseService implements ICourseService {
     private final UserEnrollmentsRepository userEnrollmentsRepository;
     private final UserMapper userMapper;
     private final CourseMapper courseMapper;
-    private final CourseCreationChainBuilder courseOperationChainBuilder; // <CreateCourseRequest>
+    private final CourseCreationChainBuilder courseCreationChainBuilder; // <CreateCourseRequest>
     private final CourseUpdateChainBuilder courseUpdateChainBuilder; // <UpdateCourseRequest>
     private final CourseDeleteChainBuilder courseDeleteChainBuilder; // <DeleteCourseRequest>
     @Value("${api.base-host}")
@@ -149,11 +148,8 @@ public class CourseService implements ICourseService {
             throw new AccessDeniedException("User is not a teacher");
         }
         logger.debug("Fetching courses for authenticated teacher: {}, page: {}", user.getUsername(), pageable.getPageNumber());
-//        Page<TeacherCourses> teacherCourses = teacherCoursesRepository.findByTeacherId(user.getId(), pageable);
 
-        Page<Course> courses = teacherCoursesRepository.findTeacherCoursesByTeacherId(user.getId(), pageable);
-
-        return courses;
+        return teacherCoursesRepository.findTeacherCoursesByTeacherId(user.getId(), pageable);
     }
 
     @Override
@@ -194,7 +190,7 @@ public class CourseService implements ICourseService {
     @PreAuthorize("hasRole('TEACHER')")
     public Course createCourse(CreateCourseRequest request, MultipartFile thumbnail) throws AccessDeniedException {
         User user = userService.getAuthenticatedUser();
-        OperationHandler<CourseCreationContext> courseOperationHandler = courseOperationChainBuilder.build();
+        OperationHandler<CourseCreationContext> courseOperationHandler = courseCreationChainBuilder.build();
         CourseCreationContext context = new CourseCreationContext(request, thumbnail, user);
         courseOperationHandler.handle(context);
         return context.getCourse();
@@ -213,6 +209,7 @@ public class CourseService implements ICourseService {
     }
 
     @Override
+    @Transactional
     public void updateCourseDuration(Course course) {
         Assert.notNull(course, "Course must not be null");
         logger.debug("Updating duration for course with ID: {}", course.getId());
