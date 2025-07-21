@@ -25,7 +25,7 @@ public interface ICourseService {
     Course createCourse(CreateCourseRequest createCourseRequest, MultipartFile thumbnail);
 
     Course updateCourse(Long courseId, UpdateCourseRequest Course);
-    void updateCourseDuration(Course course);
+    void updateCourseDuration(Long courseId);
 
     void deleteCourse(Long courseId);
 
