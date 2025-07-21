@@ -18,9 +18,8 @@ public abstract class BaseCourseDeleteHandler implements OperationHandler<Course
     }
 
     @Override
-    public OperationHandler<CourseDeleteContext> setNextHandler(OperationHandler<CourseDeleteContext> nextHandler) {
+    public void setNextHandler(OperationHandler<CourseDeleteContext> nextHandler) {
         this.nextHandler = nextHandler;
-        return nextHandler;
     }
 
     protected abstract void processRequest(CourseDeleteContext context);

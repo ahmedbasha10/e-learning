@@ -19,9 +19,8 @@ public abstract class BaseCourseUpdateHandler implements OperationHandler<Course
     }
 
     @Override
-    public OperationHandler<CourseUpdateContext> setNextHandler(OperationHandler<CourseUpdateContext> nextHandler) {
+    public void setNextHandler(OperationHandler<CourseUpdateContext> nextHandler) {
         this.nextHandler = nextHandler;
-        return nextHandler;
     }
 
     protected abstract void processRequest(CourseUpdateContext context);

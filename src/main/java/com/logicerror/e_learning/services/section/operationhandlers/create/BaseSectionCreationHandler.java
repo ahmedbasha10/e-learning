@@ -15,8 +15,8 @@ public abstract class BaseSectionCreationHandler implements OperationHandler<Sec
     }
 
     @Override
-    public OperationHandler<SectionCreationContext> setNextHandler(OperationHandler<SectionCreationContext> nextHandler) {
-        return this.nextHandler = nextHandler;
+    public void setNextHandler(OperationHandler<SectionCreationContext> nextHandler) {
+        this.nextHandler = nextHandler;
     }
 
     protected abstract void processRequest(SectionCreationContext sectionCreationContext);

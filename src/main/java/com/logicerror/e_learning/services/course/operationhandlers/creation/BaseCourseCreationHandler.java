@@ -10,9 +10,8 @@ public abstract class BaseCourseCreationHandler implements OperationHandler<Cour
     protected final Logger logger = LoggerFactory.getLogger(getClass());
     
     @Override
-    public OperationHandler<CourseCreationContext> setNextHandler(OperationHandler<CourseCreationContext> nextHandler) {
+    public void setNextHandler(OperationHandler<CourseCreationContext> nextHandler) {
         this.nextHandler = nextHandler;
-        return nextHandler;
     }
 
     @Override
