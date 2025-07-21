@@ -210,10 +210,11 @@ public class CourseService implements ICourseService {
 
     @Override
     @Transactional
-    public void updateCourseDuration(Course course) {
-        Assert.notNull(course, "Course must not be null");
-        logger.debug("Updating duration for course with ID: {}", course.getId());
-        Long totalDuration = sectionRepository.findAllByCourseId(course.getId())
+    public void updateCourseDuration(Long courseId) {
+        Assert.notNull(courseId, "Course must not be null");
+        logger.debug("Updating duration for course with ID: {}", courseId);
+        Course course = getCourseById(courseId);
+        Long totalDuration = sectionRepository.findAllByCourseId(courseId)
                 .stream()
                 .mapToLong(Section::getDuration)
                 .sum();

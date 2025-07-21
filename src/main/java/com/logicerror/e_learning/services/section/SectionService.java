@@ -95,10 +95,11 @@ public class SectionService implements ISectionService{
 
     @Override
     @Transactional
-    public void updateSectionDuration(Section section) {
-        Assert.notNull(section, "Section must not be null");
-        log.debug("Updating duration for section with ID: {}", section.getId());
-        Long totalDuration = videoRepository.findAllBySectionId(section.getId())
+    public void updateSectionDuration(Long sectionId) {
+        Assert.notNull(sectionId, "Section must not be null");
+        log.debug("Updating duration for section with ID: {}", sectionId);
+        Section section = getSectionById(sectionId);
+        Long totalDuration = videoRepository.findAllBySectionId(sectionId)
                 .stream()
                 .mapToLong(Video::getDuration)
                 .sum();
