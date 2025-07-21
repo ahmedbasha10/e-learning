@@ -7,21 +7,21 @@ import com.logicerror.e_learning.entities.course.Section;
 import com.logicerror.e_learning.entities.course.Video;
 import com.logicerror.e_learning.entities.teacher.TeacherCoursesKey;
 import com.logicerror.e_learning.entities.user.User;
-import com.logicerror.e_learning.exceptions.section.SectionNotFoundException;
 import com.logicerror.e_learning.exceptions.video.VideoCreationFailedException;
 import com.logicerror.e_learning.exceptions.video.VideoNotFoundException;
-import com.logicerror.e_learning.exceptions.video.VideoTitleAlreadyExistsException;
 import com.logicerror.e_learning.mappers.VideoMapper;
-import com.logicerror.e_learning.repositories.SectionRepository;
 import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
 import com.logicerror.e_learning.repositories.VideoRepository;
 import com.logicerror.e_learning.requests.course.video.CreateVideoRequest;
 import com.logicerror.e_learning.requests.course.video.UpdateVideoRequest;
 import com.logicerror.e_learning.services.FileManagementService;
+import com.logicerror.e_learning.services.OperationHandler;
 import com.logicerror.e_learning.services.course.CourseService;
 import com.logicerror.e_learning.services.section.SectionService;
 import com.logicerror.e_learning.services.user.IUserService;
 import com.logicerror.e_learning.services.video.fields.VideoFieldsUpdateService;
+import com.logicerror.e_learning.services.video.models.VideoCreationChainBuilder;
+import com.logicerror.e_learning.services.video.operationhandlers.create.VideoCreationContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @Service
@@ -40,7 +42,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VideoService implements IVideoService {
     private final VideoRepository videoRepository;
-    private final SectionRepository sectionRepository;
     private final SectionService sectionService;
     private final CourseService courseService;
     private final IUserService userService;
@@ -49,6 +50,7 @@ public class VideoService implements IVideoService {
     private final FileManagementService fileManagementService;
     private final StorageProperties storageProperties;
     private final VideoMapper videoMapper;
+    private final VideoCreationChainBuilder videoCreationChainBuilder;
 
     @Override
     public Video getVideoById(Long id) {
@@ -90,41 +92,22 @@ public class VideoService implements IVideoService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
-    public Video createVideo(CreateVideoRequest request, Long sectionId, MultipartFile videoFile) {
+    public Video createVideo(CreateVideoRequest request, Long courseId, Long sectionId, MultipartFile videoFile) {
         User teacher = userService.getAuthenticatedUser();
-
-        doTeacherAccessCheck(teacher);
-        Section section = findSectionOrThrow(sectionId);
-        doVideoExistsCheck(request.getTitle(), section.getCourse().getId());
-
-        Video video = videoMapper.createVideoRequestToVideo(request, section, section.getCourse());
-        video = videoRepository.save(video);
-        if (video.getId() == null) {
-            throw new VideoCreationFailedException("Failed to create video.");
-        }
-        String directory = buildFilePath(teacher, video, videoFile);
-        String filePath = storeFile(videoFile, directory);
-        int durationInSeconds = extractDurationInSeconds(filePath);
-        video.setUrl(filePath);
-        video.setDuration(durationInSeconds);
-
-        Video savedVideo = videoRepository.save(video);
-        log.info("Video created successfully with ID: {}", savedVideo.getId());
-        sectionService.updateSectionDuration(section);
-        courseService.updateCourseDuration(savedVideo.getCourse());
-        return savedVideo;
+        VideoCreationContext context = VideoCreationContext.builder()
+                .user(teacher)
+                .request(request)
+                .courseId(courseId)
+                .sectionId(sectionId)
+                .videoFile(videoFile)
+                .build();
+        OperationHandler<VideoCreationContext> createOperationHandler = videoCreationChainBuilder.build();
+        createOperationHandler.handle(context);
+        Video video = context.getVideo();
+        log.info("Video created successfully with ID: {}", video.getId());
+        return video;
     }
 
-    private void doVideoExistsCheck(String title, Long courseId) {
-        if(videoRepository.existsByTitleAndCourseId(title, courseId)) {
-            throw new VideoTitleAlreadyExistsException("Video with title '" + title + "' already exists in course with ID: " + courseId);
-        }
-    }
-
-    private Section findSectionOrThrow(Long sectionId) {
-        return sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new SectionNotFoundException("Section not found with id: " + sectionId));
-    }
 
     private String buildFilePath(User teacher, Video video, MultipartFile videoFile) {
         Section videoSection = video.getSection();
@@ -178,8 +161,8 @@ public class VideoService implements IVideoService {
 
         log.info("Video updated successfully with ID: {}", updatedVideo.getId());
 
-        sectionService.updateSectionDuration(updatedVideo.getSection());
-        courseService.updateCourseDuration(updatedVideo.getCourse());
+        sectionService.updateSectionDuration(updatedVideo.getSection().getId());
+        courseService.updateCourseDuration(updatedVideo.getCourse().getId());
 
         return updatedVideo;
     }
@@ -223,8 +206,8 @@ public class VideoService implements IVideoService {
         videoRepository.delete(video);
         deleteVideoFile(video);
         log.info("Video deleted successfully with ID: {}", videoId);
-        sectionService.updateSectionDuration(video.getSection());
-        courseService.updateCourseDuration(video.getCourse());
+        sectionService.updateSectionDuration(video.getSection().getId());
+        courseService.updateCourseDuration(video.getCourse().getId());
     }
 
     @Override
