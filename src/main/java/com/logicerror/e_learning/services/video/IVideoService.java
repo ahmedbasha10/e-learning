@@ -16,7 +16,7 @@ public interface IVideoService {
     List<Video> getCourseVideos(Long courseId);
     int countVideosInCourse(Long courseId);
     // Post
-    Video createVideo(CreateVideoRequest request, Long sectionId, MultipartFile videoFile);
+    Video createVideo(CreateVideoRequest request, Long courseId ,Long sectionId, MultipartFile videoFile);
 
     // Patch
     Video updateVideo(UpdateVideoRequest request, MultipartFile videoFile, Long videoId);

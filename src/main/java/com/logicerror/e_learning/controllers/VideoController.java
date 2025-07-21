@@ -49,8 +49,9 @@ public class VideoController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<VideoDto>> createVideo(@Valid @RequestPart("details") CreateVideoRequest request,
                                                              @RequestPart("videoFile") MultipartFile videoFile,
+                                                             @RequestParam Long courseId,
                                                              @RequestParam Long sectionId) {
-        VideoDto videoDto = videoService.convertToDto(videoService.createVideo(request, sectionId, videoFile));
+        VideoDto videoDto = videoService.convertToDto(videoService.createVideo(request, courseId, sectionId, videoFile));
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ApiResponse<>("Video created successfully", videoDto));
