@@ -75,4 +75,8 @@ public class FileManagementService {
     public String getCourseImagesPath() {
         return storageProperties.getImagePath() + File.separator + storageProperties.getCoursesPath();
     }
+
+    public String getCourseVideosPath() {
+        return storageProperties.getVideoPath() + File.separator + storageProperties.getCoursesPath();
+    }
 }
