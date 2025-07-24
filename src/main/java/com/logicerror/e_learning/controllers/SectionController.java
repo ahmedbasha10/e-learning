@@ -5,6 +5,7 @@ import com.logicerror.e_learning.dto.SectionDto;
 import com.logicerror.e_learning.dto.VideoDto;
 import com.logicerror.e_learning.entities.course.Section;
 import com.logicerror.e_learning.entities.course.Video;
+import com.logicerror.e_learning.requests.course.section.BatchCreateSectionRequest;
 import com.logicerror.e_learning.requests.course.section.CreateSectionRequest;
 import com.logicerror.e_learning.requests.course.section.UpdateSectionRequest;
 import com.logicerror.e_learning.services.section.ISectionService;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("${api.base-path}/sections")
@@ -63,6 +66,15 @@ public class SectionController {
         SectionDto sectionDto = sectionService.convertToDto(section);
 
         return ResponseEntity.ok(new ApiResponse<>("Section created successfully", sectionDto));
+    }
+
+    @PostMapping("/course/{courseId}/batch")
+    public ResponseEntity<ApiResponse<List<SectionDto>>> batchCreateSections(@RequestBody @Valid BatchCreateSectionRequest batchCreateSectionRequest, @PathVariable Long courseId) {
+        List<Section> createdSections = sectionService.batchCreateSections(batchCreateSectionRequest, courseId);
+        List<SectionDto> createdSectionsDto = createdSections.stream()
+                .map(sectionService::convertToDto)
+                .toList();
+        return ResponseEntity.ok(new ApiResponse<>("Sections created successfully", createdSectionsDto));
     }
 
     // Patch methods
