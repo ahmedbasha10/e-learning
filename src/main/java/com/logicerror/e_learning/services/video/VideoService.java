@@ -12,6 +12,7 @@ import com.logicerror.e_learning.exceptions.video.VideoNotFoundException;
 import com.logicerror.e_learning.mappers.VideoMapper;
 import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
 import com.logicerror.e_learning.repositories.VideoRepository;
+import com.logicerror.e_learning.requests.course.video.BatchCreateVideoRequest;
 import com.logicerror.e_learning.requests.course.video.CreateVideoRequest;
 import com.logicerror.e_learning.requests.course.video.UpdateVideoRequest;
 import com.logicerror.e_learning.services.FileManagementService;
@@ -35,7 +36,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -94,20 +97,53 @@ public class VideoService implements IVideoService {
     @PreAuthorize("hasRole('TEACHER')")
     public Video createVideo(CreateVideoRequest request, Long courseId, Long sectionId, MultipartFile videoFile) {
         User teacher = userService.getAuthenticatedUser();
-        VideoCreationContext context = VideoCreationContext.builder()
+        OperationHandler<VideoCreationContext> createOperationHandler = videoCreationChainBuilder.build();
+        VideoCreationContext context = createVideoRequestContext(request, courseId, sectionId, videoFile, teacher);
+        Video video = createVideoProcess(createOperationHandler, context);
+        log.info("Video created successfully with ID: {}", video.getId());
+        return video;
+    }
+
+    private Video createVideoProcess(OperationHandler<VideoCreationContext> createOperationHandler, VideoCreationContext context) {
+        createOperationHandler.handle(context);
+        return context.getVideo();
+    }
+
+    private static VideoCreationContext createVideoRequestContext(CreateVideoRequest request, Long courseId, Long sectionId, MultipartFile videoFile, User teacher) {
+        return VideoCreationContext.builder()
                 .user(teacher)
                 .request(request)
                 .courseId(courseId)
                 .sectionId(sectionId)
                 .videoFile(videoFile)
                 .build();
-        OperationHandler<VideoCreationContext> createOperationHandler = videoCreationChainBuilder.build();
-        createOperationHandler.handle(context);
-        Video video = context.getVideo();
-        log.info("Video created successfully with ID: {}", video.getId());
-        return video;
     }
 
+    @Override
+    public List<Video> batchCreateVideos(BatchCreateVideoRequest request, Long courseId, Long sectionId, Map<String, MultipartFile> fileMap) {
+        User teacher = userService.getAuthenticatedUser();
+        checkAllFilesPresent(fileMap, request.getCreateVideoRequests());
+        List<Video> createdVideos = new ArrayList<>();
+        OperationHandler<VideoCreationContext> createOperationHandler = videoCreationChainBuilder.build();
+        for(CreateVideoRequest createVideoRequest : request.getCreateVideoRequests()){
+            log.debug("Creating video with title: {}", createVideoRequest.getTitle());
+            VideoCreationContext context = createVideoRequestContext(createVideoRequest, courseId, sectionId,
+                    fileMap.get(createVideoRequest.getVideoFileIdentifier()), teacher);
+            Video createdVideo = createVideoProcess(createOperationHandler, context);
+            log.info("Video with title {} created successfully with ID: {}", createdVideo.getTitle() ,createdVideo.getId());
+            createdVideos.add(createdVideo);
+        }
+        return createdVideos;
+    }
+
+    private void checkAllFilesPresent(Map<String, MultipartFile> fileMap, List<CreateVideoRequest> videoRequests) {
+        for (CreateVideoRequest videoRequest : videoRequests) {
+            String videoFileIdentifier = videoRequest.getVideoFileIdentifier();
+            if (!fileMap.containsKey(videoFileIdentifier)) {
+                throw new VideoCreationFailedException("Missing video file for identifier: " + videoFileIdentifier);
+            }
+        }
+    }
 
     private String buildFilePath(User teacher, Video video, MultipartFile videoFile) {
         Section videoSection = video.getSection();

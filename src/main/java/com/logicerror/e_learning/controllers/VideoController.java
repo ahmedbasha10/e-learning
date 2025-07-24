@@ -3,6 +3,7 @@ package com.logicerror.e_learning.controllers;
 import com.logicerror.e_learning.controllers.responses.ApiResponse;
 import com.logicerror.e_learning.dto.VideoDto;
 import com.logicerror.e_learning.entities.course.Video;
+import com.logicerror.e_learning.requests.course.video.BatchCreateVideoRequest;
 import com.logicerror.e_learning.requests.course.video.CreateVideoRequest;
 import com.logicerror.e_learning.requests.course.video.UpdateVideoRequest;
 import com.logicerror.e_learning.services.video.IVideoService;
@@ -15,8 +16,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("${api.base-path}/videos")
@@ -55,6 +60,26 @@ public class VideoController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ApiResponse<>("Video created successfully", videoDto));
+    }
+
+    @PostMapping(value = "/batch", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<List<VideoDto>>> batchCreateVideos(@Valid @RequestPart("details") BatchCreateVideoRequest request,
+                                                                         @RequestParam Long courseId,
+                                                                         @RequestParam Long sectionId,
+                                                                         MultipartHttpServletRequest multipartRequest){
+        Map<String, MultipartFile> fileMap = new HashMap<>();
+        for(Map.Entry<String, MultipartFile> entry : multipartRequest.getFileMap().entrySet()){
+            if(!entry.getKey().equals("details")) {
+                fileMap.put(entry.getKey(), entry.getValue());
+            }
+        }
+        List<Video> videos = videoService.batchCreateVideos(request, courseId, sectionId, fileMap);
+        List<VideoDto> videosDto = videos.stream()
+                .map(videoService::convertToDto)
+                .toList();
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ApiResponse<>("Videos created successfully", videosDto));
     }
 
     // Patch

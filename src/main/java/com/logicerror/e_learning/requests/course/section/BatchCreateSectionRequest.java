@@ -13,7 +13,10 @@ import java.util.List;
 
 @AllArgsConstructor
 @Data
-@UniqueFields
+@UniqueFields(
+        message = "Duplicate section titles or orders are not allowed",
+        fields = {"title", "order"},
+        collectionProperty = "createSectionRequests")
 public class BatchCreateSectionRequest {
     @NotNull(message = "Section create requests cannot be null")
     @Size(min = 1, message = "At least one section request is required")
