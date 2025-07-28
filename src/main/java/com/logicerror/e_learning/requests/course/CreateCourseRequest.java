@@ -1,5 +1,8 @@
 package com.logicerror.e_learning.requests.course;
 
+import com.logicerror.e_learning.constants.CourseLevel;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -18,7 +21,8 @@ public class CreateCourseRequest {
     private String category;
 
     @NotNull(message = "Course Level is required")
-    private String level;
+    @Enumerated(EnumType.STRING)
+    private CourseLevel level;
 
     @NotNull(message = "Course Price is required")
     private Integer price;
@@ -48,11 +52,11 @@ public class CreateCourseRequest {
         this.category = category;
     }
 
-    public String getLevel() {
+    public CourseLevel getLevel() {
         return level;
     }
 
-    public void setLevel(String level) {
+    public void setLevel(CourseLevel level) {
         this.level = level;
     }
 

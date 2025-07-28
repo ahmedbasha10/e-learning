@@ -1,5 +1,6 @@
 package com.logicerror.e_learning.entities.course;
 
+import com.logicerror.e_learning.constants.CourseLevel;
 import com.logicerror.e_learning.entities.review.Review;
 import jakarta.persistence.*;
 
@@ -29,7 +30,8 @@ public class Course {
     private String category;
 
     @Column(name = "level", nullable = false)
-    private String level;
+    @Enumerated(EnumType.STRING)
+    private CourseLevel level;
 
     @Column(name = "duration", nullable = false)
     private int duration;
@@ -51,7 +53,7 @@ public class Course {
     public Course() {
     }
 
-    public Course(String title, String description, String imageUrl, String category, String level, int duration, int price) {
+    public Course(String title, String description, String imageUrl, String category, CourseLevel level, int duration, int price) {
         this.title = title;
         this.description = description;
         this.imageUrl = imageUrl;
@@ -103,11 +105,11 @@ public class Course {
         this.category = category;
     }
 
-    public String getLevel() {
+    public CourseLevel getLevel() {
         return level;
     }
 
-    public void setLevel(String level) {
+    public void setLevel(CourseLevel level) {
         this.level = level;
     }
 
