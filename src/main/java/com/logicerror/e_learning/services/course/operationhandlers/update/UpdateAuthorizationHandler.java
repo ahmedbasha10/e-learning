@@ -3,6 +3,7 @@ package com.logicerror.e_learning.services.course.operationhandlers.update;
 import com.logicerror.e_learning.entities.teacher.TeacherCoursesKey;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
+import com.logicerror.e_learning.services.authorization.CourseAuthorizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class UpdateAuthorizationHandler extends BaseCourseUpdateHandler{
-    private final TeacherCoursesRepository teacherCoursesRepository;
+    private final CourseAuthorizationService courseAuthorizationService;
 
     @Override
     protected void processRequest(CourseUpdateContext context) {
@@ -22,12 +23,7 @@ public class UpdateAuthorizationHandler extends BaseCourseUpdateHandler{
         }
 
         if(user.isTeacher()) {
-            boolean isOwner = teacherCoursesRepository.existsById(
-                    TeacherCoursesKey.builder()
-                            .courseId(context.getCourseId())
-                            .userId(user.getId())
-                            .build()
-            );
+            boolean isOwner = courseAuthorizationService.isCourseOwner(context.getCourseId(), user.getId());
 
             if (!isOwner) {
                 logger.error("User is not the owner of the course");
