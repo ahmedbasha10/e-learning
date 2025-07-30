@@ -6,6 +6,7 @@ import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.section.SectionNotFoundException;
 import com.logicerror.e_learning.repositories.SectionRepository;
 import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
+import com.logicerror.e_learning.services.authorization.CourseAuthorizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
@@ -18,7 +19,7 @@ import java.util.Optional;
 @Component
 public class SectionUpdateAuthorizationHandler extends BaseSectionUpdateHandler{
     private final SectionRepository sectionRepository;
-    private final TeacherCoursesRepository teacherCoursesRepository;
+    private final CourseAuthorizationService courseAuthorizationService;
 
     @Override
     protected void processRequest(SectionUpdateContext context) {
@@ -34,18 +35,12 @@ public class SectionUpdateAuthorizationHandler extends BaseSectionUpdateHandler{
         }
 
         if (user.isTeacher()) {
-            boolean isOwner = teacherCoursesRepository.existsById(
-                    TeacherCoursesKey.builder()
-                            .courseId(section.get().getCourse().getId())
-                            .userId(user.getId())
-                            .build()
-            );
+            boolean isOwner = courseAuthorizationService.isCourseOwner(section.get().getCourse().getId(), user.getId());
 
             if (!isOwner) {
                 throw new AccessDeniedException("User is not the owner of the course");
             }
         }
-
 
         context.setUpdatedSection(section.get());
         log.debug("User has permission to update the section with ID: {}", context.getSectionId());
