@@ -79,4 +79,25 @@ public class FileManagementService {
     public String getCourseVideosPath() {
         return storageProperties.getVideoPath() + File.separator + storageProperties.getCoursesPath();
     }
+
+    public String updateParentDirectoryTitle(String oldFilePath, String newTitle) {
+        if (oldFilePath == null || oldFilePath.isBlank() || newTitle == null || newTitle.isBlank()) {
+            throw new IllegalArgumentException("Old file path and new title must not be null or empty");
+        }
+
+        Path oldFile = Path.of(oldFilePath);
+        Path parentDirectory = oldFile.getParent();
+
+        if (parentDirectory == null) {
+            throw new RuntimeException("Parent directory not found for file: " + oldFilePath);
+        }
+
+        try {
+            Path newDirectory = parentDirectory.getParent().resolve(newTitle);
+            Files.move(parentDirectory, newDirectory, StandardCopyOption.REPLACE_EXISTING);
+            return newDirectory.resolve(oldFile.getFileName()).toString();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to update parent directory title: " + e.getMessage(), e);
+        }
+    }
 }
