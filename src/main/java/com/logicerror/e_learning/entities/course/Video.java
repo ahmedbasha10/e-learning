@@ -86,4 +86,18 @@ public class Video {
     public void setSection(Section section) {
         this.section = section;
     }
+
+    public Long fetchSectionId() {
+        if (section == null) {
+            return null;
+        }
+        return section.getId();
+    }
+
+    public Long fetchCourseId() {
+        if (course == null) {
+            return null;
+        }
+        return course.getId();
+    }
 }
