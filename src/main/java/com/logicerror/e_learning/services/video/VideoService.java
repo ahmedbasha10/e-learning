@@ -22,7 +22,9 @@ import com.logicerror.e_learning.services.section.SectionService;
 import com.logicerror.e_learning.services.user.IUserService;
 import com.logicerror.e_learning.services.video.fields.VideoFieldsUpdateService;
 import com.logicerror.e_learning.services.video.models.VideoCreationChainBuilder;
+import com.logicerror.e_learning.services.video.models.VideoUpdateChainBuilder;
 import com.logicerror.e_learning.services.video.operationhandlers.create.VideoCreationContext;
+import com.logicerror.e_learning.services.video.operationhandlers.update.VideoUpdateContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +56,7 @@ public class VideoService implements IVideoService {
     private final StorageProperties storageProperties;
     private final VideoMapper videoMapper;
     private final VideoCreationChainBuilder videoCreationChainBuilder;
+    private final VideoUpdateChainBuilder videoUpdateChainBuilder;
 
     @Override
     public Video getVideoById(Long id) {
@@ -169,10 +172,6 @@ public class VideoService implements IVideoService {
         }
     }
 
-    private static void doTeacherAccessCheck(User user) {
-        if(!user.isTeacher()) throw new AccessDeniedException("User does not have permission to create videos");
-    }
-
     @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
@@ -180,25 +179,18 @@ public class VideoService implements IVideoService {
         log.debug("Updating video with ID: {}", videoId);
         User user = userService.getAuthenticatedUser();
 
-        doAccessCheck(user);
+        VideoUpdateContext context = VideoUpdateContext.builder()
+                .user(user)
+                .request(request)
+                .videoId(videoId)
+                .videoFile(videoFile)
+                .build();
 
-        Video video = videoRepository.findById(videoId)
-                .orElseThrow(() -> new VideoNotFoundException("Video not found with id: " + videoId));
+        OperationHandler<VideoUpdateContext> updateOperationHandler = videoUpdateChainBuilder.build();
+        updateOperationHandler.handle(context);
 
-        doOwnerCheck(user, video);
-
-        videoFieldsUpdateService.update(video, request);
-
-        if(videoFile != null && !videoFile.isEmpty()) {
-            updateVideoContent(video, videoFile);
-        }
-
-        Video updatedVideo = videoRepository.save(video);
-
+        Video updatedVideo = context.getVideo();
         log.info("Video updated successfully with ID: {}", updatedVideo.getId());
-
-        sectionService.updateSectionDuration(updatedVideo.getSection().getId());
-        courseService.updateCourseDuration(updatedVideo.getCourse().getId());
 
         return updatedVideo;
     }
