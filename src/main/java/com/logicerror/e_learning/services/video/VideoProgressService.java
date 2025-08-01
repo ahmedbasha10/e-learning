@@ -26,6 +26,7 @@ public class VideoProgressService {
     private final UserEnrollmentsRepository userEnrollmentsRepository;
     private final IVideoService videoService;
     private final IUserService userService;
+    private final CourseProgressDomainService courseProgressDomainService;
 
     @Transactional
     public void markVideoAsCompleted(Long videoId, Integer watchedDuration) {
@@ -44,26 +45,12 @@ public class VideoProgressService {
 
         videoCompletionRepository.save(videoCompletion);
 
-        updateCourseProgress(user.getId(), video.getCourse().getId());
+        UserEnrollment enrollment = userEnrollmentsRepository.findByUserIdAndCourseId(user.getId(), video.fetchCourseId())
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Enrollment not found for userId %s and courseId %s", user.getId(), video.fetchCourseId())));
+        courseProgressDomainService.updateCourseProgress(enrollment);
     }
 
-    @Transactional
-    private void updateCourseProgress(Long userId, Long courseId) {
-        int totalVideos = videoService.countVideosInCourse(courseId);
-        int completedVideos = videoCompletionRepository.countByUserIdAndVideo_CourseId(userId, courseId);
 
-        int progressPercentage = totalVideos > 0 ? (completedVideos * 100) / totalVideos : 0;
-
-        UserEnrollment enrollment = userEnrollmentsRepository.findByUserIdAndCourseId(userId, courseId)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("Enrollment not found for userId %s and courseId %s", userId, courseId)));
-        enrollment.setProgress(progressPercentage);
-        enrollment.setCompletedVideos(completedVideos);
-        enrollment.setTotalVideos(totalVideos);
-        if(completedVideos >= totalVideos && totalVideos > 0){
-            enrollment.setStatus(EnrollmentStatus.COMPLETED);
-        }
-        userEnrollmentsRepository.save(enrollment);
-    }
 
      public CourseProgressDTO getCourseProgress(Long courseId) {
          User user = userService.getAuthenticatedUser();

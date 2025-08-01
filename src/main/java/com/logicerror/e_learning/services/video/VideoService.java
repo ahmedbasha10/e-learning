@@ -159,16 +159,6 @@ public class VideoService implements IVideoService {
         return updatedVideo;
     }
 
-    @Override
-    public VideoDto markVideoAsCompleted(Long videoId) {
-    log.debug("Marking video as completed with ID: {}", videoId);
-        User user = userService.getAuthenticatedUser();
-        doAccessCheck(user);
-        Video video = videoRepository.findById(videoId)
-                .orElseThrow(() -> new VideoNotFoundException("Video not found with id: " + videoId));
-        doOwnerCheck(user, video);
-        return null;
-    }
 
     @Override
     @Transactional

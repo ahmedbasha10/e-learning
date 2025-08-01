@@ -6,6 +6,7 @@ import com.logicerror.e_learning.entities.enrollment.UserEnrollmentsKey;
 import com.logicerror.e_learning.entities.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserEnrollmentsRepository extends JpaRepository<UserEnrollment, UserEnrollmentsKey> {
@@ -16,4 +17,6 @@ public interface UserEnrollmentsRepository extends JpaRepository<UserEnrollment,
     Optional<UserEnrollment> findByUserIdAndCourseId(Long userId, Long courseId);
 
     void deleteByCourseId(Long courseId);
+
+    List<UserEnrollment> findByCourseId(Long courseId);
 }

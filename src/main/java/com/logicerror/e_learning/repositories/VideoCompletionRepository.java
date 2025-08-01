@@ -11,4 +11,8 @@ public interface VideoCompletionRepository extends JpaRepository<VideoCompletion
     List<VideoCompletion> findByUserIdAndVideo_CourseId(Long userId, Long courseId);
     int countByUserIdAndVideo_CourseId(Long userId, Long courseId);
     boolean existsByUserIdAndVideoId(Long userId, Long videoId);
+
+    List<VideoCompletion> findByVideoId(Long videoId);
+
+    void deleteByVideoId(Long videoId);
 }

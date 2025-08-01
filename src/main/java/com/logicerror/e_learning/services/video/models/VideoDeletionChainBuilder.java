@@ -13,6 +13,7 @@ import java.util.List;
 public class VideoDeletionChainBuilder extends AbstractOperationHandlerChainBuilder<VideoDeletionContext> {
     private final VideoDeletionInitializationHandler videoDeletionInitializationHandler;
     private final VideoDeletionAuthorizationHandler videoDeletionAuthorizationHandler;
+    private final PreVideoDeletionHandler preVideoDeletionHandler;
     private final VideoDeletionHandler videoDeletionHandler;
     private final VideoContentDeletionHandler videoContentDeletionHandler;
     private final PostVideoDeletionHandler postVideoDeletionHandler;
@@ -23,6 +24,7 @@ public class VideoDeletionChainBuilder extends AbstractOperationHandlerChainBuil
         return List.of(
                 videoDeletionInitializationHandler,
                 videoDeletionAuthorizationHandler,
+                preVideoDeletionHandler,
                 videoDeletionHandler,
                 videoContentDeletionHandler,
                 postVideoDeletionHandler

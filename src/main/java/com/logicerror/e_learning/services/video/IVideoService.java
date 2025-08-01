@@ -24,7 +24,6 @@ public interface IVideoService {
 
     // Patch
     Video updateVideo(UpdateVideoRequest request, MultipartFile videoFile, Long videoId);
-    VideoDto markVideoAsCompleted(Long videoId);
 
     // Delete
     void deleteVideo(Long videoId);
