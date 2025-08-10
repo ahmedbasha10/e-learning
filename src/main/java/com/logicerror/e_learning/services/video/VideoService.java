@@ -177,25 +177,4 @@ public class VideoService implements IVideoService {
         return videoMapper.videoToVideoDto(video);
     }
 
-
-    private void doOwnerCheck(User user, Video video) {
-        if(user.isTeacher()){
-            Course course = video.getCourse();
-            boolean isOwner = teacherCoursesRepository.existsById(
-                    TeacherCoursesKey.builder()
-                            .userId(user.getId())
-                            .courseId(course.getId())
-                            .build()
-            );
-            if(!isOwner) {
-                throw new AccessDeniedException("User is not the owner of the course for this video");
-            }
-        }
-    }
-
-    private static void doAccessCheck(User user) {
-        if(!user.isTeacher() && !user.isAdmin()) {
-            throw new AccessDeniedException("User does not have permission to update videos");
-        }
-    }
 }

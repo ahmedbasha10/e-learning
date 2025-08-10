@@ -16,6 +16,8 @@ import com.logicerror.e_learning.requests.course.section.UpdateSectionRequest;
 import com.logicerror.e_learning.services.OperationHandler;
 import com.logicerror.e_learning.services.section.operationhandlers.create.SectionCreationChainBuilder;
 import com.logicerror.e_learning.services.section.operationhandlers.create.SectionCreationContext;
+import com.logicerror.e_learning.services.section.operationhandlers.delete.SectionDeletionChainBuilder;
+import com.logicerror.e_learning.services.section.operationhandlers.delete.SectionDeletionContext;
 import com.logicerror.e_learning.services.section.operationhandlers.update.SectionUpdateChainBuilder;
 import com.logicerror.e_learning.services.section.operationhandlers.update.SectionUpdateContext;
 import com.logicerror.e_learning.services.user.IUserService;
@@ -42,6 +44,7 @@ public class SectionService implements ISectionService{
     private final SectionMapper sectionMapper;
     private final SectionCreationChainBuilder sectionCreationChainBuilder;
     private final SectionUpdateChainBuilder sectionUpdateChainBuilder;
+    private final SectionDeletionChainBuilder sectionDeletionChainBuilder;
     private final TeacherCoursesRepository teacherCoursesRepository;
 
 
@@ -141,24 +144,9 @@ public class SectionService implements ISectionService{
     public void deleteSection(Long sectionId) {
         log.debug("Deleting section with ID: {}", sectionId);
         User user = userService.getAuthenticatedUser();
-        if(!user.isTeacher() && !user.isAdmin()){
-            throw new AccessDeniedException("User does not have permission to delete sections");
-        }
-
-        Section section = getSectionById(sectionId);
-        if(user.isTeacher()){
-            boolean isOwner = teacherCoursesRepository.existsById(
-                    TeacherCoursesKey.builder()
-                            .courseId(section.getCourse().getId())
-                            .userId(user.getId())
-                            .build()
-            );
-            if(!isOwner) {
-                throw new AccessDeniedException("User is not the owner of this section");
-            }
-        }
-
-        sectionRepository.delete(section);
+        SectionDeletionContext context = new SectionDeletionContext(sectionId, user);
+        OperationHandler<SectionDeletionContext> operationHandler = sectionDeletionChainBuilder.build();
+        operationHandler.handle(context);
         log.info("Section with ID: {} deleted successfully", sectionId);
     }
 
