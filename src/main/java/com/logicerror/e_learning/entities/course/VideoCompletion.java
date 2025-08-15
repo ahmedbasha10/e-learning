@@ -2,6 +2,8 @@ package com.logicerror.e_learning.entities.course;
 
 import com.logicerror.e_learning.entities.user.User;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +22,7 @@ public class VideoCompletion {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "video_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Video video;
 
     @Column(name = "completedAt", nullable = false)
