@@ -13,12 +13,14 @@ public class CourseDeleteChainBuilder extends AbstractOperationHandlerChainBuild
     private final DeleteCourseHandler courseDeleteHandler;
     private final DeleteValidationHandler validationHandler;
     private final DeleteAuthorizationHandler authorizationHandler;
+    private final VideosDeletionHandler videosDeletionHandler;
 
     @Override
     protected List<OperationHandler<CourseDeleteContext>> getOperationHandlers() {
         return List.of(
                 authorizationHandler,
                 validationHandler,
+                videosDeletionHandler,
                 courseDeleteHandler
         );
     }
