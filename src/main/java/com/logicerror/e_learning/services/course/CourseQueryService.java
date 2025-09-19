@@ -1,15 +1,17 @@
 package com.logicerror.e_learning.services.course;
 
-import com.logicerror.e_learning.dto.CourseDto;
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.entities.course.Section;
-import com.logicerror.e_learning.requests.course.CreateCourseRequest;
-import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
-public interface ICourseService {
+/**
+ * Interface for course query operations
+ * Used by other services that need direct access to Course entities
+ */
+public interface CourseQueryService {
+    
+    // Entity access methods for other services
     Course getCourseById(Long courseId);
     Course getCourseByTitle(String title);
     Page<Course> getAllCourses(Pageable pageable);
@@ -18,18 +20,9 @@ public interface ICourseService {
     Page<Course> getCoursesByLevel(String level, Pageable pageable);
     Page<Course> getCoursesByAuthenticatedTeacher(Pageable pageable);
     Page<Section> getCourseSections(Long courseId, Pageable pageable);
-    void calculateEnrolledStudentsCount(CourseDto course);
-    void addServerHostToCourseResources(CourseDto course);
-
-
-    Course createCourse(CreateCourseRequest createCourseRequest, MultipartFile thumbnail);
-
-    Course updateCourse(Long courseId, UpdateCourseRequest Course);
-    void updateCourseDuration(Long courseId);
-
-    void deleteCourse(Long courseId);
-
-    CourseDto convertToDto(Course course);
-
-
+    int getEnrolledStudentsCount(Long courseId);
+    
+    // Utility methods for other services
+    boolean courseExists(Long courseId);
+    boolean courseExistsByTitle(String title);
 }

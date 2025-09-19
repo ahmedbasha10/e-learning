@@ -7,7 +7,7 @@ import com.logicerror.e_learning.entities.enrollment.UserEnrollmentsKey;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.mappers.EnrollmentMapper;
 import com.logicerror.e_learning.repositories.UserEnrollmentsRepository;
-import com.logicerror.e_learning.services.course.ICourseService;
+import com.logicerror.e_learning.services.course.CourseQueryService;
 import com.logicerror.e_learning.services.user.IUserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class EnrollmentServiceImpl implements EnrollmentService {
-    private final ICourseService courseService;
+    private final CourseQueryService courseService;
     private final IUserService userService;
     private final UserEnrollmentsRepository userEnrollmentsRepository;
     private final EnrollmentMapper enrollmentMapper;

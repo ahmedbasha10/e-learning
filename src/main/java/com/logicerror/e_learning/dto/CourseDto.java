@@ -8,7 +8,6 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class CourseDto {
     private Long id;
     private String title;
