@@ -1,8 +1,6 @@
 package com.logicerror.e_learning.services.course;
 
-import com.logicerror.e_learning.dto.CourseDto;
-import com.logicerror.e_learning.dto.SectionDto;
-import com.logicerror.e_learning.dto.UserDto;
+import com.logicerror.e_learning.dto.*;
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.mappers.CourseMapper;
 import com.logicerror.e_learning.mappers.UserMapper;
@@ -30,6 +28,51 @@ public class CourseDtoService {
     @Value("${api.base-host}")
     private String baseHost;
 
+
+    public CourseDto convertToDto(CourseDetailsProjection projection) {
+        if (projection == null) return null;
+
+        UserDto teacher = UserDto.builder()
+                .firstName(projection.getTeacherFirstName())
+                .lastName(projection.getTeacherLastName())
+                .id(projection.getTeacherId())
+                .build();
+
+        return CourseDto.builder()
+                .id(projection.getId())
+                .title(projection.getTitle())
+                .description(projection.getDescription())
+                .imageUrl(projection.getImageUrl())
+                .level(projection.getLevel())
+                .price(projection.getPrice())
+                .duration(projection.getDuration())
+                .teacher(teacher)
+                .studentsCount(projection.getStudentsCount())
+                .category(projection.getCategory())
+                .sections(projection.getSections())
+                .build();
+
+    }
+
+    public CourseDto convertToDto(CourseListProjection projection) {
+        if (projection == null) return null;
+
+        UserDto teacher = UserDto.builder()
+                .firstName(projection.getTeacherFirstName())
+                .lastName(projection.getTeacherLastName())
+                .build();
+
+        return CourseDto.builder()
+                .id(projection.getId())
+                .title(projection.getTitle())
+                .imageUrl(projection.getImageUrl())
+                .level(projection.getLevel())
+                .price(projection.getPrice())
+                .duration(projection.getDuration())
+                .teacher(teacher)
+                .build();
+    }
+
     /**
      * Converts Course entity to CourseDto with all necessary transformations
      */
@@ -48,7 +91,7 @@ public class CourseDtoService {
     /**
      * Adds server host to course image URL and video URLs
      */
-    public void addServerHostToCourseResources(CourseDto course) {
+    private void addServerHostToCourseResources(CourseDto course) {
         if (course.getImageUrl() != null) {
             String filePath = baseHost + File.separator + course.getImageUrl();
             course.setImageUrl(filePath.replace("\\", "/"));
@@ -60,7 +103,7 @@ public class CourseDtoService {
     }
 
 
-    public void calculateEnrolledStudentsCount(CourseDto course) {
+    private void calculateEnrolledStudentsCount(CourseDto course) {
         int studentsCount = userEnrollmentsRepository.countStudentsByCourseId(course.getId());
         course.setStudentsCount(studentsCount);
     }
