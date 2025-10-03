@@ -4,6 +4,7 @@ import com.logicerror.e_learning.config.CourseProperties;
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.exceptions.files.FileException;
 import com.logicerror.e_learning.services.FileManagementService;
+import com.logicerror.e_learning.services.utils.ResourcesURLService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,13 @@ import java.io.IOException;
 public class CourseThumbnailService {
 
     private final FileManagementService fileManagementService;
+    private final ResourcesURLService resourcesURLService;
     private final CourseProperties courseProperties;
 
     public void setCourseThumbnail(Course course, MultipartFile thumbnail) {
-        course.setImageUrl(getThumbnailUrl(course, thumbnail));
+        String thumbnailUrl = getThumbnailUrl(course, thumbnail);
+        String fullUrl = resourcesURLService.buildResourceURL(thumbnailUrl);
+        course.setImageUrl(fullUrl);
     }
 
     private String getThumbnailUrl(Course course, MultipartFile thumbnail) {

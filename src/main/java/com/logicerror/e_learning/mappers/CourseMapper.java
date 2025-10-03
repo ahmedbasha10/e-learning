@@ -18,9 +18,8 @@ public interface CourseMapper {
 
     @Mapping(target = "id", source = "course.id")
     @Mapping(target = "title", source = "course.title")
-    @Mapping(target = "teacher", source = "teacher")
     @Mapping(target = "imageUrl", source = "course.imageUrl")
     @Mapping(target = "sections", source = "course.sections")
     @Mapping(target = "studentsCount", source = "course.studentsCount")
-    CourseDto courseToCourseDto(Course course, UserDto teacher);
+    CourseDto courseToCourseDto(Course course);
 }
