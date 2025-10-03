@@ -12,6 +12,8 @@ spring:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
+  jackson:
+    default-property-inclusion: non_null
 
 server:
   port: 5000
