@@ -1,6 +1,8 @@
 package com.logicerror.e_learning.services.course;
 
-import com.logicerror.e_learning.entities.course.Course;
+import com.logicerror.e_learning.constants.CourseLevel;
+import com.logicerror.e_learning.dto.CourseDetailsProjection;
+import com.logicerror.e_learning.dto.CourseListProjection;
 import com.logicerror.e_learning.entities.course.Section;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,13 +14,11 @@ import org.springframework.data.domain.Pageable;
 public interface CourseQueryService {
     
     // Entity access methods for other services
-    Course getCourseById(Long courseId);
-    Course getCourseByTitle(String title);
-    Page<Course> getAllCourses(Pageable pageable);
-    Page<Course> getAllCoursesWithStudentsCount(Pageable pageable);
-    Page<Course> getCoursesByCategory(String category, Pageable pageable);
-    Page<Course> getCoursesByLevel(String level, Pageable pageable);
-    Page<Course> getCoursesByAuthenticatedTeacher(Pageable pageable);
+    CourseDetailsProjection getCourseById(Long courseId);
+    CourseDetailsProjection getCourseByTitle(String title);
+    Page<CourseListProjection> getAllCourses(Pageable pageable);
+    Page<CourseListProjection> getCoursesByCategory(String category, Pageable pageable);
+    Page<CourseListProjection> getCoursesByLevel(CourseLevel level, Pageable pageable);
     Page<Section> getCourseSections(Long courseId, Pageable pageable);
     int getEnrolledStudentsCount(Long courseId);
     
