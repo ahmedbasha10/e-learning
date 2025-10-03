@@ -1,5 +1,6 @@
 package com.logicerror.e_learning.controllers;
 
+import com.logicerror.e_learning.constants.CourseLevel;
 import com.logicerror.e_learning.controllers.responses.ApiResponse;
 import com.logicerror.e_learning.dto.CourseDto;
 import com.logicerror.e_learning.dto.SectionDto;
@@ -24,7 +25,6 @@ public class CourseController {
     
     private final CourseService courseService;
 
-    // Query endpoints
     @GetMapping
     public ResponseEntity<ApiResponse<Page<CourseDto>>> getAllCourses(Pageable pageable) {
         Page<CourseDto> courses = courseService.getAllCourses(pageable);
@@ -54,16 +54,10 @@ public class CourseController {
 
     @GetMapping("/level/{level}")
     public ResponseEntity<ApiResponse<Page<CourseDto>>> getCoursesByLevel(
-            @PathVariable String level, 
+            @PathVariable CourseLevel level,
             Pageable pageable) {
 
         Page<CourseDto> courses = courseService.getCoursesByLevel(level, pageable);
-        return ResponseEntity.ok(new ApiResponse<>("Courses fetched successfully", courses));
-    }
-
-    @GetMapping("/teacher")
-    public ResponseEntity<ApiResponse<Page<CourseDto>>> getCoursesByTeacher(Pageable pageable) {
-        Page<CourseDto> courses = courseService.getCoursesByTeacher(pageable);
         return ResponseEntity.ok(new ApiResponse<>("Courses fetched successfully", courses));
     }
 
