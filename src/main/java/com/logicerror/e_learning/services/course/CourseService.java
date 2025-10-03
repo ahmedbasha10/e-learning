@@ -1,5 +1,6 @@
 package com.logicerror.e_learning.services.course;
 
+import com.logicerror.e_learning.constants.CourseLevel;
 import com.logicerror.e_learning.dto.CourseDto;
 import com.logicerror.e_learning.dto.SectionDto;
 import com.logicerror.e_learning.requests.course.CreateCourseRequest;
@@ -21,8 +22,7 @@ public interface CourseService {
     CourseDto getCourseById(Long courseId);
     CourseDto getCourseByTitle(String title);
     Page<CourseDto> getCoursesByCategory(String category, Pageable pageable);
-    Page<CourseDto> getCoursesByLevel(String level, Pageable pageable);
-    Page<CourseDto> getCoursesByTeacher(Pageable pageable);
+    Page<CourseDto> getCoursesByLevel(CourseLevel level, Pageable pageable);
     Page<SectionDto> getCourseSections(Long courseId, Pageable pageable);
 
     // Command operations
@@ -30,7 +30,7 @@ public interface CourseService {
     CourseDto updateCourse(Long courseId, UpdateCourseRequest request);
     void deleteCourse(Long courseId) throws AccessDeniedException;
     void updateCourseDuration(Long courseId);
-    
+
     // Utility operations
     boolean courseExists(Long courseId);
     boolean courseExistsByTitle(String title);
