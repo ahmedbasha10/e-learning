@@ -1,13 +1,11 @@
 package com.logicerror.e_learning.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.Builder;
 
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class CourseDto {
     private Long id;
     private String title;
@@ -15,11 +13,28 @@ public class CourseDto {
     private String category;
     private String level;
     private String imageUrl;
-    private int duration;
-    private int price;
+    private Integer duration;
+    private Integer price;
     private UserDto teacher;
     private List<SectionDto> sections;
-    private int studentsCount;
+    private Integer studentsCount;
+
+    public CourseDto() {
+    }
+
+    public CourseDto(Long id, String title, String description, String category, String level, String imageUrl, Integer duration, Integer price, UserDto teacher, List<SectionDto> sections, Integer studentsCount) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.level = level;
+        this.imageUrl = imageUrl;
+        this.duration = duration;
+        this.price = price;
+        this.teacher = teacher;
+        this.sections = sections;
+        this.studentsCount = studentsCount;
+    }
 
     public Long getId() {
         return id;
@@ -61,19 +76,19 @@ public class CourseDto {
         this.level = level;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
@@ -93,11 +108,19 @@ public class CourseDto {
         this.sections = sections;
     }
 
-    public int getStudentsCount() {
+    public Integer getStudentsCount() {
         return studentsCount;
     }
 
-    public void setStudentsCount(int studentsCount) {
+    public void setStudentsCount(Integer studentsCount) {
         this.studentsCount = studentsCount;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
