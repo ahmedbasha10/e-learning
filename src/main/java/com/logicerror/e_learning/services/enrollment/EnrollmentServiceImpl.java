@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class EnrollmentServiceImpl implements EnrollmentService {
-    private final CourseQueryService courseService;
     private final IUserService userService;
     private final UserEnrollmentsRepository userEnrollmentsRepository;
     private final EnrollmentMapper enrollmentMapper;
@@ -43,7 +42,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         log.info("Attempting to enroll user in course with ID: {}", courseId);
         User currentUser = getCurrentUser();
         doStudentCheck(currentUser);
-        Course course = getCourseById(courseId);
+        Course course = new Course();
+        course.setId(courseId);
         doUserAlreadyEnrolledCheck(currentUser, course);
         // Here you would typically handle payment processing
         UserEnrollment savedEnrollment = constructUserEnrollment(courseId, currentUser, course);
@@ -79,10 +79,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         if (currentUser == null || !currentUser.isStudent()) {
             throw new AccessDeniedException("You must be a student to enroll in a course.");
         }
-    }
-
-    private Course getCourseById(Long courseId) {
-        return courseService.getCourseById(courseId);
     }
 
     // Additional methods for managing enrollments can be added here

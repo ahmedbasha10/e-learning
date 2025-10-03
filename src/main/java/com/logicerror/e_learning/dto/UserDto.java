@@ -1,5 +1,9 @@
 package com.logicerror.e_learning.dto;
 
+
+import lombok.Builder;
+
+@Builder
 public class UserDto {
     private Long id;
     private String username;
@@ -11,10 +15,11 @@ public class UserDto {
     private String city;
     private String state;
 
-    public UserDto(Long id, String username, String email, String firstName, String lastName, String country, String city, String state) {
+    public UserDto(Long id, String username, String email, RoleDto role, String firstName, String lastName, String country, String city, String state) {
         this.id = id;
         this.username = username;
         this.email = email;
+        this.role = role;
         this.firstName = firstName;
         this.lastName = lastName;
         this.country = country;

@@ -1,6 +1,9 @@
 package com.logicerror.e_learning.services.course;
 
+import com.logicerror.e_learning.constants.CourseLevel;
 import com.logicerror.e_learning.dto.CourseDto;
+import com.logicerror.e_learning.dto.CourseDetailsProjection;
+import com.logicerror.e_learning.dto.CourseListProjection;
 import com.logicerror.e_learning.dto.SectionDto;
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.entities.course.Section;
@@ -29,32 +32,27 @@ public class DefaultCourseService implements CourseService {
 
     // Query operations
     public Page<CourseDto> getAllCourses(Pageable pageable) {
-        Page<Course> courses = courseQueryService.getAllCoursesWithStudentsCount(pageable);
+        Page<CourseListProjection> courses = courseQueryService.getAllCourses(pageable);
         return courses.map(courseDtoService::convertToDto);
     }
 
     public CourseDto getCourseById(Long courseId) {
-        Course course = courseQueryService.getCourseById(courseId);
+        CourseDetailsProjection course = courseQueryService.getCourseById(courseId);
         return courseDtoService.convertToDto(course);
     }
 
     public CourseDto getCourseByTitle(String title) {
-        Course course = courseQueryService.getCourseByTitle(title);
+        CourseDetailsProjection course = courseQueryService.getCourseByTitle(title);
         return courseDtoService.convertToDto(course);
     }
 
     public Page<CourseDto> getCoursesByCategory(String category, Pageable pageable) {
-        Page<Course> courses = courseQueryService.getCoursesByCategory(category, pageable);
+        Page<CourseListProjection> courses = courseQueryService.getCoursesByCategory(category, pageable);
         return courses.map(courseDtoService::convertToDto);
     }
 
-    public Page<CourseDto> getCoursesByLevel(String level, Pageable pageable) {
-        Page<Course> courses = courseQueryService.getCoursesByLevel(level, pageable);
-        return courses.map(courseDtoService::convertToDto);
-    }
-
-    public Page<CourseDto> getCoursesByTeacher(Pageable pageable) {
-        Page<Course> courses = courseQueryService.getCoursesByAuthenticatedTeacher(pageable);
+    public Page<CourseDto> getCoursesByLevel(CourseLevel level, Pageable pageable) {
+        Page<CourseListProjection> courses = courseQueryService.getCoursesByLevel(level, pageable);
         return courses.map(courseDtoService::convertToDto);
     }
 
