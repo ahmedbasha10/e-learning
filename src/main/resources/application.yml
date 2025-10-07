@@ -6,6 +6,11 @@ spring:
     username: root
     password: manager
   jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
     hibernate:
       ddl-auto: update
   servlet:
@@ -21,6 +26,8 @@ server:
 logging:
   level:
     com.logicerror.e_learning: TRACE
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
   pattern:
     console: ${LOGPATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}

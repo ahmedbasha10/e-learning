@@ -1,16 +1,14 @@
 package com.logicerror.e_learning.dto;
 
-public interface VideoProjection extends ProjectionDTOMapper<VideoDto> {
+public interface VideoPreviewProjection extends ProjectionDTOMapper<VideoDto> {
     Long getId();
     String getTitle();
-    String getUrl();
     Integer getDuration();
 
     default VideoDto toDTO() {
         return VideoDto.builder()
                 .id(getId())
                 .title(getTitle())
-                .url(getUrl())
                 .duration(getDuration())
                 .build();
     }

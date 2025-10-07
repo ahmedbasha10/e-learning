@@ -2,14 +2,16 @@ package com.logicerror.e_learning.services.course;
 
 import com.logicerror.e_learning.constants.CourseLevel;
 import com.logicerror.e_learning.dto.CourseDto;
-import com.logicerror.e_learning.dto.CourseDetailsProjection;
-import com.logicerror.e_learning.dto.CourseListProjection;
+import com.logicerror.e_learning.dto.CourseListProjectionDTOMapper;
 import com.logicerror.e_learning.dto.SectionDto;
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.entities.course.Section;
+import com.logicerror.e_learning.entities.user.User;
+import com.logicerror.e_learning.repositories.UserEnrollmentsRepository;
 import com.logicerror.e_learning.requests.course.CreateCourseRequest;
 import com.logicerror.e_learning.requests.course.UpdateCourseRequest;
 import com.logicerror.e_learning.services.section.SectionService;
+import com.logicerror.e_learning.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,26 +30,32 @@ public class DefaultCourseService implements CourseService {
     private final CourseQueryService courseQueryService;
     private final CourseDtoService courseDtoService;
     private final CourseCommandService courseCommandService;
+    private final UserService userService;
+    private final UserEnrollmentsRepository userEnrollmentsRepository;
     private final SectionService sectionService;
 
     // Query operations
     public Page<CourseDto> getAllCourses(Pageable pageable) {
-        Page<CourseListProjection> courses = courseQueryService.getAllCourses(pageable);
+        Page<CourseListProjectionDTOMapper> courses = courseQueryService.getAllCourses(pageable);
         return courses.map(courseDtoService::convertToDto);
     }
 
     public CourseDto getCourseById(Long courseId) {
-        CourseDetailsProjection course = courseQueryService.getCourseById(courseId);
-        return courseDtoService.convertToDto(course);
+        User currentUser = userService.getAuthenticatedUser();
+        boolean isEnrolled = userEnrollmentsRepository.existsByUserIdAndCourseId(currentUser.getId(), courseId);
+        if(isEnrolled) {
+            return courseDtoService.convertToDto(courseQueryService.getCourseById(courseId));
+        }
+        return courseDtoService.convertToDto(courseQueryService.getCoursePreviewById(courseId));
     }
 
     public Page<CourseDto> getCoursesByCategory(String category, Pageable pageable) {
-        Page<CourseListProjection> courses = courseQueryService.getCoursesByCategory(category, pageable);
+        Page<CourseListProjectionDTOMapper> courses = courseQueryService.getCoursesByCategory(category, pageable);
         return courses.map(courseDtoService::convertToDto);
     }
 
     public Page<CourseDto> getCoursesByLevel(CourseLevel level, Pageable pageable) {
-        Page<CourseListProjection> courses = courseQueryService.getCoursesByLevel(level, pageable);
+        Page<CourseListProjectionDTOMapper> courses = courseQueryService.getCoursesByLevel(level, pageable);
         return courses.map(courseDtoService::convertToDto);
     }
 

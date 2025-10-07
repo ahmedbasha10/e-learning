@@ -2,6 +2,7 @@ package com.logicerror.e_learning.dto;
 
 import lombok.Builder;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Builder
@@ -13,6 +14,7 @@ public class SectionDto {
     private Set<VideoDto> videos;
 
     public SectionDto() {
+        this.videos = new HashSet<>();
     }
 
     public SectionDto(Long id, String title, Integer order, Integer duration, Set<VideoDto> videos) {

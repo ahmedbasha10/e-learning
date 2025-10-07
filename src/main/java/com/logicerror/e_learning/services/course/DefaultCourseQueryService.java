@@ -1,15 +1,14 @@
 package com.logicerror.e_learning.services.course;
 
 import com.logicerror.e_learning.constants.CourseLevel;
-import com.logicerror.e_learning.dto.CourseDetailsProjection;
-import com.logicerror.e_learning.dto.CourseListProjection;
+import com.logicerror.e_learning.dto.CourseDetailsProjectionDTOMapper;
+import com.logicerror.e_learning.dto.CourseListProjectionDTOMapper;
+import com.logicerror.e_learning.dto.PreviewProjectionDTOMapper;
 import com.logicerror.e_learning.entities.course.Section;
-import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.course.CourseNotFoundException;
 import com.logicerror.e_learning.repositories.CourseRepository;
 import com.logicerror.e_learning.repositories.SectionRepository;
 import com.logicerror.e_learning.repositories.UserEnrollmentsRepository;
-import com.logicerror.e_learning.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,22 +24,20 @@ public class DefaultCourseQueryService implements CourseQueryService {
     private final CourseRepository courseRepository;
     private final SectionRepository sectionRepository;
     private final UserEnrollmentsRepository userEnrollmentsRepository;
-    private final UserService userService;
     private final Logger logger = LoggerFactory.getLogger(DefaultCourseQueryService.class);
 
-    public CourseDetailsProjection getCourseById(Long courseId) {
+    public CourseDetailsProjectionDTOMapper getCourseById(Long courseId) {
         Assert.notNull(courseId, "Course ID must not be null");
         logger.debug("Fetching course with ID: {}", courseId);
 
-        User currentUser = userService.getAuthenticatedUser();
-        boolean isEnrolled = userEnrollmentsRepository.existsByUserIdAndCourseId(currentUser.getId(), courseId);
-        if(isEnrolled) {
-            return courseRepository.findCourseById(courseId)
-                    .orElseThrow(() -> throwCourseNotFoundException(courseId));
-        } else {
-            return courseRepository.findCoursePreviewById(courseId)
-                    .orElseThrow(() -> throwCourseNotFoundException(courseId));
-        }
+        return courseRepository.findCourseById(courseId)
+                .orElseThrow(() -> throwCourseNotFoundException(courseId));
+    }
+
+    @Override
+    public PreviewProjectionDTOMapper getCoursePreviewById(Long courseId) {
+        return courseRepository.findCoursePreviewById(courseId)
+                .orElseThrow(() -> throwCourseNotFoundException(courseId));
     }
 
     private CourseNotFoundException throwCourseNotFoundException(Long courseId) {
@@ -49,29 +46,29 @@ public class DefaultCourseQueryService implements CourseQueryService {
     }
 
 
-    public Page<CourseListProjection> getAllCourses(Pageable pageable) {
+    public Page<CourseListProjectionDTOMapper> getAllCourses(Pageable pageable) {
         Assert.notNull(pageable, "Pageable must not be null");
         logger.debug("Fetching all courses, page: {}", pageable.getPageNumber());
-        Page<CourseListProjection> courses = courseRepository.findAllCourses(pageable);
+        Page<CourseListProjectionDTOMapper> courses = courseRepository.findAllCourses(pageable);
         logger.debug("Found {} courses", courses.getTotalElements());
         return courses;
     }
 
 
-    public Page<CourseListProjection> getCoursesByCategory(String category, Pageable pageable) {
+    public Page<CourseListProjectionDTOMapper> getCoursesByCategory(String category, Pageable pageable) {
         Assert.notNull(category, "Course category must not be null");
         Assert.notNull(pageable, "Pageable must not be null");
         logger.debug("Fetching courses by category: {}, page: {}", category, pageable.getPageNumber());
-        Page<CourseListProjection> courses = courseRepository.findByCategory(category, pageable);
+        Page<CourseListProjectionDTOMapper> courses = courseRepository.findByCategory(category, pageable);
         logger.debug("Found {} courses in category: {}", courses.getTotalElements(), category);
         return courses;
     }
 
-    public Page<CourseListProjection> getCoursesByLevel(CourseLevel level, Pageable pageable) {
+    public Page<CourseListProjectionDTOMapper> getCoursesByLevel(CourseLevel level, Pageable pageable) {
         Assert.notNull(level, "Course level must not be null");
         Assert.notNull(pageable, "Pageable must not be null");
         logger.debug("Fetching courses by level: {}, page: {}", level, pageable.getPageNumber());
-        Page<CourseListProjection> courses = courseRepository.findByLevel(level, pageable);
+        Page<CourseListProjectionDTOMapper> courses = courseRepository.findByLevel(level, pageable);
         logger.debug("Found {} courses with level: {}", courses.getTotalElements(), level);
         return courses;
     }
