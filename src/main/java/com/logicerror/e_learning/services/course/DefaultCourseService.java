@@ -41,11 +41,6 @@ public class DefaultCourseService implements CourseService {
         return courseDtoService.convertToDto(course);
     }
 
-    public CourseDto getCourseByTitle(String title) {
-        CourseDetailsProjection course = courseQueryService.getCourseByTitle(title);
-        return courseDtoService.convertToDto(course);
-    }
-
     public Page<CourseDto> getCoursesByCategory(String category, Pageable pageable) {
         Page<CourseListProjection> courses = courseQueryService.getCoursesByCategory(category, pageable);
         return courses.map(courseDtoService::convertToDto);

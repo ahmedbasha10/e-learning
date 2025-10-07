@@ -2,8 +2,7 @@ package com.logicerror.e_learning.entities.course;
 
 import jakarta.persistence.*;
 
-
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "sections", uniqueConstraints = {
@@ -31,7 +30,7 @@ public class Section {
     private Course course;
 
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Video> videos;
+    private Set<Video> videos;
 
     public Section() {
     }
@@ -82,11 +81,11 @@ public class Section {
         this.course = course;
     }
 
-    public List<Video> getVideos() {
+    public Set<Video> getVideos() {
         return videos;
     }
 
-    public void setVideos(List<Video> videos) {
+    public void setVideos(Set<Video> videos) {
         this.videos = videos;
     }
 }

@@ -1,6 +1,7 @@
 package com.logicerror.e_learning.dto;
 
-import java.util.List;
+
+import java.util.Set;
 
 public interface CourseDetailsProjection {
     Long getId();
@@ -11,10 +12,8 @@ public interface CourseDetailsProjection {
     String getImageUrl();
     Integer getDuration();
     Integer getPrice();
-    Long getTeacherId();
-    String getTeacherFirstName();
-    String getTeacherLastName();
     Integer getStudentsCount();
-    List<SectionDto> getSections();
+    Set<TeacherProjection> getTeachers();
+    Set<SectionProjection> getSections();
 }
 

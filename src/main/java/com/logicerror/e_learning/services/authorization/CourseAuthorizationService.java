@@ -22,6 +22,21 @@ public class CourseAuthorizationService {
         );
     }
 
+    public boolean hasAccessToCreateCourse(User user) {
+        if (user == null) {
+            log.error("User must be authenticated to create a course");
+            return false;
+        }
+
+        if (!user.isTeacher()) {
+            log.error("User is not authorized to create a course");
+            return false;
+        }
+
+        log.debug("User {} has permission to create a course", user.getUsername());
+        return true;
+    }
+
     public boolean hasAccessToModifyCourse(Long courseId, User user) {
         if (user == null) {
             log.error("User must be authenticated to modify a course with ID: {}", courseId);

@@ -1,12 +1,15 @@
 package com.logicerror.e_learning.dto;
 
+import lombok.Builder;
+
+@Builder
 public class VideoDto {
     private Long id;
     private String title;
     private int duration;
     private String url;
 
-    public VideoDto(Long id, String title, int duration, String url, boolean completed) {
+    public VideoDto(Long id, String title, int duration, String url) {
         this.id = id;
         this.title = title;
         this.duration = duration;

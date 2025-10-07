@@ -45,7 +45,6 @@ public class SectionService implements ISectionService{
     private final SectionCreationChainBuilder sectionCreationChainBuilder;
     private final SectionUpdateChainBuilder sectionUpdateChainBuilder;
     private final SectionDeletionChainBuilder sectionDeletionChainBuilder;
-    private final TeacherCoursesRepository teacherCoursesRepository;
 
 
     @Override

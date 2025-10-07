@@ -15,7 +15,6 @@ public interface CourseQueryService {
     
     // Entity access methods for other services
     CourseDetailsProjection getCourseById(Long courseId);
-    CourseDetailsProjection getCourseByTitle(String title);
     Page<CourseListProjection> getAllCourses(Pageable pageable);
     Page<CourseListProjection> getCoursesByCategory(String category, Pageable pageable);
     Page<CourseListProjection> getCoursesByLevel(CourseLevel level, Pageable pageable);

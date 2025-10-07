@@ -3,19 +3,12 @@ package com.logicerror.e_learning.services.course;
 import com.logicerror.e_learning.dto.*;
 import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.mappers.CourseMapper;
-import com.logicerror.e_learning.mappers.UserMapper;
-import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
-import com.logicerror.e_learning.repositories.UserEnrollmentsRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- * Service responsible for Course DTO operations and transformations
- * Handles URL manipulation and DTO conversion logic
- */
 @Service
 @RequiredArgsConstructor
 public class CourseDtoService {
@@ -26,10 +19,12 @@ public class CourseDtoService {
         if (projection == null) return null;
 
         UserDto teacher = UserDto.builder()
-                .firstName(projection.getTeacherFirstName())
-                .lastName(projection.getTeacherLastName())
-                .id(projection.getTeacherId())
+                .id(projection.getTeachers().iterator().next().getId())
+                .firstName(projection.getTeachers().iterator().next().getFirstName())
+                .lastName(projection.getTeachers().iterator().next().getLastName())
                 .build();
+
+        Set<SectionDto> sectionDTOs = buildSectionDTOs(projection);
 
         return CourseDto.builder()
                 .id(projection.getId())
@@ -42,9 +37,39 @@ public class CourseDtoService {
                 .teacher(teacher)
                 .studentsCount(projection.getStudentsCount())
                 .category(projection.getCategory())
-                .sections(projection.getSections())
+                .sections(sectionDTOs)
                 .build();
 
+    }
+
+    private Set<SectionDto> buildSectionDTOs(CourseDetailsProjection projection) {
+        Set<SectionDto> sectionDTOs = new HashSet<>();
+        for(SectionProjection section : projection.getSections()) {
+            SectionDto sectionDto = SectionDto.builder()
+                    .id(section.getId())
+                    .title(section.getTitle())
+                    .order(section.getOrder())
+                    .duration(section.getDuration())
+                    .build();
+
+            sectionDto.getVideos().addAll(buildVideoDTOs(section));
+            sectionDTOs.add(sectionDto);
+        }
+        return sectionDTOs;
+    }
+
+    private Set<VideoDto> buildVideoDTOs(SectionProjection section) {
+        Set<VideoDto> videoDTOs = new HashSet<>();
+        for(VideoProjection video : section.getVideos()) {
+            VideoDto videoDto = VideoDto.builder()
+                    .id(video.getId())
+                    .title(video.getTitle())
+                    .url(video.getUrl())
+                    .duration(video.getDuration())
+                    .build();
+            videoDTOs.add(videoDto);
+        }
+        return videoDTOs;
     }
 
     public CourseDto convertToDto(CourseListProjection projection) {
@@ -58,6 +83,8 @@ public class CourseDtoService {
         return CourseDto.builder()
                 .id(projection.getId())
                 .title(projection.getTitle())
+                .description(projection.getDescription())
+                .category(projection.getCategory())
                 .imageUrl(projection.getImageUrl())
                 .level(projection.getLevel())
                 .price(projection.getPrice())

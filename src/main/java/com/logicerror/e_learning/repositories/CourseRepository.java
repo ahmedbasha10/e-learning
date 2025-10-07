@@ -38,6 +38,15 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     Optional<CourseDetailsProjection> findCourseById(Long courseId);
 
     @Query("""
+    SELECT c FROM Course c
+    LEFT JOIN FETCH c.teachers tc
+    LEFT JOIN FETCH c.sections s
+    LEFT JOIN FETCH s.videos v
+    WHERE c.id = :courseId
+    """)
+    Optional<CourseDetailsProjection> findCoursePreviewById(Long courseId);
+
+    @Query("""
         SELECT
             c.id as id,
             c.title as title,
@@ -133,6 +142,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                    c.title as title,
                    c.description as description,
                    c.level as level,
+                   c.category as category,
                    c.imageUrl as imageUrl,
                    c.duration as duration,
                    c.price as price,
@@ -147,6 +157,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                    c.title as title,
                    c.description as description,
                    c.level as level,
+                   c.category as category,
                    c.imageUrl as imageUrl,
                    c.duration as duration,
                    c.price as price,
@@ -162,6 +173,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                    c.title as title,
                    c.description as description,
                    c.level as level,
+                   c.category as category,
                    c.imageUrl as imageUrl,
                    c.duration as duration,
                    c.price as price,
@@ -173,4 +185,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     Page<CourseListProjection> findByLevel(@Param("level") CourseLevel level, Pageable pageable);
 
     boolean existsByTitle(String title);
+
+
 }

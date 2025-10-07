@@ -37,12 +37,6 @@ public class CourseController {
         return ResponseEntity.ok(new ApiResponse<>("Course fetched successfully", course));
     }
 
-    @GetMapping("/title/{title}")
-    public ResponseEntity<ApiResponse<CourseDto>> getCourseByTitle(@PathVariable String title) {
-        CourseDto course = courseService.getCourseByTitle(title);
-        return ResponseEntity.ok(new ApiResponse<>("Course fetched successfully", course));
-    }
-
     @GetMapping("/category/{category}")
     public ResponseEntity<ApiResponse<Page<CourseDto>>> getCoursesByCategory(
             @PathVariable String category, 

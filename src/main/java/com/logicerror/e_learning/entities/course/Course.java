@@ -2,10 +2,11 @@ package com.logicerror.e_learning.entities.course;
 
 import com.logicerror.e_learning.constants.CourseLevel;
 import com.logicerror.e_learning.entities.review.Review;
+import com.logicerror.e_learning.entities.user.User;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "courses")
@@ -42,13 +43,19 @@ public class Course {
     @Transient
     private Integer studentsCount;
 
-
-    //TODO: Fetch lazy
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Section> sections;
+    private Set<Section> sections;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Review> reviews;
+    private Set<Review> reviews;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "teacher_courses",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> teachers;
 
     public Course() {
     }
@@ -61,8 +68,8 @@ public class Course {
         this.level = level;
         this.duration = duration;
         this.price = price;
-        this.sections = new ArrayList<>();
-        this.reviews = new ArrayList<>();
+        this.sections = new HashSet<>();
+        this.reviews = new HashSet<>();
     }
 
     public Long getId() {
@@ -129,25 +136,25 @@ public class Course {
         this.price = price;
     }
 
-    public List<Section> getSections() {
+    public Set<Section> getSections() {
         return sections;
     }
 
-    public void setSections(List<Section> sections) {
+    public void setSections(Set<Section> sections) {
         this.sections = sections;
     }
 
-    public List<Review> getReviews() {
+    public Set<Review> getReviews() {
         return reviews;
     }
 
-    public void setReviews(List<Review> reviews) {
+    public void setReviews(Set<Review> reviews) {
         this.reviews = reviews;
     }
 
     public void addSection(Section section) {
         if (this.sections == null) {
-            this.sections = new ArrayList<>();
+            this.sections = new HashSet<>();
         }
         this.sections.add(section);
     }

@@ -4,10 +4,12 @@ import com.logicerror.e_learning.constants.CourseLevel;
 import com.logicerror.e_learning.dto.CourseDetailsProjection;
 import com.logicerror.e_learning.dto.CourseListProjection;
 import com.logicerror.e_learning.entities.course.Section;
+import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.course.CourseNotFoundException;
 import com.logicerror.e_learning.repositories.CourseRepository;
 import com.logicerror.e_learning.repositories.SectionRepository;
 import com.logicerror.e_learning.repositories.UserEnrollmentsRepository;
+import com.logicerror.e_learning.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,27 +25,29 @@ public class DefaultCourseQueryService implements CourseQueryService {
     private final CourseRepository courseRepository;
     private final SectionRepository sectionRepository;
     private final UserEnrollmentsRepository userEnrollmentsRepository;
+    private final UserService userService;
     private final Logger logger = LoggerFactory.getLogger(DefaultCourseQueryService.class);
 
     public CourseDetailsProjection getCourseById(Long courseId) {
         Assert.notNull(courseId, "Course ID must not be null");
         logger.debug("Fetching course with ID: {}", courseId);
-        return courseRepository.findCourseById(courseId)
-                .orElseThrow(() -> {
-                    logger.error("Course not found with ID: {}", courseId);
-                    return new CourseNotFoundException("Course not found with id: " + courseId);
-                });
+
+        User currentUser = userService.getAuthenticatedUser();
+        boolean isEnrolled = userEnrollmentsRepository.existsByUserIdAndCourseId(currentUser.getId(), courseId);
+        if(isEnrolled) {
+            return courseRepository.findCourseById(courseId)
+                    .orElseThrow(() -> throwCourseNotFoundException(courseId));
+        } else {
+            return courseRepository.findCoursePreviewById(courseId)
+                    .orElseThrow(() -> throwCourseNotFoundException(courseId));
+        }
     }
 
-    public CourseDetailsProjection getCourseByTitle(String title) {
-        Assert.notNull(title, "Course title must not be null");
-        logger.debug("Fetching course with title: {}", title);
-        return courseRepository.findByTitle(title)
-                .orElseThrow(() -> {
-                    logger.error("Course not found with title: {}", title);
-                    return new CourseNotFoundException("Course not found with title: " + title);
-                });
+    private CourseNotFoundException throwCourseNotFoundException(Long courseId) {
+        logger.error("Course not found with ID: {}", courseId);
+        return new CourseNotFoundException("Course not found with id: " + courseId);
     }
+
 
     public Page<CourseListProjection> getAllCourses(Pageable pageable) {
         Assert.notNull(pageable, "Pageable must not be null");

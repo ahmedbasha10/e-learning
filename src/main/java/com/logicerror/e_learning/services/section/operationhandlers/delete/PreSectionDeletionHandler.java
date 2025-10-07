@@ -6,7 +6,7 @@ import com.logicerror.e_learning.services.video.models.VideoCompletionCleanupRes
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -16,7 +16,7 @@ public class PreSectionDeletionHandler extends BaseSectionDeletionHandler{
     @Override
     protected void processRequest(SectionDeletionContext context) {
         logger.info("Pre section deletion handler started for section: {}", context.getSectionId());
-        List<Video> videos = context.getTargetSection().getVideos();
+        Set<Video> videos = context.getTargetSection().getVideos();
         for (Video video : videos) {
             logger.debug("Removing completions for video: {} for section: {}", video.getId(), context.getSectionId());
             VideoCompletionCleanupResult result = courseProgressDomainService.removeVideoCompletions(video.getId());

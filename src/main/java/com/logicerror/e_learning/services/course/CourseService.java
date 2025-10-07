@@ -18,9 +18,8 @@ import java.nio.file.AccessDeniedException;
 public interface CourseService {
     
     // Query operations
-    Page<CourseDto> getAllCourses(Pageable pageable);
     CourseDto getCourseById(Long courseId);
-    CourseDto getCourseByTitle(String title);
+    Page<CourseDto> getAllCourses(Pageable pageable);
     Page<CourseDto> getCoursesByCategory(String category, Pageable pageable);
     Page<CourseDto> getCoursesByLevel(CourseLevel level, Pageable pageable);
     Page<SectionDto> getCourseSections(Long courseId, Pageable pageable);

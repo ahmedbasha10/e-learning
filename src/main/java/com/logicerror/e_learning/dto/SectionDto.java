@@ -1,13 +1,27 @@
 package com.logicerror.e_learning.dto;
 
-import java.util.List;
+import lombok.Builder;
 
+import java.util.Set;
+
+@Builder
 public class SectionDto {
     private Long id;
     private String title;
     private Integer order;
     private Integer duration;
-    private List<VideoDto> videos;
+    private Set<VideoDto> videos;
+
+    public SectionDto() {
+    }
+
+    public SectionDto(Long id, String title, Integer order, Integer duration, Set<VideoDto> videos) {
+        this.id = id;
+        this.title = title;
+        this.order = order;
+        this.duration = duration;
+        this.videos = videos;
+    }
 
     public Long getId() {
         return id;
@@ -41,11 +55,11 @@ public class SectionDto {
         this.duration = duration;
     }
 
-    public List<VideoDto> getVideos() {
+    public Set<VideoDto> getVideos() {
         return videos;
     }
 
-    public void setVideos(List<VideoDto> videos) {
+    public void setVideos(Set<VideoDto> videos) {
         this.videos = videos;
     }
 }

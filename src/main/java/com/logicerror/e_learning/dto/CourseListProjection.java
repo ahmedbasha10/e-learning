@@ -4,11 +4,11 @@ public interface CourseListProjection {
     Long getId();
     String getTitle();
     String getDescription();
+    String getCategory();
     String getImageUrl();
     String getTeacherFirstName();
     String getTeacherLastName();
     String getLevel();
     Integer getPrice();
     Integer getDuration();
-
 }

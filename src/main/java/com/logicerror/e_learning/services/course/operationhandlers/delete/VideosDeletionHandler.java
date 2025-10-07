@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class VideosDeletionHandler extends BaseCourseDeleteHandler {
         Course course = context.getDeletedCourse();
         List<Video> videos = course.getSections().stream()
                 .map(Section::getVideos)
-                .flatMap(List::stream)
+                .flatMap(Set::stream)
                 .toList();
 
         List<FileDeletionQueue> deletionQueue = videos.stream()

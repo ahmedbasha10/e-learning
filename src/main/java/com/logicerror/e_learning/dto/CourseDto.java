@@ -3,7 +3,7 @@ package com.logicerror.e_learning.dto;
 
 import lombok.Builder;
 
-import java.util.List;
+import java.util.Set;
 
 @Builder
 public class CourseDto {
@@ -16,13 +16,13 @@ public class CourseDto {
     private Integer duration;
     private Integer price;
     private UserDto teacher;
-    private List<SectionDto> sections;
+    private Set<SectionDto> sections;
     private Integer studentsCount;
 
     public CourseDto() {
     }
 
-    public CourseDto(Long id, String title, String description, String category, String level, String imageUrl, Integer duration, Integer price, UserDto teacher, List<SectionDto> sections, Integer studentsCount) {
+    public CourseDto(Long id, String title, String description, String category, String level, String imageUrl, Integer duration, Integer price, UserDto teacher, Set<SectionDto> sections, Integer studentsCount) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -100,11 +100,11 @@ public class CourseDto {
         this.teacher = teacher;
     }
 
-    public List<SectionDto> getSections() {
+    public Set<SectionDto> getSections() {
         return sections;
     }
 
-    public void setSections(List<SectionDto> sections) {
+    public void setSections(Set<SectionDto> sections) {
         this.sections = sections;
     }
 
