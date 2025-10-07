@@ -41,6 +41,7 @@ public class DefaultCourseCommandService implements CourseCommandService {
     private final CourseDeleteChainBuilder courseDeleteChainBuilder;
     private final Logger logger = LoggerFactory.getLogger(DefaultCourseCommandService.class);
 
+    @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER')")
     public Course createCourse(CreateCourseRequest request, MultipartFile thumbnail) {
@@ -51,6 +52,7 @@ public class DefaultCourseCommandService implements CourseCommandService {
         return context.getCourse();
     }
 
+    @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public Course updateCourse(Long courseId, UpdateCourseRequest request) {
@@ -61,6 +63,7 @@ public class DefaultCourseCommandService implements CourseCommandService {
         return context.getUpdatedCourse();
     }
 
+    @Override
     @Transactional
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public void deleteCourse(Long courseId) {
@@ -70,6 +73,7 @@ public class DefaultCourseCommandService implements CourseCommandService {
         courseOperationHandler.handle(context);
     }
 
+    @Override
     @Transactional
     public void updateCourseDuration(Long courseId) {
         Assert.notNull(courseId, "Course must not be null");

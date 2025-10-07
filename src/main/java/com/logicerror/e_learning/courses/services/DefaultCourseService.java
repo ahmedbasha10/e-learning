@@ -34,12 +34,13 @@ public class DefaultCourseService implements CourseService {
     private final UserEnrollmentsRepository userEnrollmentsRepository;
     private final SectionService sectionService;
 
-    // Query operations
+    @Override
     public Page<CourseDto> getAllCourses(Pageable pageable) {
         Page<CourseListProjectionDTOMapper> courses = courseQueryService.getAllCourses(pageable);
         return courses.map(courseDtoService::convertToDto);
     }
 
+    @Override
     public CourseDto getCourseById(Long courseId) {
         User currentUser = userService.getAuthenticatedUser();
         boolean isEnrolled = userEnrollmentsRepository.existsByUserIdAndCourseId(currentUser.getId(), courseId);
@@ -49,39 +50,45 @@ public class DefaultCourseService implements CourseService {
         return courseDtoService.convertToDto(courseQueryService.getCoursePreviewById(courseId));
     }
 
+    @Override
     public Page<CourseDto> getCoursesByCategory(String category, Pageable pageable) {
         Page<CourseListProjectionDTOMapper> courses = courseQueryService.getCoursesByCategory(category, pageable);
         return courses.map(courseDtoService::convertToDto);
     }
 
+    @Override
     public Page<CourseDto> getCoursesByLevel(CourseLevel level, Pageable pageable) {
         Page<CourseListProjectionDTOMapper> courses = courseQueryService.getCoursesByLevel(level, pageable);
         return courses.map(courseDtoService::convertToDto);
     }
 
+    @Override
     public Page<SectionDto> getCourseSections(Long courseId, Pageable pageable) {
         Page<Section> sections = courseQueryService.getCourseSections(courseId, pageable);
         return sections.map(sectionService::convertToDto);
     }
 
-    // Command operations
-    @PreAuthorize("hasRole('TEACHER')")
-    public CourseDto createCourse(CreateCourseRequest request, MultipartFile thumbnail) {
-        Course course = courseCommandService.createCourse(request, thumbnail);
-        return courseDtoService.convertToDto(course);
-    }
-
+    @Override
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public CourseDto updateCourse(Long courseId, UpdateCourseRequest request) {
         Course course = courseCommandService.updateCourse(courseId, request);
         return courseDtoService.convertToDto(course);
     }
 
+    @Override
+    @PreAuthorize("hasRole('TEACHER')")
+    public CourseDto createCourse(CreateCourseRequest request, MultipartFile thumbnail) {
+        Course course = courseCommandService.createCourse(request, thumbnail);
+        return courseDtoService.convertToDto(course);
+    }
+
+    @Override
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public void deleteCourse(Long courseId) {
         courseCommandService.deleteCourse(courseId);
     }
 
+    @Override
     public void updateCourseDuration(Long courseId) {
         courseCommandService.updateCourseDuration(courseId);
     }

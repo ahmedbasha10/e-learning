@@ -21,9 +21,4 @@ public interface CourseQueryService {
     Page<CourseListProjectionDTOMapper> getCoursesByCategory(String category, Pageable pageable);
     Page<CourseListProjectionDTOMapper> getCoursesByLevel(CourseLevel level, Pageable pageable);
     Page<Section> getCourseSections(Long courseId, Pageable pageable);
-    int getEnrolledStudentsCount(Long courseId);
-    
-    // Utility methods for other services
-    boolean courseExists(Long courseId);
-    boolean courseExistsByTitle(String title);
 }
