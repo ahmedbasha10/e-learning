@@ -1,9 +1,7 @@
 package com.logicerror.e_learning.services.video;
 
 import com.logicerror.e_learning.dto.VideoDto;
-import com.logicerror.e_learning.entities.course.Course;
 import com.logicerror.e_learning.entities.course.Video;
-import com.logicerror.e_learning.entities.teacher.TeacherCoursesKey;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.video.VideoCreationFailedException;
 import com.logicerror.e_learning.exceptions.video.VideoNotFoundException;
@@ -24,7 +22,6 @@ import com.logicerror.e_learning.services.video.operationhandlers.update.VideoUp
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

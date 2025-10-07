@@ -1,12 +1,12 @@
 package com.logicerror.e_learning.services.section.operationhandlers.create;
 
-import com.logicerror.e_learning.entities.course.Course;
+import com.logicerror.e_learning.courses.entities.Course;
 import com.logicerror.e_learning.entities.course.Section;
 import com.logicerror.e_learning.exceptions.section.SectionCreationFailedException;
 import com.logicerror.e_learning.mappers.SectionMapper;
 import com.logicerror.e_learning.repositories.SectionRepository;
 import com.logicerror.e_learning.requests.course.section.CreateSectionRequest;
-import com.logicerror.e_learning.services.course.CourseQueryService;
+import com.logicerror.e_learning.courses.services.CourseQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

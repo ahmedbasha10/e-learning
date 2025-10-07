@@ -1,11 +1,12 @@
 package com.logicerror.e_learning.config;
 
-import com.logicerror.e_learning.entities.course.Course;
+import com.logicerror.e_learning.courses.constants.CourseLevel;
+import com.logicerror.e_learning.courses.entities.Course;
 import com.logicerror.e_learning.entities.teacher.TeacherCourses;
 import com.logicerror.e_learning.entities.teacher.TeacherCoursesKey;
 import com.logicerror.e_learning.entities.user.Role;
 import com.logicerror.e_learning.entities.user.User;
-import com.logicerror.e_learning.repositories.CourseRepository;
+import com.logicerror.e_learning.courses.repositories.CourseRepository;
 import com.logicerror.e_learning.repositories.RoleRepository;
 import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
 import com.logicerror.e_learning.repositories.UserRepository;
@@ -63,7 +64,7 @@ public class TestDatabaseInitializer {
             course.setTitle("Test Course");
             course.setDescription("This is a test course for unit testing.");
             course.setCategory("Test Category");
-            course.setLevel("Beginner");
+            course.setLevel(CourseLevel.BEGINNER);
             course.setPrice(50);
             course.setDuration(120);
             course.setImageUrl("http://example.com/test-course.jpg");

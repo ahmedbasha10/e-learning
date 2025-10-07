@@ -1,5 +1,6 @@
 package com.logicerror.e_learning.mappers;
 
+import com.logicerror.e_learning.courses.mappers.CourseMapper;
 import com.logicerror.e_learning.dto.UserEnrollmentDto;
 import com.logicerror.e_learning.entities.enrollment.UserEnrollment;
 import org.mapstruct.Mapper;

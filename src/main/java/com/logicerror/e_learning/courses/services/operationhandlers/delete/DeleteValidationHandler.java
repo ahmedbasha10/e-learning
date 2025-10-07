@@ -1,0 +1,32 @@
+package com.logicerror.e_learning.courses.services.operationhandlers.delete;
+
+import com.logicerror.e_learning.courses.entities.Course;
+import com.logicerror.e_learning.courses.exceptions.CourseNotFoundException;
+import com.logicerror.e_learning.courses.repositories.CourseRepository;
+import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class DeleteValidationHandler extends BaseCourseDeleteHandler{
+    private final CourseRepository courseRepository;
+    private final TeacherCoursesRepository teacherCoursesRepository;
+
+    @Override
+    protected void processRequest(CourseDeleteContext context) {
+        logger.debug("Validating course deletion request");
+        Course course = courseRepository.findById(context.getCourseId())
+                .orElseThrow(() -> new CourseNotFoundException("Course not found with ID: " + context.getCourseId()));
+        context.setDeletedCourse(course);
+        if(context.getUser().isAdmin()){
+            teacherCoursesRepository.findByCourseId(context.getCourseId())
+                    .stream()
+                    .map(teacherCourse -> teacherCourse.getUser().getId())
+                    .forEach(context::addTeacherId);
+        } else {
+            context.addTeacherId(context.getUser().getId());
+        }
+        logger.debug("Course validation successful");
+    }
+}

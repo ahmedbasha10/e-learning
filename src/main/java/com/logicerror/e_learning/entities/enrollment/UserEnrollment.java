@@ -1,13 +1,10 @@
 package com.logicerror.e_learning.entities.enrollment;
 
-import com.logicerror.e_learning.entities.course.Course;
+import com.logicerror.e_learning.courses.entities.Course;
 import com.logicerror.e_learning.entities.user.User;
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 

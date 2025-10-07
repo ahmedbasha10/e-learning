@@ -1,10 +1,9 @@
 package com.logicerror.e_learning.services.video;
 
-import com.logicerror.e_learning.dto.CourseProgressDTO;
+import com.logicerror.e_learning.courses.dtos.CourseProgressDTO;
 import com.logicerror.e_learning.dto.VideoProgressDTO;
 import com.logicerror.e_learning.entities.course.Video;
 import com.logicerror.e_learning.entities.course.VideoCompletion;
-import com.logicerror.e_learning.entities.enrollment.EnrollmentStatus;
 import com.logicerror.e_learning.entities.enrollment.UserEnrollment;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.general.ResourceNotFoundException;

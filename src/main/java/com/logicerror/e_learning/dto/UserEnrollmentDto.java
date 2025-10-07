@@ -1,5 +1,7 @@
 package com.logicerror.e_learning.dto;
 
+import com.logicerror.e_learning.courses.dtos.CourseDto;
+
 import java.time.LocalDate;
 
 public class UserEnrollmentDto {

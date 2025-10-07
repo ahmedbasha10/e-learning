@@ -1,12 +1,10 @@
 package com.logicerror.e_learning.services.section.operationhandlers.update;
 
 import com.logicerror.e_learning.entities.course.Section;
-import com.logicerror.e_learning.entities.teacher.TeacherCoursesKey;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.section.SectionNotFoundException;
 import com.logicerror.e_learning.repositories.SectionRepository;
-import com.logicerror.e_learning.repositories.TeacherCoursesRepository;
-import com.logicerror.e_learning.services.authorization.CourseAuthorizationService;
+import com.logicerror.e_learning.courses.security.CourseAuthorizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;

@@ -2,7 +2,7 @@ package com.logicerror.e_learning.eventlisteners;
 
 import com.logicerror.e_learning.events.SectionRemovedEvent;
 import com.logicerror.e_learning.events.VideosModifiedEvent;
-import com.logicerror.e_learning.services.course.CourseCommandService;
+import com.logicerror.e_learning.courses.services.CourseCommandService;
 import com.logicerror.e_learning.services.section.SectionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;

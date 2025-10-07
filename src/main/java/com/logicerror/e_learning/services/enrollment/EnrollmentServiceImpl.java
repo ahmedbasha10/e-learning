@@ -1,13 +1,12 @@
 package com.logicerror.e_learning.services.enrollment;
 
 import com.logicerror.e_learning.dto.UserEnrollmentDto;
-import com.logicerror.e_learning.entities.course.Course;
+import com.logicerror.e_learning.courses.entities.Course;
 import com.logicerror.e_learning.entities.enrollment.UserEnrollment;
 import com.logicerror.e_learning.entities.enrollment.UserEnrollmentsKey;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.mappers.EnrollmentMapper;
 import com.logicerror.e_learning.repositories.UserEnrollmentsRepository;
-import com.logicerror.e_learning.services.course.CourseQueryService;
 import com.logicerror.e_learning.services.user.IUserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

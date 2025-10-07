@@ -1,5 +1,6 @@
 package com.logicerror.e_learning.entities.course;
 
+import com.logicerror.e_learning.courses.entities.Course;
 import jakarta.persistence.*;
 
 import java.util.Set;

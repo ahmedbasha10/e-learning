@@ -1,6 +1,6 @@
 package com.logicerror.e_learning.services.section.operationhandlers.delete;
 
-import com.logicerror.e_learning.services.authorization.CourseAuthorizationService;
+import com.logicerror.e_learning.courses.security.CourseAuthorizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;

@@ -1,7 +1,7 @@
 package com.logicerror.e_learning.controllers;
 
 import com.logicerror.e_learning.controllers.responses.ApiResponse;
-import com.logicerror.e_learning.dto.CourseProgressDTO;
+import com.logicerror.e_learning.courses.dtos.CourseProgressDTO;
 import com.logicerror.e_learning.requests.course.video.VideoCompletionRequest;
 import com.logicerror.e_learning.services.video.VideoProgressService;
 import lombok.RequiredArgsConstructor;

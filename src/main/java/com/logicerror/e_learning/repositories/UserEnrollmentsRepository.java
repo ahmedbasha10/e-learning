@@ -1,6 +1,6 @@
 package com.logicerror.e_learning.repositories;
 
-import com.logicerror.e_learning.entities.course.Course;
+import com.logicerror.e_learning.courses.entities.Course;
 import com.logicerror.e_learning.entities.enrollment.UserEnrollment;
 import com.logicerror.e_learning.entities.enrollment.UserEnrollmentsKey;
 import com.logicerror.e_learning.entities.user.User;

@@ -1,6 +1,6 @@
 package com.logicerror.e_learning.entities.review;
 
-import com.logicerror.e_learning.entities.course.Course;
+import com.logicerror.e_learning.courses.entities.Course;
 import com.logicerror.e_learning.entities.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
