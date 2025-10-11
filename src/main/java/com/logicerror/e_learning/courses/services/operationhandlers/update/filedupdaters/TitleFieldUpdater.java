@@ -14,7 +14,7 @@ public class TitleFieldUpdater implements CourseFieldUpdater{
 
     @Override
     public void updateField(Course course, UpdateCourseRequest request) {
-        if (request.getTitle() != null) {
+        if (request.getTitle() != null && !request.getTitle().equals(course.getTitle())) {
             if(courseRepository.existsByTitle(request.getTitle())) {
                 throw new CourseTitleAlreadyExistsException("Course already exists with title: " + request.getTitle());
             }
