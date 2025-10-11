@@ -10,7 +10,7 @@ import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.repositories.UserEnrollmentsRepository;
 import com.logicerror.e_learning.courses.requests.CreateCourseRequest;
 import com.logicerror.e_learning.courses.requests.UpdateCourseRequest;
-import com.logicerror.e_learning.sections.services.SectionService;
+import com.logicerror.e_learning.sections.services.DefaultSectionService;
 import com.logicerror.e_learning.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,7 +32,7 @@ public class DefaultCourseService implements CourseService {
     private final CourseCommandService courseCommandService;
     private final UserService userService;
     private final UserEnrollmentsRepository userEnrollmentsRepository;
-    private final SectionService sectionService;
+    private final DefaultSectionService sectionService;
 
     @Override
     public Page<CourseDto> getAllCourses(Pageable pageable) {

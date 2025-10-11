@@ -8,7 +8,7 @@ import com.logicerror.e_learning.entities.course.Video;
 import com.logicerror.e_learning.sections.requests.BatchCreateSectionRequest;
 import com.logicerror.e_learning.sections.requests.CreateSectionRequest;
 import com.logicerror.e_learning.sections.requests.UpdateSectionRequest;
-import com.logicerror.e_learning.sections.services.ISectionService;
+import com.logicerror.e_learning.sections.services.SectionService;
 import com.logicerror.e_learning.services.video.IVideoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("${api.base-path}/sections")
 @RequiredArgsConstructor
 public class SectionController {
-    private final ISectionService sectionService;
+    private final SectionService sectionService;
     private final IVideoService videoService;
 
     // Get methods
