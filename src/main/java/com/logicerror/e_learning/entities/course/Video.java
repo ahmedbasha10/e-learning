@@ -1,6 +1,7 @@
 package com.logicerror.e_learning.entities.course;
 
 import com.logicerror.e_learning.courses.entities.Course;
+import com.logicerror.e_learning.sections.entities.Section;
 import jakarta.persistence.*;
 
 @Entity

@@ -1,7 +1,7 @@
 package com.logicerror.e_learning.services.video.operationhandlers.create;
 
 import com.logicerror.e_learning.courses.entities.Course;
-import com.logicerror.e_learning.entities.course.Section;
+import com.logicerror.e_learning.sections.entities.Section;
 import com.logicerror.e_learning.entities.course.Video;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.video.VideoCreationFailedException;

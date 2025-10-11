@@ -3,7 +3,7 @@ package com.logicerror.e_learning.courses.services.operationhandlers.delete;
 import com.logicerror.e_learning.constants.DeletionStatus;
 import com.logicerror.e_learning.courses.entities.Course;
 import com.logicerror.e_learning.entities.course.FileDeletionQueue;
-import com.logicerror.e_learning.entities.course.Section;
+import com.logicerror.e_learning.sections.entities.Section;
 import com.logicerror.e_learning.entities.course.Video;
 import com.logicerror.e_learning.repositories.FileDeletionQueueRepository;
 import lombok.RequiredArgsConstructor;

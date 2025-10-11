@@ -3,7 +3,7 @@ package com.logicerror.e_learning.courses.projections;
 
 import com.logicerror.e_learning.courses.dtos.CourseDto;
 import com.logicerror.e_learning.dto.ProjectionDTOMapper;
-import com.logicerror.e_learning.dto.SectionProjection;
+import com.logicerror.e_learning.sections.projections.SectionProjection;
 import com.logicerror.e_learning.dto.TeacherProjection;
 
 import java.util.Set;

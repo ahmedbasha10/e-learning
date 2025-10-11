@@ -1,11 +1,11 @@
 package com.logicerror.e_learning.courses.services;
 
 import com.logicerror.e_learning.courses.entities.Course;
-import com.logicerror.e_learning.entities.course.Section;
+import com.logicerror.e_learning.sections.entities.Section;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.courses.exceptions.CourseNotFoundException;
 import com.logicerror.e_learning.courses.repositories.CourseRepository;
-import com.logicerror.e_learning.repositories.SectionRepository;
+import com.logicerror.e_learning.sections.repositories.SectionRepository;
 import com.logicerror.e_learning.courses.requests.CreateCourseRequest;
 import com.logicerror.e_learning.courses.requests.UpdateCourseRequest;
 import com.logicerror.e_learning.services.OperationHandler;

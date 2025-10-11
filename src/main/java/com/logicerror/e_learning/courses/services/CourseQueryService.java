@@ -4,7 +4,7 @@ import com.logicerror.e_learning.courses.constants.CourseLevel;
 import com.logicerror.e_learning.courses.projections.CourseDetailsProjectionDTOMapper;
 import com.logicerror.e_learning.courses.projections.CourseListProjectionDTOMapper;
 import com.logicerror.e_learning.courses.projections.CoursePreviewProjectionDTOMapper;
-import com.logicerror.e_learning.entities.course.Section;
+import com.logicerror.e_learning.sections.entities.Section;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

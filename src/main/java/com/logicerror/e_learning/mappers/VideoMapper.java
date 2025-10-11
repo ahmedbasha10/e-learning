@@ -2,7 +2,7 @@ package com.logicerror.e_learning.mappers;
 
 import com.logicerror.e_learning.dto.VideoDto;
 import com.logicerror.e_learning.courses.entities.Course;
-import com.logicerror.e_learning.entities.course.Section;
+import com.logicerror.e_learning.sections.entities.Section;
 import com.logicerror.e_learning.entities.course.Video;
 import com.logicerror.e_learning.requests.course.video.CreateVideoRequest;
 import org.mapstruct.Mapper;

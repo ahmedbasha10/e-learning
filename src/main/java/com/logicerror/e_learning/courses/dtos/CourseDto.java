@@ -1,7 +1,7 @@
 package com.logicerror.e_learning.courses.dtos;
 
 
-import com.logicerror.e_learning.dto.SectionDto;
+import com.logicerror.e_learning.sections.dtos.SectionDto;
 import com.logicerror.e_learning.dto.UserDto;
 import lombok.Builder;
 

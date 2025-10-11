@@ -1,10 +1,10 @@
 package com.logicerror.e_learning.services.video.operationhandlers.create;
 
-import com.logicerror.e_learning.entities.course.Section;
+import com.logicerror.e_learning.sections.entities.Section;
 import com.logicerror.e_learning.entities.course.Video;
-import com.logicerror.e_learning.exceptions.section.SectionNotFoundException;
+import com.logicerror.e_learning.sections.exceptions.SectionNotFoundException;
 import com.logicerror.e_learning.mappers.VideoMapper;
-import com.logicerror.e_learning.repositories.SectionRepository;
+import com.logicerror.e_learning.sections.repositories.SectionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

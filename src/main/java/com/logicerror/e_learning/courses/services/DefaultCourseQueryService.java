@@ -6,8 +6,8 @@ import com.logicerror.e_learning.courses.projections.CourseDetailsProjectionDTOM
 import com.logicerror.e_learning.courses.projections.CourseListProjectionDTOMapper;
 import com.logicerror.e_learning.courses.projections.CoursePreviewProjectionDTOMapper;
 import com.logicerror.e_learning.courses.repositories.CourseRepository;
-import com.logicerror.e_learning.entities.course.Section;
-import com.logicerror.e_learning.repositories.SectionRepository;
+import com.logicerror.e_learning.sections.entities.Section;
+import com.logicerror.e_learning.sections.repositories.SectionRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

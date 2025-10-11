@@ -3,7 +3,7 @@ package com.logicerror.e_learning.courses.mappers;
 import com.logicerror.e_learning.courses.dtos.CourseDto;
 import com.logicerror.e_learning.courses.entities.Course;
 import com.logicerror.e_learning.courses.requests.CreateCourseRequest;
-import com.logicerror.e_learning.mappers.SectionMapper;
+import com.logicerror.e_learning.sections.mappers.SectionMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

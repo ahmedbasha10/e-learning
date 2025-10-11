@@ -1,7 +1,7 @@
 package com.logicerror.e_learning.courses.entities;
 
 import com.logicerror.e_learning.courses.constants.CourseLevel;
-import com.logicerror.e_learning.entities.course.Section;
+import com.logicerror.e_learning.sections.entities.Section;
 import com.logicerror.e_learning.entities.review.Review;
 import com.logicerror.e_learning.entities.user.User;
 import jakarta.persistence.*;

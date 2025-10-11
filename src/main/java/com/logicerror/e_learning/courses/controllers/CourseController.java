@@ -3,7 +3,7 @@ package com.logicerror.e_learning.courses.controllers;
 import com.logicerror.e_learning.courses.constants.CourseLevel;
 import com.logicerror.e_learning.controllers.responses.ApiResponse;
 import com.logicerror.e_learning.courses.dtos.CourseDto;
-import com.logicerror.e_learning.dto.SectionDto;
+import com.logicerror.e_learning.sections.dtos.SectionDto;
 import com.logicerror.e_learning.courses.requests.CreateCourseRequest;
 import com.logicerror.e_learning.courses.requests.UpdateCourseRequest;
 import com.logicerror.e_learning.courses.services.CourseService;
