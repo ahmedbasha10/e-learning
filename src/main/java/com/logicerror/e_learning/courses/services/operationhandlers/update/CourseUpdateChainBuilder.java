@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class CourseUpdateChainBuilder extends AbstractOperationHandlerChainBuilder<CourseUpdateContext> {
-    private final UpdateValidationHandler validationHandler;;
+    private final UpdateValidationHandler validationHandler;
     private final UpdateAuthorizationHandler authorizationHandler;
     private final CourseUpdateHandler courseUpdateHandler;
 
