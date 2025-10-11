@@ -24,38 +24,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SectionController {
     private final SectionService sectionService;
-    private final IVideoService videoService;
 
     // Get methods
     // Example: Get section by ID
     @GetMapping("/{sectionId}")
     public ResponseEntity<ApiResponse<SectionDto>> getSectionById(@PathVariable Long sectionId) {
-        // Logic to fetch section by ID
-        Section section = sectionService.getSectionById(sectionId);
-        // Convert to DTO and return response
-        SectionDto sectionDto = sectionService.convertToDto(section);
-
-        return ResponseEntity.ok(new ApiResponse<>("Section fetched successfully", sectionDto));
-    }
-
-    // Example: Get section by title
-    @GetMapping("/course/{courseId}/section/title/{title}")
-    public ResponseEntity<ApiResponse<SectionDto>> getSectionByTitle(@PathVariable Long courseId, @PathVariable String title) {
-        // Logic to fetch section by title
-        Section section = sectionService.getSectionByTitle(courseId, title);
-        // Convert to DTO and return response
-        SectionDto sectionDto = sectionService.convertToDto(section);
-
+        SectionDto sectionDto = sectionService.getSectionById(sectionId);
         return ResponseEntity.ok(new ApiResponse<>("Section fetched successfully", sectionDto));
     }
 
     @GetMapping("/{sectionId}/videos")
     public ResponseEntity<ApiResponse<Page<VideoDto>>> getSectionVideos(@PathVariable Long sectionId, Pageable pageable) {
-        Page<Video> videosPage = sectionService.getSectionVideos(sectionId, pageable);
-        Page<VideoDto> videoDtoPage = videosPage.map(videoService::convertToDto);
+        Page<VideoDto> videoDtoPage = sectionService.getSectionVideos(sectionId, pageable);
         return ResponseEntity.ok(new ApiResponse<>("Videos fetched successfully", videoDtoPage));
     }
-
 
     // Post methods
     @PostMapping("/course/{courseId}")

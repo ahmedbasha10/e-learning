@@ -1,8 +1,8 @@
 package com.logicerror.e_learning.sections.services;
 
+import com.logicerror.e_learning.dto.VideoDto;
 import com.logicerror.e_learning.sections.dtos.SectionDto;
 import com.logicerror.e_learning.sections.entities.Section;
-import com.logicerror.e_learning.entities.course.Video;
 import com.logicerror.e_learning.sections.requests.BatchCreateSectionRequest;
 import com.logicerror.e_learning.sections.requests.CreateSectionRequest;
 import com.logicerror.e_learning.sections.requests.UpdateSectionRequest;
@@ -13,9 +13,8 @@ import java.util.List;
 
 public interface SectionService {
 
-    Section getSectionById(Long sectionId);
-    Section getSectionByTitle(Long courseId, String title);
-    Page<Video> getSectionVideos(Long sectionId, Pageable pageable);
+    SectionDto getSectionById(Long sectionId);
+    Page<VideoDto> getSectionVideos(Long sectionId, Pageable pageable);
     Section createSection(CreateSectionRequest createSectionRequest, Long courseId);
     List<Section> batchCreateSections(BatchCreateSectionRequest batchCreateSectionRequest, Long courseId);
     Section updateSection(UpdateSectionRequest updateSectionRequest, Long sectionId);

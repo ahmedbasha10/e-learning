@@ -1,23 +1,23 @@
 package com.logicerror.e_learning.sections.services;
 
-import com.logicerror.e_learning.sections.dtos.SectionDto;
-import com.logicerror.e_learning.sections.entities.Section;
+import com.logicerror.e_learning.dto.VideoDto;
 import com.logicerror.e_learning.entities.course.Video;
 import com.logicerror.e_learning.entities.user.User;
-import com.logicerror.e_learning.sections.exceptions.SectionNotFoundException;
+import com.logicerror.e_learning.mappers.VideoMapper;
+import com.logicerror.e_learning.sections.dtos.SectionDto;
+import com.logicerror.e_learning.sections.entities.Section;
 import com.logicerror.e_learning.sections.mappers.SectionMapper;
 import com.logicerror.e_learning.sections.repositories.SectionRepository;
-import com.logicerror.e_learning.repositories.VideoRepository;
 import com.logicerror.e_learning.sections.requests.BatchCreateSectionRequest;
 import com.logicerror.e_learning.sections.requests.CreateSectionRequest;
 import com.logicerror.e_learning.sections.requests.UpdateSectionRequest;
-import com.logicerror.e_learning.services.OperationHandler;
 import com.logicerror.e_learning.sections.services.operationhandlers.create.SectionCreationChainBuilder;
 import com.logicerror.e_learning.sections.services.operationhandlers.create.SectionCreationContext;
 import com.logicerror.e_learning.sections.services.operationhandlers.delete.SectionDeletionChainBuilder;
 import com.logicerror.e_learning.sections.services.operationhandlers.delete.SectionDeletionContext;
 import com.logicerror.e_learning.sections.services.operationhandlers.update.SectionUpdateChainBuilder;
 import com.logicerror.e_learning.sections.services.operationhandlers.update.SectionUpdateContext;
+import com.logicerror.e_learning.services.OperationHandler;
 import com.logicerror.e_learning.services.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,37 +37,30 @@ import java.util.List;
 public class DefaultSectionService implements SectionService {
     private final IUserService userService;
     private final SectionRepository sectionRepository;
-    private final VideoRepository videoRepository;
+    private final SectionQueryService sectionQueryService;
     private final SectionMapper sectionMapper;
+    private final VideoMapper videoMapper;
     private final SectionCreationChainBuilder sectionCreationChainBuilder;
     private final SectionUpdateChainBuilder sectionUpdateChainBuilder;
     private final SectionDeletionChainBuilder sectionDeletionChainBuilder;
 
 
     @Override
-    public Section getSectionById(Long sectionId) {
+    public SectionDto getSectionById(Long sectionId) {
         log.debug("Fetching section with ID: {}", sectionId);
-        Section section = sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new SectionNotFoundException("Section not found with id: " + sectionId));
+        Section section = sectionQueryService.getSectionById(sectionId);
+        SectionDto sectionDto = sectionMapper.sectionToSectionDto(section);
         log.info("Section found: {}", section.getTitle());
-        return section;
+        return sectionDto;
     }
 
     @Override
-    public Section getSectionByTitle(Long courseId, String title) {
-        log.debug("Fetching section with title: {}", title);
-        Section section = sectionRepository.findByTitleWithCourseId(courseId, title)
-                .orElseThrow(() -> new SectionNotFoundException("Section not found with title: " + title));
-        log.info("Section found: {}", section.getTitle());
-        return section;
-    }
-
-    @Override
-    public Page<Video> getSectionVideos(Long sectionId, Pageable pageable) {
+    public Page<VideoDto> getSectionVideos(Long sectionId, Pageable pageable) {
         Assert.notNull(sectionId, "Section ID must not be null");
         Assert.notNull(pageable, "Pageable must not be null");
         log.debug("Fetching videos for section with ID: {}", sectionId);
-        return videoRepository.findAllBySectionId(sectionId, pageable);
+        Page<Video> videos = sectionQueryService.getSectionVideos(sectionId, pageable);
+        return videos.map(videoMapper::videoToVideoDto);
     }
 
     @Override
@@ -124,14 +117,14 @@ public class DefaultSectionService implements SectionService {
     public void updateSectionDuration(Long sectionId) {
         Assert.notNull(sectionId, "Section must not be null");
         log.debug("Updating duration for section with ID: {}", sectionId);
-        Section section = getSectionById(sectionId);
-        Long totalDuration = videoRepository.findAllBySectionId(sectionId)
-                .stream()
-                .mapToLong(Video::getDuration)
-                .sum();
-        section.setDuration(totalDuration.intValue());
-        sectionRepository.save(section);
-        log.info("Updated duration for section with ID: {} to {}", section.getId(), totalDuration);
+//        Section section = getSectionById(sectionId);
+//        Long totalDuration = videoRepository.findAllBySectionId(sectionId)
+//                .stream()
+//                .mapToLong(Video::getDuration)
+//                .sum();
+//        section.setDuration(totalDuration.intValue());
+//        sectionRepository.save(section);
+//        log.info("Updated duration for section with ID: {} to {}", section.getId(), totalDuration);
     }
 
     @Override
