@@ -25,20 +25,6 @@ import java.util.List;
 public class SectionController {
     private final SectionService sectionService;
 
-    // Get methods
-    // Example: Get section by ID
-    @GetMapping("/{sectionId}")
-    public ResponseEntity<ApiResponse<SectionDto>> getSectionById(@PathVariable Long sectionId) {
-        SectionDto sectionDto = sectionService.getSectionById(sectionId);
-        return ResponseEntity.ok(new ApiResponse<>("Section fetched successfully", sectionDto));
-    }
-
-    @GetMapping("/{sectionId}/videos")
-    public ResponseEntity<ApiResponse<Page<VideoDto>>> getSectionVideos(@PathVariable Long sectionId, Pageable pageable) {
-        Page<VideoDto> videoDtoPage = sectionService.getSectionVideos(sectionId, pageable);
-        return ResponseEntity.ok(new ApiResponse<>("Videos fetched successfully", videoDtoPage));
-    }
-
     // Post methods
     @PostMapping("/course/{courseId}")
     public ResponseEntity<ApiResponse<SectionDto>> createSection(@RequestBody @Valid CreateSectionRequest createSectionRequest, @PathVariable Long courseId) {

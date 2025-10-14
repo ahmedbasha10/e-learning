@@ -37,31 +37,11 @@ import java.util.List;
 public class DefaultSectionService implements SectionService {
     private final IUserService userService;
     private final SectionRepository sectionRepository;
-    private final SectionQueryService sectionQueryService;
     private final SectionMapper sectionMapper;
-    private final VideoMapper videoMapper;
     private final SectionCreationChainBuilder sectionCreationChainBuilder;
     private final SectionUpdateChainBuilder sectionUpdateChainBuilder;
     private final SectionDeletionChainBuilder sectionDeletionChainBuilder;
 
-
-    @Override
-    public SectionDto getSectionById(Long sectionId) {
-        log.debug("Fetching section with ID: {}", sectionId);
-        Section section = sectionQueryService.getSectionById(sectionId);
-        SectionDto sectionDto = sectionMapper.sectionToSectionDto(section);
-        log.info("Section found: {}", section.getTitle());
-        return sectionDto;
-    }
-
-    @Override
-    public Page<VideoDto> getSectionVideos(Long sectionId, Pageable pageable) {
-        Assert.notNull(sectionId, "Section ID must not be null");
-        Assert.notNull(pageable, "Pageable must not be null");
-        log.debug("Fetching videos for section with ID: {}", sectionId);
-        Page<Video> videos = sectionQueryService.getSectionVideos(sectionId, pageable);
-        return videos.map(videoMapper::videoToVideoDto);
-    }
 
     @Override
     @PreAuthorize("hasRole('TEACHER')")

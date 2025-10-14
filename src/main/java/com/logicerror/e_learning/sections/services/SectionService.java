@@ -13,8 +13,6 @@ import java.util.List;
 
 public interface SectionService {
 
-    SectionDto getSectionById(Long sectionId);
-    Page<VideoDto> getSectionVideos(Long sectionId, Pageable pageable);
     Section createSection(CreateSectionRequest createSectionRequest, Long courseId);
     List<Section> batchCreateSections(BatchCreateSectionRequest batchCreateSectionRequest, Long courseId);
     Section updateSection(UpdateSectionRequest updateSectionRequest, Long sectionId);
