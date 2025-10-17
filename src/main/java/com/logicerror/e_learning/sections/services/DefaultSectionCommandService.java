@@ -66,12 +66,12 @@ public class DefaultSectionCommandService implements SectionCommandService{
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     @Transactional
     public Section updateSection(UpdateSectionRequest updateSectionRequest, Long sectionId) {
-        log.debug("Creating section with title: {} for course ID: {}", updateSectionRequest.getTitle(), sectionId);
+        log.debug("Updating section with title: {} for course ID: {}", updateSectionRequest.getTitle(), sectionId);
         User user = userService.getAuthenticatedUser();
         OperationHandler<SectionUpdateContext> operationHandler = sectionUpdateChainBuilder.build();
         SectionUpdateContext context = new SectionUpdateContext(updateSectionRequest, sectionId, user);
         operationHandler.handle(context);
-        log.info("Section created successfully with title: {}", context.getUpdatedSection().getTitle());
+        log.info("Section updated successfully with title: {}", context.getUpdatedSection().getTitle());
         return context.getUpdatedSection();
     }
 

@@ -7,6 +7,7 @@ import com.logicerror.e_learning.exceptions.general.ResourceCreationFailedExcept
 import com.logicerror.e_learning.exceptions.general.ResourceNotFoundException;
 import com.logicerror.e_learning.sections.exceptions.SectionCreationFailedException;
 import com.logicerror.e_learning.sections.exceptions.SectionNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -19,30 +20,36 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @ControllerAdvice(assignableTypes = SectionController.class)
+@Slf4j
 public class SectionExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleSectionNotFoundException(SectionNotFoundException ex) {
+        log.error("Section not found ex: ", ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(ex.getMessage(), null));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Void>> handleAccessDeniedException(AccessDeniedException ex) {
+        log.error("Section Access Denied ex: ", ex);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse<>(ex.getMessage(), null));
     }
 
     @ExceptionHandler(ResourceCreationFailedException.class)
     public ResponseEntity<ApiResponse<Void>> handleSectionCreationFailedException(SectionCreationFailedException ex) {
+        log.error("Section Creation Failed ex: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(ex.getMessage(), null));
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public ResponseEntity<ApiResponse<Void>> handleSectionAlreadyExistsException(ResourceAlreadyExistsException ex) {
+        log.error("Section Already Exists ex: ", ex);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse<>(ex.getMessage(), null));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneralException(Exception ex) {
+        log.error("Unexpected error ex: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>("An unexpected error occurred: " + ex.getMessage(), null));
     }
 
