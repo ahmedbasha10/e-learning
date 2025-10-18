@@ -12,7 +12,6 @@ public class SectionDeletionHandler extends BaseSectionDeletionHandler {
     @Override
     protected void processRequest(SectionDeletionContext context) {
         logger.info("Section deletion handler started for section: {}", context.getSectionId());
-        // Delete the section from the repository
         sectionRepository.deleteById(context.getSectionId());
         logger.info("Section deletion handler completed for section: {}", context.getSectionId());
     }
