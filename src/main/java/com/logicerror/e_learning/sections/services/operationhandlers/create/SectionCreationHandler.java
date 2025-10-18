@@ -6,7 +6,6 @@ import com.logicerror.e_learning.sections.exceptions.SectionCreationFailedExcept
 import com.logicerror.e_learning.sections.mappers.SectionMapper;
 import com.logicerror.e_learning.sections.repositories.SectionRepository;
 import com.logicerror.e_learning.sections.requests.CreateSectionRequest;
-import com.logicerror.e_learning.courses.services.CourseQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 public class SectionCreationHandler extends BaseSectionCreationHandler {
     private final SectionMapper sectionMapper;
     private final SectionRepository sectionRepository;
-    private final CourseQueryService courseService;
 
     @Override
     protected void processRequest(SectionCreationContext context) {
