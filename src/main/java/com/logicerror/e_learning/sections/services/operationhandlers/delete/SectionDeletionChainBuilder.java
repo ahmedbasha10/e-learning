@@ -12,7 +12,6 @@ import java.util.List;
 public class SectionDeletionChainBuilder extends AbstractOperationHandlerChainBuilder<SectionDeletionContext> {
     private final SectionDeletionInitializationHandler initializationHandler;
     private final SectionDeletionAuthorizationHandler authorizationHandler;
-    private final PreSectionDeletionHandler preSectionDeletionHandler;
     private final SectionDeletionHandler sectionDeletionHandler;
     private final PostSectionDeletionHandler postSectionDeletionHandler;
 
@@ -21,7 +20,6 @@ public class SectionDeletionChainBuilder extends AbstractOperationHandlerChainBu
         return List.of(
             initializationHandler,
             authorizationHandler,
-            preSectionDeletionHandler,
             sectionDeletionHandler,
             postSectionDeletionHandler
         );
