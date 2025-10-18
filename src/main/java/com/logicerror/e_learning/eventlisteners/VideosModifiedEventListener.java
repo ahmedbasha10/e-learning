@@ -4,6 +4,7 @@ import com.logicerror.e_learning.events.SectionRemovedEvent;
 import com.logicerror.e_learning.events.VideosModifiedEvent;
 import com.logicerror.e_learning.courses.services.CourseCommandService;
 import com.logicerror.e_learning.sections.services.DefaultSectionService;
+import com.logicerror.e_learning.services.video.CourseProgressDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ public class VideosModifiedEventListener {
 
     private final CourseCommandService courseService;
     private final DefaultSectionService sectionService;
+    private final CourseProgressDomainService courseProgressDomainService;
 
     @EventListener(VideosModifiedEvent.class)
     public void handleVideosModifiedEvent(VideosModifiedEvent event) {
@@ -24,6 +26,7 @@ public class VideosModifiedEventListener {
     @EventListener(SectionRemovedEvent.class)
     public void handleSectionRemovedEvent(SectionRemovedEvent event) {
         courseService.updateCourseDuration(event.getCourseId());
+        courseProgressDomainService.updateCourseProgressForAllUsers(event.getCourseId());
     }
 
 }
