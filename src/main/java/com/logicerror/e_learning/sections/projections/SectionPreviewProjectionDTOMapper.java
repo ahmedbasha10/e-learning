@@ -1,7 +1,7 @@
 package com.logicerror.e_learning.sections.projections;
 
 import com.logicerror.e_learning.dto.ProjectionDTOMapper;
-import com.logicerror.e_learning.dto.VideoPreviewProjection;
+import com.logicerror.e_learning.videos.projections.VideoPreviewProjection;
 import com.logicerror.e_learning.sections.dtos.SectionDto;
 
 import java.util.List;

@@ -2,7 +2,7 @@ package com.logicerror.e_learning.sections.services.operationhandlers.delete;
 
 import com.logicerror.e_learning.sections.entities.Section;
 import com.logicerror.e_learning.entities.user.User;
-import com.logicerror.e_learning.services.video.models.VideoCompletionCleanupResult;
+import com.logicerror.e_learning.videos.services.models.VideoCompletionCleanupResult;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 

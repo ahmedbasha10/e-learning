@@ -1,6 +1,6 @@
 package com.logicerror.e_learning.sections.dtos;
 
-import com.logicerror.e_learning.dto.VideoDto;
+import com.logicerror.e_learning.videos.dtos.VideoDto;
 import lombok.Builder;
 
 import java.util.HashSet;

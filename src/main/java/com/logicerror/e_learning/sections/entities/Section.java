@@ -1,7 +1,7 @@
 package com.logicerror.e_learning.sections.entities;
 
 import com.logicerror.e_learning.courses.entities.Course;
-import com.logicerror.e_learning.entities.course.Video;
+import com.logicerror.e_learning.videos.entities.Video;
 import jakarta.persistence.*;
 
 import java.util.Set;

@@ -4,7 +4,7 @@ import com.logicerror.e_learning.events.SectionRemovedEvent;
 import com.logicerror.e_learning.events.VideosModifiedEvent;
 import com.logicerror.e_learning.courses.services.CourseCommandService;
 import com.logicerror.e_learning.sections.services.DefaultSectionService;
-import com.logicerror.e_learning.services.video.CourseProgressDomainService;
+import com.logicerror.e_learning.videos.services.CourseProgressDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

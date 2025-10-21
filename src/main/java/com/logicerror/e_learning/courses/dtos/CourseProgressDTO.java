@@ -1,6 +1,6 @@
 package com.logicerror.e_learning.courses.dtos;
 
-import com.logicerror.e_learning.dto.VideoProgressDTO;
+import com.logicerror.e_learning.videos.dtos.VideoProgressDTO;
 
 import java.util.List;
 

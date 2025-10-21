@@ -1,10 +1,10 @@
 package com.logicerror.e_learning.sections.services.operationhandlers.delete;
 
 import com.logicerror.e_learning.constants.DeletionStatus;
-import com.logicerror.e_learning.entities.course.FileDeletionQueue;
-import com.logicerror.e_learning.entities.course.Video;
+import com.logicerror.e_learning.videos.entities.FileDeletionQueue;
+import com.logicerror.e_learning.videos.entities.Video;
 import com.logicerror.e_learning.events.SectionRemovedEvent;
-import com.logicerror.e_learning.repositories.FileDeletionQueueRepository;
+import com.logicerror.e_learning.videos.repositories.FileDeletionQueueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
