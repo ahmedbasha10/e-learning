@@ -14,7 +14,7 @@ public class TitleFieldUpdater implements SectionFieldUpdater{
 
     @Override
     public void updateField(Section section, UpdateSectionRequest request) {
-        if (request.getTitle() != null && !request.getTitle().isEmpty()) {
+        if (request.getTitle() != null && !request.getTitle().isEmpty() && !request.getTitle().equals(section.getTitle())) {
             if(sectionRepository.existsByCourseIdAndTitle(section.getCourse().getId(), request.getTitle())) {
                 throw new SectionAlreadyExistsException("Section with the same title already exists in this course.");
             }

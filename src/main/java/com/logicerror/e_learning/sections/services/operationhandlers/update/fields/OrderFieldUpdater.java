@@ -14,7 +14,7 @@ public class OrderFieldUpdater implements SectionFieldUpdater {
 
     @Override
     public void updateField(Section section, UpdateSectionRequest request) {
-        if (request.getOrder() != null && request.getOrder() >= 0) {
+        if (request.getOrder() != null && request.getOrder() >= 0 && !request.getOrder().equals(section.getOrder())) {
             if(sectionRepository.existsByCourseIdAndOrder(section.getCourse().getId(), request.getOrder())){
                 throw new SectionAlreadyExistsException("Section with the same order already exists in this course.");
             }

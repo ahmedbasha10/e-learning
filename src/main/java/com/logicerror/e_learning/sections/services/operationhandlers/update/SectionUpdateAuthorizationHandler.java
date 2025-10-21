@@ -23,21 +23,15 @@ public class SectionUpdateAuthorizationHandler extends BaseSectionUpdateHandler{
     protected void processRequest(SectionUpdateContext context) {
         log.debug("Processing section update authorization for section ID: {}", context.getSectionId());
         User user = context.getUser();
-        if (!user.isTeacher() && !user.isAdmin()) {
-            throw new AccessDeniedException("User does not have permission to update a section");
-        }
 
         Optional<Section> section = sectionRepository.findById(context.getSectionId());
         if (section.isEmpty()) {
             throw new SectionNotFoundException("Section is not found with id: " + context.getSectionId());
         }
 
-        if (user.isTeacher()) {
-            boolean isOwner = courseAuthorizationService.isCourseOwner(section.get().getCourse().getId(), user.getId());
-
-            if (!isOwner) {
-                throw new AccessDeniedException("User is not the owner of the course");
-            }
+        if(!courseAuthorizationService.hasAccessToModifyCourse(section.get().getCourse().getId(), user)) {
+            log.error("User {} is not authorized to update section with ID: {}", user.getUsername(), context.getSectionId());
+            throw new AccessDeniedException("User is not authorized to update section with id: " + context.getSectionId());
         }
 
         context.setUpdatedSection(section.get());
