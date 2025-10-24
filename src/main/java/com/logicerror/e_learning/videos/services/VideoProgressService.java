@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class VideoProgressService {
     private final VideoCompletionRepository videoCompletionRepository;
     private final UserEnrollmentsRepository userEnrollmentsRepository;
-    private final IVideoService videoService;
+    private final VideoService videoService;
     private final IUserService userService;
     private final CourseProgressDomainService courseProgressDomainService;
 

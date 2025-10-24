@@ -6,7 +6,7 @@ import com.logicerror.e_learning.videos.entities.Video;
 import com.logicerror.e_learning.videos.requests.BatchCreateVideoRequest;
 import com.logicerror.e_learning.videos.requests.CreateVideoRequest;
 import com.logicerror.e_learning.videos.requests.UpdateVideoRequest;
-import com.logicerror.e_learning.videos.services.IVideoService;
+import com.logicerror.e_learning.videos.services.VideoService;
 import com.logicerror.e_learning.videos.services.VideoStreamingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import java.util.Map;
 @RequestMapping("${api.base-path}/videos")
 @RequiredArgsConstructor
 public class VideoController {
-    private final IVideoService videoService;
+    private final VideoService videoService;
     private final VideoStreamingService videoStreamingService;
 
     // Get Methods
