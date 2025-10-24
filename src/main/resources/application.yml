@@ -23,11 +23,13 @@ spring:
 server:
   port: 5000
 
+api:
+  base-path: /api/v1
+  base-host: http://localhost:5000
+
 logging:
   level:
     com.logicerror.e_learning: TRACE
-
-
   pattern:
     console: ${LOGPATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}
 
@@ -35,6 +37,3 @@ app:
   course:
     default-thumbnail: storage/images/courses/default.png
 
-api:
-  base-path: /api/v1
-  base-host: http://localhost:5000

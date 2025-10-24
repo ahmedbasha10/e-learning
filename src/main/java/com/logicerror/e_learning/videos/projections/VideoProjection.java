@@ -1,6 +1,7 @@
 package com.logicerror.e_learning.videos.projections;
 
 import com.logicerror.e_learning.dto.ProjectionDTOMapper;
+import com.logicerror.e_learning.services.utils.ResourcesURLService;
 import com.logicerror.e_learning.videos.dtos.VideoDto;
 
 public interface VideoProjection extends ProjectionDTOMapper<VideoDto> {

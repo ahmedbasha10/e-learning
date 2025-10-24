@@ -19,13 +19,11 @@ import java.io.IOException;
 public class CourseThumbnailService {
 
     private final FileManagementService fileManagementService;
-    private final ResourcesURLService resourcesURLService;
     private final CourseProperties courseProperties;
 
     public void setCourseThumbnail(Course course, MultipartFile thumbnail) {
         String thumbnailUrl = getThumbnailUrl(course, thumbnail);
-        String fullUrl = resourcesURLService.buildResourceURL(thumbnailUrl);
-        course.setImageUrl(fullUrl);
+        course.setImageUrl(thumbnailUrl);
     }
 
     private String getThumbnailUrl(Course course, MultipartFile thumbnail) {

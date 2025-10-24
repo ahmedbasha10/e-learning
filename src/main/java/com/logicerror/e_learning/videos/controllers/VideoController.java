@@ -26,25 +26,24 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class VideoController {
     private final VideoService videoService;
-    private final VideoStreamingService videoStreamingService;
 
     // Get Methods
     // Get by ID
     @GetMapping("/{videoId}")
     public ResponseEntity<ApiResponse<VideoDto>> getVideoById(@PathVariable Long videoId) {
-        VideoDto videoDto = videoService.convertToDto(videoService.getVideoById(videoId));
+        VideoDto videoDto = videoService.getVideoById(videoId);
         return ResponseEntity.ok(new ApiResponse<>("Video fetched successfully", videoDto));
     }
     // Get by title and course
     @GetMapping("/course/{courseId}/title/{title}")
     public ResponseEntity<ApiResponse<VideoDto>> getVideoByTitleAndCourse(@PathVariable Long courseId, @PathVariable String title) {
-        VideoDto videoDto = videoService.convertToDto(videoService.getVideoByTitleAndCourse(title, courseId));
+        VideoDto videoDto = videoService.getVideoByTitleAndCourse(title, courseId);
         return ResponseEntity.ok(new ApiResponse<>("Video fetched successfully", videoDto));
     }
     // Get by title and section
     @GetMapping("/section/{sectionId}/title/{title}")
     public ResponseEntity<ApiResponse<VideoDto>> getVideoByTitleAndSection(Long sectionId, String title) {
-        VideoDto videoDto = videoService.convertToDto(videoService.getVideoByTitleAndSection(title, sectionId));
+        VideoDto videoDto = videoService.getVideoByTitleAndSection(title, sectionId);
         return ResponseEntity.ok(new ApiResponse<>("Video fetched successfully", videoDto));
     }
 
@@ -54,7 +53,7 @@ public class VideoController {
                                                              @RequestPart("videoFile") MultipartFile videoFile,
                                                              @RequestParam Long courseId,
                                                              @RequestParam Long sectionId) {
-        VideoDto videoDto = videoService.convertToDto(videoService.createVideo(request, courseId, sectionId, videoFile));
+        VideoDto videoDto = videoService.createVideo(request, courseId, sectionId, videoFile);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ApiResponse<>("Video created successfully", videoDto));
@@ -71,13 +70,10 @@ public class VideoController {
                 fileMap.put(entry.getKey(), entry.getValue());
             }
         }
-        List<Video> videos = videoService.batchCreateVideos(request, courseId, sectionId, fileMap);
-        List<VideoDto> videosDto = videos.stream()
-                .map(videoService::convertToDto)
-                .toList();
+        List<VideoDto> videos = videoService.batchCreateVideos(request, courseId, sectionId, fileMap);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new ApiResponse<>("Videos created successfully", videosDto));
+                .body(new ApiResponse<>("Videos created successfully", videos));
     }
 
     // Patch
@@ -85,9 +81,8 @@ public class VideoController {
     public ResponseEntity<ApiResponse<VideoDto>> updateVideo(@Valid @RequestPart("details") UpdateVideoRequest request,
                                                              @RequestPart(value = "videoFile", required = false) MultipartFile videoFile,
                                                              @PathVariable Long videoId) {
-        Video updateVideo = videoService.updateVideo(request, videoFile, videoId);
-        VideoDto videoDto = videoService.convertToDto(updateVideo);
-        return ResponseEntity.ok(new ApiResponse<>("Video updated successfully", videoDto));
+        VideoDto updateVideo = videoService.updateVideo(request, videoFile, videoId);
+        return ResponseEntity.ok(new ApiResponse<>("Video updated successfully", updateVideo));
     }
 
     // Delete

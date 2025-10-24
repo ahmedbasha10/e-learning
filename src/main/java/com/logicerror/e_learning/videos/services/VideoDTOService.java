@@ -1,5 +1,6 @@
 package com.logicerror.e_learning.videos.services;
 
+import com.logicerror.e_learning.services.utils.ResourcesURLService;
 import com.logicerror.e_learning.videos.dtos.VideoDto;
 import com.logicerror.e_learning.videos.entities.Video;
 import com.logicerror.e_learning.videos.mappers.VideoMapper;
@@ -10,8 +11,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class VideoDTOService {
     private final VideoMapper videoMapper;
+    private final ResourcesURLService resourcesURLService;
 
     public VideoDto convertToDto(Video video) {
+        video.setUrl(resourcesURLService.buildResourceURL(video.getUrl()));
         return videoMapper.videoToVideoDto(video);
     }
 }

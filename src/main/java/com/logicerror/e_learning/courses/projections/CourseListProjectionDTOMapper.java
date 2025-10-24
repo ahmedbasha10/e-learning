@@ -3,6 +3,7 @@ package com.logicerror.e_learning.courses.projections;
 import com.logicerror.e_learning.courses.dtos.CourseDto;
 import com.logicerror.e_learning.dto.ProjectionDTOMapper;
 import com.logicerror.e_learning.dto.UserDto;
+import com.logicerror.e_learning.services.utils.ResourcesURLService;
 
 public interface CourseListProjectionDTOMapper extends ProjectionDTOMapper<CourseDto> {
     Long getId();

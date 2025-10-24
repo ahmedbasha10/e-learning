@@ -8,8 +8,10 @@ import com.logicerror.e_learning.entities.enrollment.UserEnrollment;
 import com.logicerror.e_learning.entities.user.User;
 import com.logicerror.e_learning.exceptions.general.ResourceNotFoundException;
 import com.logicerror.e_learning.repositories.UserEnrollmentsRepository;
+import com.logicerror.e_learning.videos.exceptions.VideoNotFoundException;
 import com.logicerror.e_learning.videos.repositories.VideoCompletionRepository;
 import com.logicerror.e_learning.services.user.IUserService;
+import com.logicerror.e_learning.videos.repositories.VideoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
 public class VideoProgressService {
     private final VideoCompletionRepository videoCompletionRepository;
     private final UserEnrollmentsRepository userEnrollmentsRepository;
-    private final VideoService videoService;
+    private final VideoQueryService videoQueryService;
     private final IUserService userService;
     private final CourseProgressDomainService courseProgressDomainService;
 
@@ -34,8 +36,8 @@ public class VideoProgressService {
         if(videoCompletionRepository.existsByUserIdAndVideoId(user.getId(), videoId)) {
             return; // Video already marked as completed
         }
-        //TODO: check if the user finished the video really not hacking
-        Video video = videoService.getVideoById(videoId);
+
+        Video video = videoQueryService.getVideoById(videoId);
 
         VideoCompletion videoCompletion = new VideoCompletion();
         videoCompletion.setUser(user);
@@ -56,7 +58,7 @@ public class VideoProgressService {
          UserEnrollment enrollment = userEnrollmentsRepository.findByUserIdAndCourseId(user.getId(), courseId)
                  .orElseThrow(() -> new ResourceNotFoundException(String.format("Enrollment not found for userId %s and courseId %s", user.getId(), courseId)));
 
-         List<Video> videos = videoService.getCourseVideos(courseId);
+         List<Video> videos = videoQueryService.getCourseVideos(courseId);
          List<VideoCompletion> completedVideos = videoCompletionRepository.findByUserIdAndVideo_CourseId(user.getId(), courseId);
 
          Set<Long> completedVideoIds = completedVideos.stream()

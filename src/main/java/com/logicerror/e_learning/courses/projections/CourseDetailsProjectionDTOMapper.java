@@ -5,6 +5,7 @@ import com.logicerror.e_learning.courses.dtos.CourseDto;
 import com.logicerror.e_learning.dto.ProjectionDTOMapper;
 import com.logicerror.e_learning.sections.projections.SectionProjection;
 import com.logicerror.e_learning.dto.TeacherProjection;
+import com.logicerror.e_learning.services.utils.ResourcesURLService;
 
 import java.util.Set;
 import java.util.stream.Collectors;
